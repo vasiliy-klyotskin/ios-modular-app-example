@@ -6,16 +6,35 @@
 	objectVersion = 70;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		D64821CA2C620BBA0068BA30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D64821A92C6206170068BA30 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D64821B02C6206170068BA30;
+			remoteInfo = JustChat;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		D64821B12C6206170068BA30 /* JustChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JustChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D64821C62C620BBA0068BA30 /* JustChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JustChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D64821B32C6206170068BA30 /* JustChat */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = JustChat; sourceTree = "<group>"; };
+		D64821C72C620BBA0068BA30 /* JustChatTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = JustChatTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		D64821AE2C6206170068BA30 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D64821C32C620BBA0068BA30 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,6 +48,7 @@
 			isa = PBXGroup;
 			children = (
 				D64821B32C6206170068BA30 /* JustChat */,
+				D64821C72C620BBA0068BA30 /* JustChatTests */,
 				D64821B22C6206170068BA30 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -37,6 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				D64821B12C6206170068BA30 /* JustChat.app */,
+				D64821C62C620BBA0068BA30 /* JustChatTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,6 +87,29 @@
 			productReference = D64821B12C6206170068BA30 /* JustChat.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D64821C52C620BBA0068BA30 /* JustChatTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D64821CC2C620BBB0068BA30 /* Build configuration list for PBXNativeTarget "JustChatTests" */;
+			buildPhases = (
+				D64821C22C620BBA0068BA30 /* Sources */,
+				D64821C32C620BBA0068BA30 /* Frameworks */,
+				D64821C42C620BBA0068BA30 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D64821CB2C620BBA0068BA30 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D64821C72C620BBA0068BA30 /* JustChatTests */,
+			);
+			name = JustChatTests;
+			packageProductDependencies = (
+			);
+			productName = JustChatTests;
+			productReference = D64821C62C620BBA0068BA30 /* JustChatTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -78,6 +122,10 @@
 				TargetAttributes = {
 					D64821B02C6206170068BA30 = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					D64821C52C620BBA0068BA30 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = D64821B02C6206170068BA30;
 					};
 				};
 			};
@@ -95,12 +143,20 @@
 			projectRoot = "";
 			targets = (
 				D64821B02C6206170068BA30 /* JustChat */,
+				D64821C52C620BBA0068BA30 /* JustChatTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		D64821AF2C6206170068BA30 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D64821C42C620BBA0068BA30 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -117,7 +173,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D64821C22C620BBA0068BA30 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D64821CB2C620BBA0068BA30 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D64821B02C6206170068BA30 /* JustChat */;
+			targetProxy = D64821CA2C620BBA0068BA30 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		D64821BD2C6206180068BA30 /* Debug */ = {
@@ -297,6 +368,42 @@
 			};
 			name = Release;
 		};
+		D64821CD2C620BBB0068BA30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.klyotskin.JustChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JustChat.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/JustChat";
+			};
+			name = Debug;
+		};
+		D64821CE2C620BBB0068BA30 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.klyotskin.JustChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JustChat.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/JustChat";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -314,6 +421,15 @@
 			buildConfigurations = (
 				D64821C02C6206180068BA30 /* Debug */,
 				D64821C12C6206180068BA30 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D64821CC2C620BBB0068BA30 /* Build configuration list for PBXNativeTarget "JustChatTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D64821CD2C620BBB0068BA30 /* Debug */,
+				D64821CE2C620BBB0068BA30 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
