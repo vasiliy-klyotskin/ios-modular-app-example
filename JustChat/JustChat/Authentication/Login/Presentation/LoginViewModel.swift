@@ -24,26 +24,34 @@ public final class LoginViewModel {
         if login.isEmpty {
             inputError = LoginStrings.emptyInputError
         } else {
-            isLoading = true
-            submitter(login).sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                switch completion {
-                case .failure(let failure):
-                    switch failure {
-                    case .input(let inputError):
-                        self?.inputError = inputError
-                    default: break
-                    }
-                case .finished:
-                    break
-                }
-            }, receiveValue: { _ in
-                
-            }).store(in: &cancellables)
+            startSubmitting()
         }
     }
     
     func update(login: String) {
         self.login = login
+    }
+    
+    private func startSubmitting() {
+        isLoading = true
+        submitter(login).sink(receiveCompletion: { [weak self] completion in
+            self?.isLoading = false
+            switch completion {
+            case .failure(let error):
+                self?.handle(error: error)
+            case .finished:
+                break
+            }
+        }, receiveValue: { _ in
+            
+        }).store(in: &cancellables)
+    }
+    
+    private func handle(error: LoginError) {
+        switch error {
+        case .input(let inputError):
+            self.inputError = inputError
+        default: break
+        }
     }
 }
