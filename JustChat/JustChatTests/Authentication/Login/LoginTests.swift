@@ -13,92 +13,97 @@ struct LoginTests {
     @Test
     func sutPresentsLoading() {
         let (sut, spy) = makeSut()
-        #expect(spy.isLoading == false, "Mustn't be loading initially")
+        
+        #expect(spy.isLoading == false, "Initially, it should not be loading")
         
         sut.initiateLoginSubmit()
-        #expect(spy.isLoading == false, "Mustn't be loading after submitting empty login")
+        #expect(spy.isLoading == false, "Should not be loading after submitting an empty login")
         
         sut.changeLoginInput("any login")
-        #expect(spy.isLoading == false, "Mustn't be loading after changing login")
+        #expect(spy.isLoading == false, "Should not be loading after changing the login input")
         
         sut.initiateLoginSubmit()
-        #expect(spy.isLoading == true, "Must be loading after submitting with not empty login")
+        #expect(spy.isLoading == true, "Should be loading after submitting a non-empty login")
         
         spy.finishRemoteRequestWithError(index: 0)
-        #expect(spy.isLoading == false, "Mustn't be loading after receiving submit error")
+        #expect(spy.isLoading == false, "Should not be loading after receiving a submit error")
         
         sut.initiateLoginSubmit()
-        #expect(spy.isLoading == true, "Must be loading after submitting with not empty login again")
+        #expect(spy.isLoading == true, "Should be loading after submitting a non-empty login again")
         
         spy.finishRemoteRequestWith(response: success(), index: 1)
-        #expect(spy.isLoading == false, "Mustn't be loading after submit success")
+        #expect(spy.isLoading == false, "Should not be loading after a successful submit")
     }
     
-    @Test func sutPresentsInputError() {
+    @Test
+    func sutPresentsInputError() {
         let (sut, spy) = makeSut()
-        #expect(spy.inputError == nil, "Mustn't be an input error")
+        
+        #expect(spy.inputError == nil, "Initially, there should not be an input error")
         
         sut.initiateLoginSubmit()
-        #expect(spy.inputError == LoginStrings.emptyInputError, "Must be an empty input error")
+        #expect(spy.inputError == LoginStrings.emptyInputError, "Should show empty input error after submitting an empty login")
         
         sut.changeLoginInput("any login")
-        #expect(spy.inputError == nil, "Mustn't be an error after login change")
+        #expect(spy.inputError == nil, "Should not show an error after changing the login input")
         
         sut.initiateLoginSubmit()
-        #expect(spy.inputError == nil, "Mustn't be an error after submit")
+        #expect(spy.inputError == nil, "Should not show an error after submitting a non-empty login")
         
         spy.finishRemoteRequestWithError(index: 0)
-        #expect(spy.inputError == nil, "Mustn't be an error after request failure")
+        #expect(spy.inputError == nil, "Should not show an error after request failure")
         
         sut.initiateLoginSubmit()
-        #expect(spy.inputError == nil, "Mustn't be an error after another submit")
+        #expect(spy.inputError == nil, "Should not show an error after another submit")
         
         spy.finishRemoteRequestWith(response: validation(error: "some error"), index: 1)
-        #expect(spy.inputError == "some error", "Must be an input error after receiving validation error")
+        #expect(spy.inputError == "some error", "Should show the validation error after receiving a validation error")
         
         sut.initiateLoginSubmit()
-        #expect(spy.inputError == nil, "Mustn't be an error after another submit")
+        #expect(spy.inputError == nil, "Should not show an error after another submit")
         
         spy.finishRemoteRequestWith(response: success(), index: 2)
-        #expect(spy.inputError == nil, "Mustn't be an error after success")
+        #expect(spy.inputError == nil, "Should not show an error after a successful submit")
     }
     
-    @Test func setPresentsGeneralError() {
+    @Test
+    func setPresentsGeneralError() {
         let (sut, spy) = makeSut()
-        #expect(spy.generalError == nil, "Mustn't be a general error initially")
+        
+        #expect(spy.generalError == nil, "Initially, there should not be a general error")
         
         sut.initiateLoginSubmit()
-        #expect(spy.generalError == nil, "Mustn't be a general error after submitting empty login")
+        #expect(spy.generalError == nil, "There should not be a general error after submitting an empty login")
         
         sut.changeLoginInput("any login")
-        #expect(spy.generalError == nil, "Mustn't be a general error after login change")
+        #expect(spy.generalError == nil, "There should not be a general error after changing the login input")
         
         sut.initiateLoginSubmit()
-        #expect(spy.generalError == nil, "Mustn't be a general error after submit")
+        #expect(spy.generalError == nil, "There should not be a general error after submitting a non-empty login")
         
         spy.finishRemoteRequestWithError(index: 0)
-        #expect(spy.generalError == "Something went wrong...", "Must be a general error after request failure")
+        #expect(spy.generalError == "Something went wrong...", "A general error should be shown after request failure")
         
         sut.tapToast()
-        #expect(spy.generalError == nil, "Mustn't be a general error after taping toast")
+        #expect(spy.generalError == nil, "There should not be a general error after dismissing the toast")
         
         sut.initiateLoginSubmit()
-        #expect(spy.generalError == nil, "Mustn't be a general error after submit")
+        #expect(spy.generalError == nil, "There should not be a general error after submitting again")
         
         spy.finishRemoteRequestWithError(index: 1)
-        #expect(spy.generalError == "Something went wrong...", "Must be a general error after another request failure")
+        #expect(spy.generalError == "Something went wrong...", "A general error should be shown after another request failure")
         
         sut.initiateLoginSubmit()
-        #expect(spy.generalError == nil, "Mustn't be a general error after submit")
+        #expect(spy.generalError == nil, "There should not be a general error after submitting again")
         
         spy.finishRemoteRequestWith(response: validation(error: "any"), index: 2)
-        #expect(spy.generalError == nil, "Mustn't be a general error after receiving validation error")
+        #expect(spy.generalError == nil, "There should not be a general error after receiving a validation error")
         
         sut.initiateLoginSubmit()
-        #expect(spy.generalError == nil, "Mustn't be a general error after submit")
+        #expect(spy.generalError == nil, "There should not be a general error after submitting again")
         
         spy.finishRemoteRequestWith(response: success(), index: 3)
-        #expect(spy.generalError == nil, "Mustn't be a general error after success")
+        #expect(spy.generalError == nil, "There should not be a general error after a successful submission")
     }
     
     private func success() -> (Data, HTTPURLResponse) {
