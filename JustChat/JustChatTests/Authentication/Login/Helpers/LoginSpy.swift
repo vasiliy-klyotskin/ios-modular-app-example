@@ -9,22 +9,17 @@ import Foundation
 import Combine
 
 final class LoginSpy {
-    var isLoading: Bool?
+    var isLoading: Bool = false
     var inputError: String?
     
     var tasks = [PassthroughSubject<(Data, HTTPURLResponse), Error>]()
     var requests = [URLRequest]()
     
-    var cancellables = [AnyCancellable]()
+    private var cancellables = Set<AnyCancellable>()
     
     func startSpying(sut: LoginTests.Sut) {
-        sut.submitVm.$isLoading.sink { [weak self] value in
-            self?.isLoading = value
-        }.store(in: &cancellables)
-        
-        sut.inputVm.$error.sink { [weak self] value in
-            self?.inputError = value
-        }.store(in: &cancellables)
+        sut.submitVm.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
+        sut.inputVm.$error.bind(\.inputError, to: self, storeIn: &cancellables)
     }
     
     func remote(request: URLRequest) -> AnyPublisher<(Data, HTTPURLResponse), Error> {
@@ -41,5 +36,19 @@ final class LoginSpy {
     func finishRemoteRequestWith(response: (Data, HTTPURLResponse), index: Int) {
         tasks[index].send(response)
         tasks[index].send(completion: .finished)
+    }
+}
+
+extension Published.Publisher {
+    func bind<Root>(
+        _ keyPath: ReferenceWritableKeyPath<Root, Value>,
+        to target: Root,
+        storeIn cancellables: inout Set<AnyCancellable>
+    ) where Root: AnyObject {
+        self
+            .sink { [weak target] value in
+                target?[keyPath: keyPath] = value
+            }
+            .store(in: &cancellables)
     }
 }
