@@ -21,6 +21,7 @@ public final class LoginViewModel {
     }
     
     public func submit() {
+        if isLoading { return }
         inputError = nil
         generalError = nil
         if login.isEmpty {
