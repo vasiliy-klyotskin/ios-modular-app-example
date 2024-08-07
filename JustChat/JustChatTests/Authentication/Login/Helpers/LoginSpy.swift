@@ -11,6 +11,7 @@ import Combine
 final class LoginSpy {
     var isLoading: Bool = false
     var inputError: String?
+    var generalError: String?
     
     var tasks = [PassthroughSubject<(Data, HTTPURLResponse), Error>]()
     var requests = [URLRequest]()
@@ -19,6 +20,7 @@ final class LoginSpy {
     
     func startSpying(sut: LoginTests.Sut) {
         sut.submitVm.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
+        sut.toastVm.$error.bind(\.generalError, to: self, storeIn: &cancellables)
         sut.inputVm.$error.bind(\.inputError, to: self, storeIn: &cancellables)
     }
     

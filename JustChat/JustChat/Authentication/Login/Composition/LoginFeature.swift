@@ -8,4 +8,5 @@
 public struct LoginFeature {
     public let submitVm: LoginViewModel
     public let inputVm: TextFieldViewModel
+    public let toastVm: ToastViewModel
 }

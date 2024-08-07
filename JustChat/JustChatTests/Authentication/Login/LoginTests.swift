@@ -63,6 +63,44 @@ struct LoginTests {
         #expect(spy.inputError == nil, "Mustn't be an error after success")
     }
     
+    @Test func setPresentsGeneralError() {
+        let (sut, spy) = makeSut()
+        #expect(spy.generalError == nil, "Mustn't be a general error initially")
+        
+        sut.initiateLoginSubmit()
+        #expect(spy.generalError == nil, "Mustn't be a general error after submitting empty login")
+        
+        sut.changeLoginInput("any login")
+        #expect(spy.generalError == nil, "Mustn't be a general error after login change")
+        
+        sut.initiateLoginSubmit()
+        #expect(spy.generalError == nil, "Mustn't be a general error after submit")
+        
+        spy.finishRemoteRequestWithError(index: 0)
+        #expect(spy.generalError == "Something went wrong...", "Must be a general error after request failure")
+        
+        sut.tapToast()
+        #expect(spy.generalError == nil, "Mustn't be a general error after taping toast")
+        
+        sut.initiateLoginSubmit()
+        #expect(spy.generalError == nil, "Mustn't be a general error after submit")
+        
+        spy.finishRemoteRequestWithError(index: 1)
+        #expect(spy.generalError == "Something went wrong...", "Must be a general error after another request failure")
+        
+        sut.initiateLoginSubmit()
+        #expect(spy.generalError == nil, "Mustn't be a general error after submit")
+        
+        spy.finishRemoteRequestWith(response: validation(error: "any"), index: 2)
+        #expect(spy.generalError == nil, "Mustn't be a general error after receiving validation error")
+        
+        sut.initiateLoginSubmit()
+        #expect(spy.generalError == nil, "Mustn't be a general error after submit")
+        
+        spy.finishRemoteRequestWith(response: success(), index: 3)
+        #expect(spy.generalError == nil, "Mustn't be a general error after success")
+    }
+    
     private func success() -> (Data, HTTPURLResponse) {
         let response = HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
         let data = "any".data(using: .utf8)!

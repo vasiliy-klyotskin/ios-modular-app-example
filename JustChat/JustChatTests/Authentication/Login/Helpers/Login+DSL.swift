@@ -13,4 +13,8 @@ extension LoginTests.Sut {
     func changeLoginInput(_ value: String) {
         self.inputVm.input = value
     }
+    
+    func tapToast() {
+        self.toastVm.processTap()
+    }
 }
