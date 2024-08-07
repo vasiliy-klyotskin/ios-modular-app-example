@@ -9,16 +9,21 @@ import Foundation
 import Combine
 
 final class LoginSpy {
-    var isLoadingUpdates: [Bool] = []
+    var isLoading: Bool?
+    var inputError: String?
+    
     var tasks = [PassthroughSubject<(Data, HTTPURLResponse), Error>]()
     var requests = [URLRequest]()
+    
     var cancellables = [AnyCancellable]()
     
-    typealias Sut = LoginTests.Sut
-    
-    func startSpying(sut: Sut) {
-        sut.$isLoading.sink { [weak self] value in
-            self?.isLoadingUpdates.append(value)
+    func startSpying(sut: LoginTests.Sut) {
+        sut.submitVm.$isLoading.sink { [weak self] value in
+            self?.isLoading = value
+        }.store(in: &cancellables)
+        
+        sut.inputVm.$error.sink { [weak self] value in
+            self?.inputError = value
         }.store(in: &cancellables)
     }
     

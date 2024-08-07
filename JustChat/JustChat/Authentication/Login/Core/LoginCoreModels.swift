@@ -6,5 +6,9 @@
 //
 
 typealias LoginRequest = String
-typealias LoginModel = Any
-typealias LoginError = Error
+typealias LoginModel = String
+
+enum LoginError: Error {
+    case input(String)
+    case general(String)
+}
