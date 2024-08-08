@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "DADBCB45-3AD8-4D8A-AB35-9793053C032A",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:JustChat.xcodeproj",
+        "identifier" : "D64821C52C620BBA0068BA30",
+        "name" : "JustChatTests"
+      }
+    }
+  ],
+  "version" : 1
+}
