@@ -1,8 +1,8 @@
 //
-//  LoginRequestDTO.swift
+//  LoginRequest+Creation.swift
 //  JustChat
 //
-//  Created by Василий Клецкин on 8/7/24.
+//  Created by Василий Клецкин on 8/8/24.
 //
 
 import Foundation

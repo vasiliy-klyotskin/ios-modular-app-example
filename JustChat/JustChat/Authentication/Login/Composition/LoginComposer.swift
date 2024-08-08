@@ -23,16 +23,12 @@ public enum LoginComposer {
     }
     
     private static func makeSubmitter(remote: @escaping Remote) -> LoginSubmitter {{ login in
+        let remoteStrings = RemoteStrings(system: "Something went wrong...")
         return remote(login.loginRequest())
-            .mapError { _ in LoginError.general("Something went wrong...") }
-            .flatMap { (data, status) in
-                if status.statusCode != 200 {
-                    return Fail<String, LoginError>(error: LoginError.input("some error")).eraseToAnyPublisher()
-                   
-                } else {
-                    return Just("").setFailureType(to: LoginError.self).eraseToAnyPublisher()
-                }
-            }
+            .mapError(RemoteMapper.map(strings: remoteStrings))
+            .flatMapResult(RemoteMapper.map(strings: remoteStrings))
+            .mapError(LoginError.from(remoteError:))
+            .map(LoginModel.from(dto:))
             .eraseToAnyPublisher()
     }}
 }

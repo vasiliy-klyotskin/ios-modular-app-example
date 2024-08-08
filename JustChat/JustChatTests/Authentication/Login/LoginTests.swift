@@ -54,8 +54,8 @@ struct LoginTests {
         sut.initiateLoginSubmit()
         #expect(spy.inputError == nil, "Should not show an error after another submit")
         
-        spy.finishRemoteRequestWith(response: validation(error: "some error"), index: 1)
-        #expect(spy.inputError == "some error", "Should show the validation error after receiving a validation error")
+        spy.finishRemoteRequestWith(response: input(error: "some error"), index: 1)
+        #expect(spy.inputError == "some error", "Should show the validation error after receiving an input error")
         
         sut.initiateLoginSubmit()
         #expect(spy.inputError == nil, "Should not show an error after another submit")
@@ -93,8 +93,8 @@ struct LoginTests {
         sut.initiateLoginSubmit()
         #expect(spy.generalError == nil, "There should not be a general error after submitting again")
         
-        spy.finishRemoteRequestWith(response: validation(error: "any"), index: 2)
-        #expect(spy.generalError == nil, "There should not be a general error after receiving a validation error")
+        spy.finishRemoteRequestWith(response: input(error: "any"), index: 2)
+        #expect(spy.generalError == nil, "There should not be a general error after receiving an input error")
         
         sut.initiateLoginSubmit()
         #expect(spy.generalError == nil, "There should not be a general error after submitting again")
@@ -132,8 +132,8 @@ struct LoginTests {
         sut.initiateLoginSubmit()
         expectRequestCorrect(spy.requests[1], for: "another login", "There should be new request after submitting non-empty login")
         
-        spy.finishRemoteRequestWith(response: validation(error: "any"), index: 1)
-        #expect(spy.requests.count == 2, "There shouldn't be new requests after receiving validation error")
+        spy.finishRemoteRequestWith(response: input(error: "any"), index: 1)
+        #expect(spy.requests.count == 2, "There shouldn't be new requests after receiving an input error")
         
         sut.initiateLoginSubmit()
         expectRequestCorrect(spy.requests[2], for: "another login", "There should be a new request after submitting non-empty login")
@@ -155,21 +155,24 @@ struct LoginTests {
     
     private func success() -> (Data, HTTPURLResponse) {
         let response = HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-        let data = "any".data(using: .utf8)!
+        let data = """
+        {
+            "confirmationToken": "any token",
+            "nextAttemptAfter": 120,
+            "otpLength": 4
+        }
+        """.data(using: .utf8)!
         return (data, response)
     }
     
-    private func validation(error: String) -> (Data, HTTPURLResponse) {
+    private func input(error: String) -> (Data, HTTPURLResponse) {
         let non2xx = 400
         let response = HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: non2xx, httpVersion: nil, headerFields: nil)!
         let data = """
             {
-                "errors": [
-                    {
-                        "field": "login"
-                        "message": "\(error)"
-                    }
-                ]
+                "messages": {
+                    "LOGIN_INPUT": "\(error)"
+                }
             }
         """.data(using: .utf8)!
         return (data, response)
