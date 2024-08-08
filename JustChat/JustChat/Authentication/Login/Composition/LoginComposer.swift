@@ -23,11 +23,7 @@ public enum LoginComposer {
     }
     
     private static func makeSubmitter(remote: @escaping Remote) -> LoginSubmitter {{ login in
-        var request = URLRequest(url: URL(string: "https://any.com/api/v1/login")!)
-        request.httpBody = try! JSONEncoder().encode(LoginRequestDTO(login: login))
-        request.httpMethod = "POST"
-        
-        return remote(request)
+        return remote(login.loginRequest())
             .mapError { _ in LoginError.general("Something went wrong...") }
             .flatMap { (data, status) in
                 if status.statusCode != 200 {

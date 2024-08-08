@@ -143,7 +143,8 @@ struct LoginTests {
     }
     
     private func expectRequestCorrect(_ request: URLRequest, for login: String, _ comment: Comment?) {
-        #expect(request.url?.path() == "/api/v1/login", comment)
+        #expect(request.url?.absoluteString == "https://justchat.com/api/v1/login", comment)
+        #expect(request.allHTTPHeaderFields == ["Content-Type": "application/json"], comment)
         #expect(request.httpMethod == "POST", comment)
         #expect(request.httpBody == body(for: login), comment)
     }
