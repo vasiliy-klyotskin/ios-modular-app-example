@@ -13,11 +13,14 @@ public final class LoginViewModel {
     @Published public var generalError: String? = nil
     
     private let submitter: LoginSubmitter
+    private let onSuccess: (LoginModel) -> Void
+    
     private var login: String = ""
     private var cancellables: [AnyCancellable] = []
     
-    init(submitter: @escaping LoginSubmitter) {
+    init(submitter: @escaping LoginSubmitter, onSuccess: @escaping (LoginModel) -> Void) {
         self.submitter = submitter
+        self.onSuccess = onSuccess
     }
     
     public func submit() {
@@ -45,8 +48,8 @@ public final class LoginViewModel {
             case .finished:
                 break
             }
-        }, receiveValue: { _ in
-            
+        }, receiveValue: { [weak self] model in
+            self?.onSuccess(model)
         }).store(in: &cancellables)
     }
     

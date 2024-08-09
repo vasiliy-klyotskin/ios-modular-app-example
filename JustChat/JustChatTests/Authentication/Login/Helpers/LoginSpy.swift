@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import JustChat
 import Combine
 
 final class LoginSpy {
     var isLoading: Bool = false
     var inputError: String?
     var generalError: String?
+    var successes = [LoginModel]()
     
     var tasks = [PassthroughSubject<(Data, HTTPURLResponse), Error>]()
     var requests = [URLRequest]()
@@ -29,6 +31,10 @@ final class LoginSpy {
         let task = PassthroughSubject<(Data, HTTPURLResponse), Error>()
         tasks.append(task)
         return task.eraseToAnyPublisher()
+    }
+    
+    func keepLoginModel(_ model: LoginModel) {
+        successes.append(model)
     }
     
     func finishRemoteRequestWithError(index: Int) {

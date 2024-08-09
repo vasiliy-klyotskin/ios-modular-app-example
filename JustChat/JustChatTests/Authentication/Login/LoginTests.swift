@@ -20,6 +20,7 @@ struct LoginTests {
         #expect(spy.requests.isEmpty, "There should be no requests initially.")
         #expect(spy.inputError == nil, "There should be no input error initially.")
         #expect(spy.generalError == nil, "There should be no general error initially.")
+        #expect(spy.successes.isEmpty, "There should ne no success messages initially.")
         
         // Perform an empty login submit and assert state
         sut.initiateLoginSubmit()
@@ -27,6 +28,7 @@ struct LoginTests {
         #expect(spy.requests.isEmpty, "There should be no requests after submitting an empty login.")
         #expect(spy.inputError == LoginStrings.emptyInputError, "An empty input error message should be shown after submitting an empty login.")
         #expect(spy.generalError == nil, "There should be no general error after submitting an empty login.")
+        #expect(spy.successes.isEmpty, "There should ne no success messages after submitting an empty login.")
         
         // Change login input to a valid one and assert state
         sut.changeLoginInput("any login")
@@ -34,6 +36,7 @@ struct LoginTests {
         #expect(spy.requests.isEmpty, "There should be no requests after changing the login input.")
         #expect(spy.inputError == nil, "There should be no input error after changing the login input.")
         #expect(spy.generalError == nil, "There should be no general error after changing the login input.")
+        #expect(spy.successes.isEmpty, "There should ne no success messages after changing the login input.")
         
         // Perform a valid login submit and assert state
         sut.initiateLoginSubmit()
@@ -41,6 +44,7 @@ struct LoginTests {
         expectRequestCorrect(spy.requests[0], for: "any login", "A remote request should be made after submitting a non-empty login.")
         #expect(spy.inputError == nil, "There should be no input error after submitting a non-empty login.")
         #expect(spy.generalError == nil, "There should be no general error after submitting a non-empty login.")
+        #expect(spy.successes.isEmpty, "There should ne no success messages after submitting a non-empty login.")
         
         // Handle input error from remote and assert state
         spy.finishRemoteRequestWith(response: input(error: "input error"), index: 0)
@@ -48,6 +52,7 @@ struct LoginTests {
         #expect(spy.requests.count == 1, "There should be no new requests after receiving an input error.")
         #expect(spy.inputError == "input error", "The validation error message should be shown after receiving an input error.")
         #expect(spy.generalError == nil, "There should be no general error after receiving an input error.")
+        #expect(spy.successes.isEmpty, "There should ne no success messages after receiving an input error.")
 
         // Change login input to another valid one and assert state
         sut.changeLoginInput("another login")
@@ -55,6 +60,7 @@ struct LoginTests {
         #expect(spy.requests.count == 1, "There should be no new requests after changing the login input again.")
         #expect(spy.inputError == nil, "There should be no input error after changing the login input again.")
         #expect(spy.generalError == nil, "There should be no general error after changing the login input again.")
+        #expect(spy.successes.isEmpty, "There should ne no success messages after changing the login input again.")
         
         // Perform another valid login submit and assert state
         sut.initiateLoginSubmit()
@@ -62,6 +68,7 @@ struct LoginTests {
         expectRequestCorrect(spy.requests[1], for: "another login", "A new remote request should be made after submitting another login.")
         #expect(spy.inputError == nil, "There should be no input error after submitting another non-empty login.")
         #expect(spy.generalError == nil, "There should be no general error after submitting another non-empty login.")
+        #expect(spy.successes.isEmpty, "There should ne no success messages after submitting another non-empty login.")
         
         // Handle general error from remote and assert state
         spy.finishRemoteRequestWithError(index: 1)
@@ -69,6 +76,7 @@ struct LoginTests {
         #expect(spy.requests.count == 2, "There should be no new requests after a request failure.")
         #expect(spy.inputError == nil, "There should be no input error after a request failure.")
         #expect(spy.generalError == "Something went wrong...", "A general error message should be shown after a request failure.")
+        #expect(spy.successes.isEmpty, "There should ne no success messages after after a request failure.")
         
         // Perform final login submit and assert state
         sut.initiateLoginSubmit()
@@ -76,13 +84,16 @@ struct LoginTests {
         expectRequestCorrect(spy.requests[2], for: "another login", "A new remote request should be made after submitting again.")
         #expect(spy.inputError == nil, "There should be no input error after submitting again.")
         #expect(spy.generalError == nil, "The general error should be hidden after submitting again.")
+        #expect(spy.successes.isEmpty, "There should ne no success messages after submitting again.")
         
         // Handle successful response and assert state
-        spy.finishRemoteRequestWith(response: success(), index: 2)
+        spy.finishRemoteRequestWith(response: success(token: "token", otpLength: 5, next: 120), index: 2)
+        let expectedSuccess = successModel(login: "another login", token: "token", otpLength: 5, next: 120)
         #expect(spy.isLoading == false, "The loading state should be false after a request success.")
         #expect(spy.requests.count == 3, "There should be no new requests after a request success.")
         #expect(spy.inputError == nil, "There should be no input error after a request success.")
         #expect(spy.generalError == nil, "There should be no general error after a request success.")
+        #expect(spy.successes == [expectedSuccess], "There should ne no success messages")
     }
     
     private func expectRequestCorrect(_ request: URLRequest, for login: String, _ comment: Comment?) {
@@ -96,16 +107,20 @@ struct LoginTests {
         "{\"login\":\"\(login)\"}".data(using: .utf8)!
     }
     
-    private func success(nextAttemptAfter: Int = 60) -> (Data, HTTPURLResponse) {
+    private func success(token: String, otpLength: Int, next: Int = 60) -> (Data, HTTPURLResponse) {
         let response = HTTPURLResponse(url: URL(string: "https://any.com")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
         let data = """
         {
-            "confirmationToken": "any token",
-            "nextAttemptAfter": \(nextAttemptAfter),
-            "otpLength": 4
+            "confirmationToken": "\(token)",
+            "nextAttemptAfter": \(next),
+            "otpLength": \(otpLength)
         }
         """.data(using: .utf8)!
         return (data, response)
+    }
+                
+    private func successModel(login: String = "", token: String = "", otpLength: Int = 0, next: Int = 0) -> LoginModel {
+        .init(login: login, confirmationToken: token, otpLength: otpLength, nextAttemptAfter: next)
     }
     
     private func input(error: String) -> (Data, HTTPURLResponse) {
@@ -125,7 +140,10 @@ struct LoginTests {
     
     private func makeSut() -> (Sut, LoginSpy) {
         let spy = LoginSpy()
-        let sut = LoginComposer.make(remote: spy.remote)
+        let sut = LoginComposer.make(
+            remote: spy.remote,
+            onReadyForOtpStep: spy.keepLoginModel
+        )
         spy.startSpying(sut: sut)
         return (sut, spy)
     }

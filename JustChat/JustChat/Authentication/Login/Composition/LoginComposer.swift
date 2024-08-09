@@ -11,9 +11,12 @@ import Combine
 public typealias Remote = (URLRequest) -> AnyPublisher<(Data, HTTPURLResponse), Error>
 
 public enum LoginComposer {
-    public static func make(remote: @escaping Remote) -> LoginFeature {
+    public static func make(
+        remote: @escaping Remote,
+        onReadyForOtpStep: @escaping (LoginModel) -> Void
+    ) -> LoginFeature {
         let submitter = makeSubmitter(remote: remote)
-        let submitVm = LoginViewModel(submitter: submitter)
+        let submitVm = LoginViewModel(submitter: submitter, onSuccess: onReadyForOtpStep)
         let toastVm = ToastViewModel(submitVm.$generalError)
         let inputVm = TextFieldViewModel(
             errorPublisher: submitVm.$inputError,
@@ -28,7 +31,11 @@ public enum LoginComposer {
             .mapError(RemoteMapper.map(strings: remoteStrings))
             .flatMapResult(RemoteMapper.map(strings: remoteStrings))
             .mapError(LoginError.from(remoteError:))
-            .map(LoginModel.from(dto:))
+            .map(curry(LoginModel.from)(login))
             .eraseToAnyPublisher()
     }}
+}
+
+public func curry<A, B, C>(_ fun: @escaping (A, B) -> C) -> (A) -> (B) -> C {
+    { a in { b in fun(a, b) }}
 }
