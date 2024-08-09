@@ -12,13 +12,16 @@ public final class LoginViewModel {
     @Published public var inputError: String? = nil
     @Published public var generalError: String? = nil
     
-    private let submitter: LoginSubmitter
+    private let submitter: (LoginRequest) -> AnyPublisher<LoginModel, LoginError>
     private let onSuccess: (LoginModel) -> Void
     
     private var login: String = ""
     private var cancellables: [AnyCancellable] = []
     
-    init(submitter: @escaping LoginSubmitter, onSuccess: @escaping (LoginModel) -> Void) {
+    init(
+        submitter: @escaping (LoginRequest) -> AnyPublisher<LoginModel, LoginError>,
+        onSuccess: @escaping (LoginModel) -> Void
+    ) {
         self.submitter = submitter
         self.onSuccess = onSuccess
     }

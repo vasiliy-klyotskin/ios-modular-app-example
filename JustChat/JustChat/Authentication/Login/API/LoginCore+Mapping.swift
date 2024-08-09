@@ -14,13 +14,13 @@ struct LoginResponseDTO: Decodable {
 }
 
 extension LoginModel {
-    static func from(login: String, dto: LoginResponseDTO) -> LoginModel {
+    static func fromLoginAndDto(login: String, dto: LoginResponseDTO) -> LoginModel {
         .init(login: login, confirmationToken: dto.confirmationToken, otpLength: dto.otpLength, nextAttemptAfter: dto.nextAttemptAfter)
     }
 }
 
 extension LoginError {
-    static func from(remoteError: RemoteError) -> LoginError {
+    static func fromRemoteError(_ remoteError: RemoteError) -> LoginError {
         switch remoteError {
         case .system(let error):
             return .general(error)

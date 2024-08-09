@@ -22,7 +22,8 @@ struct RemoteStrings {
 }
 
 enum RemoteMapper {
-    static func map<T: Decodable>(strings: RemoteStrings) -> (Data, HTTPURLResponse) -> Result<T, RemoteError> {{ data, response in
+    static func mapSuccess<T: Decodable>(strings: RemoteStrings, success: (Data, HTTPURLResponse)) -> Result<T, RemoteError> {
+        let (data, response) = success
         if response.statusCode == 200 {
             do {
                 let dto = try JSONDecoder().decode(T.self, from: data)
@@ -39,11 +40,11 @@ enum RemoteMapper {
                 return .failure(.system(strings.system))
             }
         }
-    }}
+    }
     
-    static func map(strings: RemoteStrings) -> (Error) -> RemoteError {{ error in
+    static func mapError(strings: RemoteStrings, error: Error) -> RemoteError {
         .system(strings.system)
-    }}
+    }
 }
 
 struct RemoteMessagesErrorDTO: Decodable {

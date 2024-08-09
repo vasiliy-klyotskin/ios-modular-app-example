@@ -15,7 +15,7 @@ public enum LoginComposer {
         remote: @escaping Remote,
         onReadyForOtpStep: @escaping (LoginModel) -> Void
     ) -> LoginFeature {
-        let submitter = makeSubmitter(remote: remote)
+        let submitter = makeSubmitter <~ remote
         let submitVm = LoginViewModel(submitter: submitter, onSuccess: onReadyForOtpStep)
         let toastVm = ToastViewModel(submitVm.$generalError)
         let inputVm = TextFieldViewModel(
@@ -25,17 +25,16 @@ public enum LoginComposer {
         return .init(submitVm: submitVm, inputVm: inputVm, toastVm: toastVm)
     }
     
-    private static func makeSubmitter(remote: @escaping Remote) -> LoginSubmitter {{ login in
+    private static func makeSubmitter(
+        remote: @escaping Remote,
+        login: LoginRequest
+    ) -> AnyPublisher<LoginModel, LoginError> {
         let remoteStrings = RemoteStrings(system: "Something went wrong...")
         return remote(login.loginRequest())
-            .mapError(RemoteMapper.map(strings: remoteStrings))
-            .flatMapResult(RemoteMapper.map(strings: remoteStrings))
-            .mapError(LoginError.from(remoteError:))
-            .map(curry(LoginModel.from)(login))
+            .mapError(RemoteMapper.mapError <~ remoteStrings)
+            .flatMapResult(RemoteMapper.mapSuccess <~ remoteStrings)
+            .mapError(LoginError.fromRemoteError)
+            .map(LoginModel.fromLoginAndDto <~ login)
             .eraseToAnyPublisher()
-    }}
-}
-
-public func curry<A, B, C>(_ fun: @escaping (A, B) -> C) -> (A) -> (B) -> C {
-    { a in { b in fun(a, b) }}
+    }
 }
