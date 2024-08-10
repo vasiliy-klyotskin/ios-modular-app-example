@@ -1,8 +1,8 @@
 //
-//  LoginComposer.swift
+//  LoginFeature+Make.swift
 //  JustChat
 //
-//  Created by Василий Клецкин on 8/6/24.
+//  Created by Василий Клецкин on 8/11/24.
 //
 
 import Foundation
@@ -10,15 +10,15 @@ import Combine
 
 public typealias Remote = (URLRequest) -> AnyPublisher<(Data, HTTPURLResponse), Error>
 
-public enum LoginComposer {
-    public static func make(
+public extension LoginFeature {
+    static func make(
         remote: @escaping Remote,
         onReadyForOtpStep: @escaping (LoginModel) -> Void,
         currentTime: @escaping () -> Date = Date.init
     ) -> LoginFeature {
         let submitVm = LoginViewModel()
-        let toastVm = ToastComposer.compose(error: submitVm.$generalError)
-        let inputVm = TextFieldComposer.compose(error: submitVm.$inputError, onInput: submitVm.updateLogin)
+        let toastVm = ToastViewModel.make(error: submitVm.$generalError)
+        let inputVm = TextFieldViewModel.make(error: submitVm.$inputError, onInput: submitVm.updateLogin)
         let cache = LoginCache(currentTime: currentTime)
         submitVm.onValidatedLoginSubmit = start(submitter <~ remote <~ cache <~ submitVm <~ onReadyForOtpStep)
         return .init(submitVm: submitVm, inputVm: inputVm, toastVm: toastVm)
