@@ -15,85 +15,85 @@ struct LoginTests {
     func sutPerformsInitialSubmitScenario() {
         let (sut, spy) = makeSut()
         
-        // Assert initial state
-        #expect(spy.isLoading == false, "The loading state should be false initially.")
-        #expect(spy.requests.isEmpty, "There should be no requests initially.")
-        #expect(spy.inputError == nil, "There should be no input error initially.")
-        #expect(spy.generalError == nil, "There should be no general error initially.")
-        #expect(spy.successes.isEmpty, "There should be no success messages initially.")
+        // MARK: When the scenario starts
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.requests.isEmpty, "There should be no requests.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // Perform an empty login submit and assert state
+        // MARK: When the user submits an empty login
         sut.initiateLoginSubmit()
-        #expect(spy.isLoading == false, "The loading state should remain false after submitting an empty login.")
-        #expect(spy.requests.isEmpty, "There should be no requests after submitting an empty login.")
-        #expect(spy.inputError == LoginStrings.emptyInputError, "An empty input error message should be shown after submitting an empty login.")
-        #expect(spy.generalError == nil, "There should be no general error after submitting an empty login.")
-        #expect(spy.successes.isEmpty, "There should be no success messages after submitting an empty login.")
+        #expect(spy.isLoading == false, "The loading state should remain false.")
+        #expect(spy.requests.isEmpty, "There should be no requests.")
+        #expect(spy.inputError == LoginStrings.emptyInputError, "An empty input error message should be shown.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // Change login input to a valid one and assert state
+        // MARK: When the user changes login input to a valid one
         sut.changeLoginInput("any login")
-        #expect(spy.isLoading == false, "The loading state should remain false after changing the login input.")
-        #expect(spy.requests.isEmpty, "There should be no requests after changing the login input.")
-        #expect(spy.inputError == nil, "There should be no input error after changing the login input.")
-        #expect(spy.generalError == nil, "There should be no general error after changing the login input.")
-        #expect(spy.successes.isEmpty, "There should be no success messages after changing the login input.")
+        #expect(spy.isLoading == false, "The loading state should remain false.")
+        #expect(spy.requests.isEmpty, "There should be no requests.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // Perform a valid login submit and assert state
+        // MARK: When the user submits a valid login
         sut.initiateLoginSubmit()
-        #expect(spy.isLoading == true, "The loading state should be true after submitting a non-empty login.")
-        expectRequestCorrect(spy.requests[0], for: "any login", "A remote request should be made after submitting a non-empty login.")
-        #expect(spy.inputError == nil, "There should be no input error after submitting a non-empty login.")
-        #expect(spy.generalError == nil, "There should be no general error after submitting a non-empty login.")
-        #expect(spy.successes.isEmpty, "There should be no success messages after submitting a non-empty login.")
+        #expect(spy.isLoading == true, "The loading state should be true.")
+        expectRequestCorrect(spy.requests[0], for: "any login", "A remote request should be made.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // Handle input error from remote and assert state
+        // MARK: When the request finishes with input error
         spy.finishRemoteRequestWith(response: input(error: "input error"), index: 0)
-        #expect(spy.isLoading == false, "The loading state should be false after receiving an input error.")
-        #expect(spy.requests.count == 1, "There should be no new requests after receiving an input error.")
-        #expect(spy.inputError == "input error", "The validation error message should be shown after receiving an input error.")
-        #expect(spy.generalError == nil, "There should be no general error after receiving an input error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages after receiving an input error.")
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.requests.count == 1, "There should be no new requests.")
+        #expect(spy.inputError == "input error", "The validation error message should be shown.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
 
-        // Change login input to another valid one and assert state
+        // MARK: When the user changes login to another one
         sut.changeLoginInput("another login")
-        #expect(spy.isLoading == false, "The loading state should be false after changing the login input again.")
-        #expect(spy.requests.count == 1, "There should be no new requests after changing the login input again.")
-        #expect(spy.inputError == nil, "There should be no input error after changing the login input again.")
-        #expect(spy.generalError == nil, "There should be no general error after changing the login input again.")
-        #expect(spy.successes.isEmpty, "There should be no success messages after changing the login input again.")
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.requests.count == 1, "There should be no new requests.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // Perform another valid login submit and assert state
+        // MARK: When the user submits another login
         sut.initiateLoginSubmit()
-        #expect(spy.isLoading == true, "The loading state should be true after submitting another non-empty login.")
-        expectRequestCorrect(spy.requests[1], for: "another login", "A new remote request should be made after submitting another login.")
-        #expect(spy.inputError == nil, "There should be no input error after submitting another non-empty login.")
-        #expect(spy.generalError == nil, "There should be no general error after submitting another non-empty login.")
-        #expect(spy.successes.isEmpty, "There should be no success messages after submitting another non-empty login.")
+        #expect(spy.isLoading == true, "The loading state should be true.")
+        expectRequestCorrect(spy.requests[1], for: "another login", "A new remote request should be made.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // Handle general error from remote and assert state
+        // MARK: When the request fails
         spy.finishRemoteRequestWithError(index: 1)
-        #expect(spy.isLoading == false, "The loading state should be false after a request failure.")
-        #expect(spy.requests.count == 2, "There should be no new requests after a request failure.")
-        #expect(spy.inputError == nil, "There should be no input error after a request failure.")
-        #expect(spy.generalError == "Something went wrong...", "A general error message should be shown after a request failure.")
-        #expect(spy.successes.isEmpty, "There should be no success messages after after a request failure.")
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.requests.count == 2, "There should be no new requests.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == "Something went wrong...", "A general error message should be shown.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // Perform final login submit and assert state
+        // MARK: When the user submits again
         sut.initiateLoginSubmit()
-        #expect(spy.isLoading == true, "The loading state should be true after submitting again.")
-        expectRequestCorrect(spy.requests[2], for: "another login", "A new remote request should be made after submitting again.")
-        #expect(spy.inputError == nil, "There should be no input error after submitting again.")
-        #expect(spy.generalError == nil, "The general error should be hidden after submitting again.")
-        #expect(spy.successes.isEmpty, "There should be no success messages after submitting again.")
+        #expect(spy.isLoading == true, "The loading state should be true.")
+        expectRequestCorrect(spy.requests[2], for: "another login", "A new remote request should be made.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "The general error should be hidden.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // Handle successful response and assert state
+        // MARK: When the request finishes successfully
         spy.finishRemoteRequestWith(response: success(token: "token", otpLength: 5, next: 120), index: 2)
         let expectedSuccess = successModel(login: "another login", token: "token", otpLength: 5, nextAttemptAfter: 120)
-        #expect(spy.isLoading == false, "The loading state should be false after a request success.")
-        #expect(spy.requests.count == 3, "There should be no new requests after a request success.")
-        #expect(spy.inputError == nil, "There should be no input error after a request success.")
-        #expect(spy.generalError == nil, "There should be no general error after a request success.")
-        #expect(spy.successes == [expectedSuccess], "There should be a success message after a request success")
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.requests.count == 3, "There should be no new requests.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes == [expectedSuccess], "There should be a success message.")
     }
     
     @Test
