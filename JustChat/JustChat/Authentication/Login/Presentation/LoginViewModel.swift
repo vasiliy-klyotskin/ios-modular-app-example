@@ -12,18 +12,11 @@ public final class LoginViewModel {
     @Published public var inputError: String? = nil
     @Published public var generalError: String? = nil
     
-    private let submitter: (LoginRequest) -> AnyPublisher<LoginModel, LoginError>
-    private let onSuccess: (LoginModel) -> Void
-    
+    private let onValidatedLoginSubmit: (LoginRequest) -> Void
     private var login: String = ""
-    private var cancellables: [AnyCancellable] = []
     
-    init(
-        submitter: @escaping (LoginRequest) -> AnyPublisher<LoginModel, LoginError>,
-        onSuccess: @escaping (LoginModel) -> Void
-    ) {
-        self.submitter = submitter
-        self.onSuccess = onSuccess
+    init(onValidatedLoginSubmit: @escaping (LoginRequest) -> Void) {
+        self.onValidatedLoginSubmit = onValidatedLoginSubmit
     }
     
     public func submit() {
@@ -33,8 +26,7 @@ public final class LoginViewModel {
         if login.isEmpty {
             inputError = LoginStrings.emptyInputError
         } else {
-            isLoading = true
-            startSubmitting()
+            onValidatedLoginSubmit(login)
         }
     }
     
@@ -42,21 +34,15 @@ public final class LoginViewModel {
         self.login = login
     }
     
-    private func startSubmitting() {
-        submitter(login).sink(receiveCompletion: { [weak self] completion in
-            self?.isLoading = false
-            switch completion {
-            case .failure(let error):
-                self?.handle(error: error)
-            case .finished:
-                break
-            }
-        }, receiveValue: { [weak self] model in
-            self?.onSuccess(model)
-        }).store(in: &cancellables)
+    func startLoading() {
+        self.isLoading = true
     }
     
-    private func handle(error: LoginError) {
+    func finishLoading() {
+        self.isLoading = false
+    }
+    
+    func handleError(_ error: LoginError) {
         switch error {
         case .input(let inputError):
             self.inputError = inputError

@@ -1,11 +1,9 @@
 //
-//  LoginCoreModels.swift
+//  LoginModel.swift
 //  JustChat
 //
-//  Created by Василий Клецкин on 8/6/24.
+//  Created by Василий Клецкин on 8/10/24.
 //
-
-typealias LoginRequest = String
 
 public struct LoginModel: Equatable {
     let login: String
@@ -19,9 +17,4 @@ public struct LoginModel: Equatable {
         self.otpLength = otpLength
         self.nextAttemptAfter = nextAttemptAfter
     }
-}
-
-enum LoginError: Error {
-    case input(String)
-    case general(String)
 }

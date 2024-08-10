@@ -88,12 +88,83 @@ struct LoginTests {
         
         // Handle successful response and assert state
         spy.finishRemoteRequestWith(response: success(token: "token", otpLength: 5, next: 120), index: 2)
-        let expectedSuccess = successModel(login: "another login", token: "token", otpLength: 5, next: 120)
+        let expectedSuccess = successModel(login: "another login", token: "token", otpLength: 5, nextAttemptAfter: 120)
         #expect(spy.isLoading == false, "The loading state should be false after a request success.")
         #expect(spy.requests.count == 3, "There should be no new requests after a request success.")
         #expect(spy.inputError == nil, "There should be no input error after a request success.")
         #expect(spy.generalError == nil, "There should be no general error after a request success.")
-        #expect(spy.successes == [expectedSuccess], "There should be no success messages")
+        #expect(spy.successes == [expectedSuccess], "There should be a success message after a request success")
+    }
+    
+    @Test
+    func sutPerformsRepeatedSubmitScenario() {
+        let (sut, spy) = makeSut()
+        
+        // MARK: When the user submits the same login and the cache is not expired yet
+        sut.changeLoginInput("my login")
+        sut.initiateLoginSubmit()
+        spy.finishRemoteRequestWith(response: success(token: "token 1", otpLength: 4, next: 60), index: 0)
+        spy.simulateTimePassed(seconds: 59)
+        sut.initiateLoginSubmit()
+        let expectedSuccess1 = successModel(login: "my login", token: "token 1", otpLength: 4, nextAttemptAfter: 1)
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.requests.count == 1, "There should be no new requests.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.last == expectedSuccess1, "The last success message should match the expected success.")
+
+        // MARK: When the user submits the same login and the cache is already expired
+        spy.simulateTimePassed(seconds: 1)
+        sut.initiateLoginSubmit()
+        #expect(spy.isLoading == true, "The loading state should be true.")
+        #expect(spy.requests.count == 2, "There should be a new request.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.count == 2, "There should be no new success messages.")
+
+        // MARK: When the user submits another login and the cache for the previous login is not expired yet
+        spy.finishRemoteRequestWith(response: success(token: "token 2", otpLength: 8, next: 100), index: 1)
+        sut.changeLoginInput("another login")
+        sut.initiateLoginSubmit()
+        #expect(spy.isLoading == true, "The loading state should be true.")
+        expectRequestCorrect(spy.requests[2], for: "another login", "There should be a new request.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.count == 3, "There should be no new success messages after submission.")
+
+        // MARK: When the request with another login succeeds and the user tries to submit the initial login again after some time
+        spy.finishRemoteRequestWith(response: success(token: "token 3", otpLength: 9, next: 90), index: 2)
+        sut.changeLoginInput("my login")
+        spy.simulateTimePassed(seconds: 5)
+        sut.initiateLoginSubmit()
+        let expectedSuccess2 = successModel(login: "my login", token: "token 2", otpLength: 8, nextAttemptAfter: 95)
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.count == 5, "There should be one new success message after submission.")
+        #expect(spy.successes.last == expectedSuccess2, "The last success message should match the expected success.")
+        
+        // MARK: When the request for yet another login fails and the user tries to submit the initial login again
+        sut.changeLoginInput("yet another login")
+        sut.initiateLoginSubmit()
+        spy.finishRemoteRequestWithError(index: 3)
+        sut.changeLoginInput("my login")
+        sut.initiateLoginSubmit()
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.count == 6, "There should be one new success message after submission.")
+        
+        // MARK: When receive input error for yet another login and the user tries to submit the initial login again
+        sut.changeLoginInput("yet another login")
+        sut.initiateLoginSubmit()
+        spy.finishRemoteRequestWith(response: input(error: "any error"), index: 4)
+        sut.changeLoginInput("my login")
+        sut.initiateLoginSubmit()
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.count == 7, "There should be one new success message after submission.")
     }
     
     private func expectRequestCorrect(_ request: URLRequest, for login: String, _ comment: Comment?) {
@@ -119,8 +190,8 @@ struct LoginTests {
         return (data, response)
     }
                 
-    private func successModel(login: String = "", token: String = "", otpLength: Int = 0, next: Int = 0) -> LoginModel {
-        .init(login: login, confirmationToken: token, otpLength: otpLength, nextAttemptAfter: next)
+    private func successModel(login: String = "", token: String = "", otpLength: Int = 0, nextAttemptAfter: Int = 0) -> LoginModel {
+        .init(login: login, confirmationToken: token, otpLength: otpLength, nextAttemptAfter: nextAttemptAfter)
     }
     
     private func input(error: String) -> (Data, HTTPURLResponse) {
@@ -142,7 +213,8 @@ struct LoginTests {
         let spy = LoginSpy()
         let sut = LoginComposer.make(
             remote: spy.remote,
-            onReadyForOtpStep: spy.keepLoginModel
+            onReadyForOtpStep: spy.keepLoginModel,
+            currentTime: spy.getCurrentTime
         )
         spy.startSpying(sut: sut)
         return (sut, spy)

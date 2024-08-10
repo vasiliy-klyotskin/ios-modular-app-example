@@ -18,7 +18,12 @@ final class LoginSpy {
     var tasks = [PassthroughSubject<(Data, HTTPURLResponse), Error>]()
     var requests = [URLRequest]()
     
+    private var currentTime: Date = Date()
     private var cancellables = Set<AnyCancellable>()
+    
+    func getCurrentTime() -> Date {
+        currentTime
+    }
     
     func startSpying(sut: LoginTests.Sut) {
         sut.submitVm.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
@@ -44,6 +49,10 @@ final class LoginSpy {
     func finishRemoteRequestWith(response: (Data, HTTPURLResponse), index: Int) {
         tasks[index].send(response)
         tasks[index].send(completion: .finished)
+    }
+    
+    func simulateTimePassed(seconds: Int) {
+        currentTime.addTimeInterval(TimeInterval(seconds))
     }
 }
 

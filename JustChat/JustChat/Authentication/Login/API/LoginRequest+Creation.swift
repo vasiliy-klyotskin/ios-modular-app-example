@@ -8,7 +8,7 @@
 import Foundation
 
 extension LoginRequest {
-    func loginRequest() -> URLRequest {
+    var urlRequest: URLRequest {
         let url = URL(string: "https://justchat.com/api/v1/login")!
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

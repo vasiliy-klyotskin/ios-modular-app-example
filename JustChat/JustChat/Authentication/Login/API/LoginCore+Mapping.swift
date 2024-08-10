@@ -14,7 +14,7 @@ struct LoginResponseDTO: Decodable {
 }
 
 extension LoginModel {
-    static func fromLoginAndDto(login: String, dto: LoginResponseDTO) -> LoginModel {
+    static func fromLoginAndDto(login: LoginRequest, dto: LoginResponseDTO) -> LoginModel {
         .init(login: login, confirmationToken: dto.confirmationToken, otpLength: dto.otpLength, nextAttemptAfter: dto.nextAttemptAfter)
     }
 }
