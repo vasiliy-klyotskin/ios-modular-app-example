@@ -8,11 +8,9 @@
 import Foundation
 import Combine
 
-public typealias Remote = (URLRequest) -> AnyPublisher<(Data, HTTPURLResponse), Error>
-
 public extension LoginFeature {
     static func make(
-        remote: @escaping Remote,
+        remote: @escaping RemoteClient,
         onReadyForOtpStep: @escaping (LoginModel) -> Void,
         currentTime: @escaping () -> Date = Date.init
     ) -> LoginFeature {
@@ -25,7 +23,7 @@ public extension LoginFeature {
     }
     
     private static func submitter(
-        remote: @escaping Remote,
+        remote: @escaping RemoteClient,
         cache: LoginCache,
         vm: LoginViewModel,
         onSuccess: @escaping (LoginModel) -> Void,
@@ -33,8 +31,8 @@ public extension LoginFeature {
     ) -> AnyPublisher<LoginModel, LoginError> {
         liftToPublisher(cache.load <~ login)
             .fallback(to: remote(login.urlRequest)
-                .mapError(RemoteMapper.mapError <~ remoteStrings)
-                .flatMapResult(RemoteMapper.mapSuccess <~ remoteStrings)
+                .mapError(RemoteMapper.mapError <~ RemoteStrings.values)
+                .flatMapResult(RemoteMapper.mapSuccess <~ RemoteStrings.values)
                 .mapError(LoginError.fromRemoteError)
                 .map(LoginModel.fromLoginAndDto <~ login)
                 .onSubscription(weakify(vm, { $0.startLoading }))
@@ -45,9 +43,5 @@ public extension LoginFeature {
             )
             .onOutput(onSuccess)
             .eraseToAnyPublisher()
-    }
-    
-    private static var remoteStrings: RemoteStrings {
-        .init(system: "Something went wrong...")
     }
 }

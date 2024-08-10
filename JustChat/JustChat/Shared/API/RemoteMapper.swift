@@ -1,25 +1,11 @@
 //
-//  RemoteError.swift
+//  RemoteMapper.swift
 //  JustChat
 //
-//  Created by Василий Клецкин on 8/8/24.
+//  Created by Василий Клецкин on 8/11/24.
 //
 
 import Foundation
-
-struct RemoteMessagesError {
-    let messages: [String: String]
-    let fallback: String
-}
-
-enum RemoteError: Error {
-    case system(String)
-    case messages(RemoteMessagesError)
-}
-
-struct RemoteStrings {
-    let system: String
-}
 
 enum RemoteMapper {
     static func mapSuccess<T: Decodable>(strings: RemoteStrings, success: (Data, HTTPURLResponse)) -> Result<T, RemoteError> {
