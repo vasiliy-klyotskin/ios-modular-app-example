@@ -55,17 +55,3 @@ final class LoginSpy {
         currentTime.addTimeInterval(TimeInterval(seconds))
     }
 }
-
-extension Published.Publisher {
-    func bind<Root>(
-        _ keyPath: ReferenceWritableKeyPath<Root, Value>,
-        to target: Root,
-        storeIn cancellables: inout Set<AnyCancellable>
-    ) where Root: AnyObject {
-        self
-            .sink { [weak target] value in
-                target?[keyPath: keyPath] = value
-            }
-            .store(in: &cancellables)
-    }
-}
