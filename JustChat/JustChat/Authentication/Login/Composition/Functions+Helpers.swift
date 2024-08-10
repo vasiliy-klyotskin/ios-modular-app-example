@@ -16,3 +16,10 @@ func weakify<Object: AnyObject, A>(_ object: Object, _ method: @escaping (Object
         object.map { method(type(of: $0))($0)(a) }
     }
 }
+
+func captured<A>(_ values: Any..., in block: @escaping (A) -> Void) -> (A) -> Void {
+    { [values] in
+        _ = values
+        block($0)
+    }
+}

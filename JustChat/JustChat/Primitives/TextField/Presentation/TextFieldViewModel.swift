@@ -9,36 +9,18 @@ import Combine
 
 public final class TextFieldViewModel: ObservableObject {
     @Published public var error: String? = nil
-    @Published public var input: String = ""
-    
-    private var cancellables: Set<AnyCancellable> = []
-    private let onInput: (String) -> Void
-    
-    init(errorPublisher: Published<String?>.Publisher, onInput: @escaping (String) -> Void) {
-        self.onInput = onInput
-        bindErrorPublisher(errorPublisher)
-        bindInput()
+    @Published public var input: String = "" {
+        didSet { handle(input: input) }
     }
     
-    private func bindErrorPublisher(_ errorPublisher: Published<String?>.Publisher) {
-        errorPublisher
-            .sink { [weak self] in
-                self?.error = $0
-            }
-            .store(in: &cancellables)
-    }
+    var onInputChanged: (String) -> Void = { _ in }
 
-    private func bindInput() {
-        $input
-            .dropFirst()
-            .sink { [weak self] in
-                self?.handleInputChange($0)
-            }
-            .store(in: &cancellables)
+    func updateError(_ error: String?) {
+        self.error = error
     }
     
-    private func handleInputChange(_ input: String) {
+    func handle(input: String) {
         error = nil
-        onInput(input)
+        onInputChanged(input)
     }
 }

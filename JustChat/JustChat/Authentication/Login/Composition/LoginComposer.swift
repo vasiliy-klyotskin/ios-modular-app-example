@@ -16,32 +16,35 @@ public enum LoginComposer {
         onReadyForOtpStep: @escaping (LoginModel) -> Void,
         currentTime: @escaping () -> Date = Date.init
     ) -> LoginFeature {
-        let starter = LoginSubmitStarter(onSuccess: onReadyForOtpStep)
-        let submitVm = LoginViewModel(onValidatedLoginSubmit: starter.start)
-        let toastVm = ToastViewModel(submitVm.$generalError)
-        let inputVm = TextFieldViewModel(errorPublisher: submitVm.$inputError, onInput: submitVm.updateLogin)
+        let submitVm = LoginViewModel()
+        let toastVm = ToastComposer.compose(error: submitVm.$generalError)
+        let inputVm = TextFieldComposer.compose(error: submitVm.$inputError, onInput: submitVm.updateLogin)
         let cache = LoginCache(currentTime: currentTime)
-        starter.submitter = makeSubmitter <~ remote <~ cache <~ submitVm
+        submitVm.onValidatedLoginSubmit = start(submitter <~ remote <~ cache <~ submitVm <~ onReadyForOtpStep)
         return .init(submitVm: submitVm, inputVm: inputVm, toastVm: toastVm)
     }
     
-    private static func makeSubmitter(
+    private static func submitter(
         remote: @escaping Remote,
         cache: LoginCache,
         vm: LoginViewModel,
+        onSuccess: @escaping (LoginModel) -> Void,
         login: LoginRequest
     ) -> AnyPublisher<LoginModel, LoginError> {
-        liftToPublisher(cache.load <~ login).fallback(to: remote(login.urlRequest)
-            .mapError(RemoteMapper.mapError <~ remoteStrings)
-            .flatMapResult(RemoteMapper.mapSuccess <~ remoteStrings)
-            .mapError(LoginError.fromRemoteError)
-            .map(LoginModel.fromLoginAndDto <~ login)
-            .onStart(weakify(vm, { $0.startLoading }))
-            .onFinish(weakify(vm, { $0.finishLoading }))
-            .onError(weakify(vm, { $0.handleError }))
-            .onSuccess(cache.save)
+        liftToPublisher(cache.load <~ login)
+            .fallback(to: remote(login.urlRequest)
+                .mapError(RemoteMapper.mapError <~ remoteStrings)
+                .flatMapResult(RemoteMapper.mapSuccess <~ remoteStrings)
+                .mapError(LoginError.fromRemoteError)
+                .map(LoginModel.fromLoginAndDto <~ login)
+                .onSubscription(weakify(vm, { $0.startLoading }))
+                .onCompletion(weakify(vm, { $0.finishLoading }))
+                .onFailure(weakify(vm, { $0.handleError }))
+                .onOutput(cache.save)
+                .eraseToAnyPublisher()
+            )
+            .onOutput(onSuccess)
             .eraseToAnyPublisher()
-        )
     }
     
     private static var remoteStrings: RemoteStrings {

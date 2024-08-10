@@ -12,12 +12,9 @@ public final class LoginViewModel {
     @Published public var inputError: String? = nil
     @Published public var generalError: String? = nil
     
-    private let onValidatedLoginSubmit: (LoginRequest) -> Void
-    private var login: String = ""
+    var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
     
-    init(onValidatedLoginSubmit: @escaping (LoginRequest) -> Void) {
-        self.onValidatedLoginSubmit = onValidatedLoginSubmit
-    }
+    private var login: String = ""
     
     public func submit() {
         if isLoading { return }
