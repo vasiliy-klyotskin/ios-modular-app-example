@@ -47,6 +47,16 @@ final class LoginCacheTests {
         #expect(result == .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 1))
     }
     
+    @Test func sutShouldUpdateReturnNilIfCacheIsExpired() {
+        let (sut, spy) = makeSut()
+        sut.save(model: .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 10))
+        spy.simulateTimePassed(seconds: 10)
+        
+        let result = sut.load(for: "login")
+        
+        #expect(result == nil)
+    }
+    
     typealias Sut = LoginCache
     
     private let leakChecker = MemoryLeakChecker()
