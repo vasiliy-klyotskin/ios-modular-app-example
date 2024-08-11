@@ -15,10 +15,22 @@ final class LoginViewModelTests {
     @Test
     func sutPresentsInitialState() {
         let (sut, spy) = makeSut()
+        _ = sut
         
-        #expect(spy.isLoading == [false])
-        #expect(spy.inputError == [nil])
-        #expect(spy.generalError == [nil])
+        #expect(spy.isLoading == false)
+        #expect(spy.inputError == nil)
+        #expect(spy.generalError == nil)
+        #expect(spy.validatedCalls.isEmpty)
+    }
+    
+    @Test
+    func sutValidatesEmptyLogin() {
+        let (sut, spy) = makeSut()
+        sut.submit()
+        
+        #expect(spy.isLoading == false)
+        #expect(spy.inputError == LoginStrings.emptyInputError)
+        #expect(spy.generalError == nil)
         #expect(spy.validatedCalls.isEmpty)
     }
     
@@ -35,16 +47,16 @@ final class LoginViewModelTests {
     final class Spy {
         var validatedCalls: [LoginRequest] = []
         
-        var isLoading: [Bool] = []
-        var inputError: [String?] = []
-        var generalError: [String?] = []
+        var isLoading: Bool = false
+        var inputError: String? = nil
+        var generalError: String? = nil
         
         private var cancellables = Set<AnyCancellable>()
         
         func startSpying(sut: Sut) {
-            sut.$isLoading.bindList(\.isLoading, to: self, storeIn: &cancellables)
-            sut.$inputError.bindList(\.inputError, to: self, storeIn: &cancellables)
-            sut.$generalError.bindList(\.generalError, to: self, storeIn: &cancellables)
+            sut.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
+            sut.$inputError.bind(\.inputError, to: self, storeIn: &cancellables)
+            sut.$generalError.bind(\.generalError, to: self, storeIn: &cancellables)
         }
         
         func appendValidated(_ request: LoginRequest) {
