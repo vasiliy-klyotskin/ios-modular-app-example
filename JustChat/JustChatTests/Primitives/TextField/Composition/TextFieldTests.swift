@@ -10,46 +10,44 @@ import JustChat
 
 @Suite
 final class TextFieldTests {
-    @Test func sutNotifiesAboutNewInput() {
+    @Test
+    func sutPerformsInputFlow() {
         let (sut, spy) = makeSut()
-        #expect(spy.onInputCalls.isEmpty)
         
+        // MARK: When input flow begins
+        #expect(spy.onInputCalls.isEmpty, "There shouldn't be any message.")
+        #expect(spy.internalError == nil, "There shouldn't be an error.")
+        #expect(sut.isTitleShown == false, "The title should be hidden.")
+        
+        // MARK: When input changes to "a"
         sut.changeInput("a")
-        #expect(spy.onInputCalls == ["a"])
+        #expect(spy.onInputCalls == ["a"], "Expected message with input 'a'.")
+        #expect(spy.internalError == nil, "There shouldn't be an error after input 'a'.")
+        #expect(sut.isTitleShown == true, "The title should be visible after input 'a'.")
         
+        // MARK: When input changes to "ab"
         sut.changeInput("ab")
-        #expect(spy.onInputCalls == ["a", "ab"])
-    }
-    
-    @Test func sutPresentsInternalError() {
-        let (sut, spy) = makeSut()
-        _ = sut
-        #expect(spy.internalError == nil)
+        #expect(spy.onInputCalls == ["a", "ab"], "Expected messages with inputs 'a' and 'ab'.")
+        #expect(spy.internalError == nil, "There shouldn't be an error after input 'ab'.")
+        #expect(sut.isTitleShown == true, "The title should remain visible after input 'ab'.")
         
+        // MARK: When external error occurs
         spy.externalError = "error"
-        #expect(spy.internalError == "error")
+        #expect(spy.onInputCalls == ["a", "ab"], "Expected no additional messages after error.")
+        #expect(spy.internalError == "error", "Expected internal error to be set to 'error'.")
+        #expect(sut.isTitleShown == true, "The title should remain visible despite the error.")
         
-        spy.externalError = nil
-        #expect(spy.internalError == nil)
-    }
-    
-    @Test func sutHidesErrorOnInputChange() {
-        let (sut, spy) = makeSut()
-        spy.externalError = "error"
-        sut.changeInput("a")
+        // MARK: When input is cleared
+        sut.clear()
+        #expect(spy.onInputCalls == ["a", "ab", ""], "Expected messages including the cleared input.")
+        #expect(spy.internalError == nil, "There shouldn't be an error after clearing input.")
+        #expect(sut.isTitleShown == false, "The title should be hidden after clearing input.")
         
-        #expect(spy.internalError == nil)
-    }
-    
-    @Test func sutPresentsTitle() {
-        let (sut, _) = makeSut()
-        #expect(sut.isTitleShown == false)
-        
-        sut.changeInput("a")
-        #expect(sut.isTitleShown == true)
-        
-        sut.changeInput("")
-        #expect(sut.isTitleShown == false)
+        // MARK: When input changes to "abc"
+        sut.changeInput("abc")
+        #expect(spy.onInputCalls == ["a", "ab", "", "abc"], "Expected messages with all inputs including 'abc'.")
+        #expect(spy.internalError == nil, "There shouldn't be an error after input 'abc'.")
+        #expect(sut.isTitleShown == true, "The title should be visible after input 'abc'.")
     }
     
     typealias Sut = TextFieldViewModel
