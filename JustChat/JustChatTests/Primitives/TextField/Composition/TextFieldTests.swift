@@ -41,6 +41,17 @@ final class TextFieldTests {
         #expect(spy.internalError == nil)
     }
     
+    @Test func sutPresentsTitle() {
+        let (sut, _) = makeSut()
+        #expect(sut.isTitleShown == false)
+        
+        sut.changeInput("a")
+        #expect(sut.isTitleShown == true)
+        
+        sut.changeInput("")
+        #expect(sut.isTitleShown == false)
+    }
+    
     typealias Sut = TextFieldViewModel
     
     private let leakChecker = MemoryLeakChecker()
