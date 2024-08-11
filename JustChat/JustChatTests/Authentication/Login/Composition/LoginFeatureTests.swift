@@ -171,8 +171,8 @@ final class LoginFeatureTests {
     
     private var leakChecker = MemoryLeakChecker()
     
-    private func makeSut() -> (Sut, LoginSpy) {
-        let spy = LoginSpy()
+    private func makeSut() -> (Sut, LoginFeatureSpy) {
+        let spy = LoginFeatureSpy()
         let sut = LoginFeature.make(
             remote: spy.remote,
             onReadyForOtpStep: spy.keepLoginModel,

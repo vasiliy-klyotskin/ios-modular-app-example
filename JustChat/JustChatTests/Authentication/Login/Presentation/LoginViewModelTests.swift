@@ -8,12 +8,10 @@
 import Testing
 import JustChat
 
-import Combine
-
 @Suite
 final class LoginViewModelTests {
     @Test
-    func sutHandlesSubmissionAndErrorsCorrectly() {
+    func sutHandlesSubmissionCorrectly() {
         let (sut, spy) = makeSut()
         
         // MARK: When sut is initiated
@@ -91,9 +89,9 @@ final class LoginViewModelTests {
     
     private var leakChecker = MemoryLeakChecker()
     
-    private func makeSut() -> (Sut, Spy) {
+    private func makeSut() -> (Sut, LoginViewModelSpy) {
         let sut = Sut()
-        let spy = Spy()
+        let spy = LoginViewModelSpy()
         sut.onValidatedLoginSubmit = spy.appendValidated
         spy.startSpying(sut: sut)
         leakChecker.addForChecking(sut)
@@ -103,25 +101,5 @@ final class LoginViewModelTests {
     
     deinit {
         leakChecker.check()
-    }
-    
-    final class Spy {
-        var validatedCalls: [LoginRequest] = []
-        
-        var isLoading: Bool = false
-        var inputError: String? = nil
-        var generalError: String? = nil
-        
-        private var cancellables = Set<AnyCancellable>()
-        
-        func startSpying(sut: Sut) {
-            sut.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
-            sut.$inputError.bind(\.inputError, to: self, storeIn: &cancellables)
-            sut.$generalError.bind(\.generalError, to: self, storeIn: &cancellables)
-        }
-        
-        func appendValidated(_ request: LoginRequest) {
-            validatedCalls.append(request)
-        }
     }
 }

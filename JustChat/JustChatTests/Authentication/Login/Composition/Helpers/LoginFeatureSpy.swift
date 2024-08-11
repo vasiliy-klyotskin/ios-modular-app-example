@@ -9,7 +9,7 @@ import Foundation
 import JustChat
 import Combine
 
-final class LoginSpy {
+final class LoginFeatureSpy {
     var isLoading: Bool = false
     var inputError: String?
     var generalError: String?
