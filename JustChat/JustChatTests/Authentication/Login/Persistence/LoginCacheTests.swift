@@ -23,9 +23,18 @@ final class LoginCacheTests {
         let (sut, _) = makeSut()
         sut.save(model: .init(login: "some login", confirmationToken: "any", otpLength: 4, nextAttemptAfter: 10))
         
-        let result = sut.load(for: "another key")
+        let result = sut.load(for: "another login")
         
         #expect(result == nil)
+    }
+    
+    @Test func sutShouldReturnModelForPreviouslyCachedModel() {
+        let (sut, _) = makeSut()
+        sut.save(model: .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 10))
+        
+        let result = sut.load(for: "login")
+        
+        #expect(result == .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 10))
     }
     
     typealias Sut = LoginCache
