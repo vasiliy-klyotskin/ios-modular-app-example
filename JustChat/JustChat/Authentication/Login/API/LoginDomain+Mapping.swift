@@ -37,5 +37,5 @@ extension LoginError {
         }
     }
     
-    static var inputKey: String { "LOGIN_INPUT" }
+    public static var inputKey: String { "LOGIN_INPUT" }
 }

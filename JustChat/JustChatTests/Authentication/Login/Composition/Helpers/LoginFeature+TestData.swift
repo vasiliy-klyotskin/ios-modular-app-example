@@ -43,7 +43,7 @@ extension LoginFeatureTests {
         let data = """
             {
                 "messages": {
-                    "LOGIN_INPUT": "\(error)"
+                    "\(LoginError.inputKey)": "\(error)"
                 }
             }
         """.data(using: .utf8)!

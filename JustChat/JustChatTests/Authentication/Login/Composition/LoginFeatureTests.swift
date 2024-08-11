@@ -75,7 +75,7 @@ final class LoginFeatureTests {
         #expect(spy.isLoading == false, "The loading state should be false.")
         #expect(spy.requests.count == 2, "There should be no new requests.")
         #expect(spy.inputError == nil, "There should be no input error.")
-        #expect(spy.generalError == "Something went wrong...", "A general error message should be shown.")
+        #expect(spy.generalError == RemoteStrings.values.system, "A general error message should be shown.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
         // MARK: When the user submits again
