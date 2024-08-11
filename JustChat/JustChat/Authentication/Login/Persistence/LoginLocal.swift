@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct LoginLocal {
+public struct LoginLocal {
     let login: String
     let confirmationToken: String
     let otpLength: Int
