@@ -37,6 +37,16 @@ final class LoginCacheTests {
         #expect(result == .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 10))
     }
     
+    @Test func sutShouldUpdateModelAfterSomeTimePassed() {
+        let (sut, spy) = makeSut()
+        sut.save(model: .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 10))
+        spy.simulateTimePassed(seconds: 9)
+        
+        let result = sut.load(for: "login")
+        
+        #expect(result == .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 1))
+    }
+    
     typealias Sut = LoginCache
     
     private let leakChecker = MemoryLeakChecker()
