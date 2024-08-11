@@ -18,22 +18,22 @@ extension Publisher {
         .eraseToAnyPublisher()
     }
     
-    func onSubscription(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
-        handleEvents(receiveSubscription: { _ in action() })
+    func onSubscription(_ action: (() -> Void)? = nil) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveSubscription: { _ in (action ?? {})() })
     }
     
-    func onCompletion(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
-        handleEvents(receiveCompletion: { _ in action() })
+    func onCompletion(_ action: (() -> Void)? = nil) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveCompletion: { _ in (action ?? {})() })
     }
     
-    func onOutput(_ action: @escaping (Output) -> Void) -> Publishers.HandleEvents<Self> {
-        handleEvents(receiveOutput: { output in action(output) })
+    func onOutput(_ action: ((Output) -> Void)? = nil) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveOutput: { output in (action ?? { _ in })(output) })
     }
     
-    func onFailure(_ action: @escaping (Failure) -> Void) -> Publishers.HandleEvents<Self> {
+    func onFailure(_ action: ((Failure) -> Void)? = nil) -> Publishers.HandleEvents<Self> {
         handleEvents(receiveCompletion: { completion in
             if case .failure(let error) = completion {
-                action(error)
+                (action ?? { _ in })(error)
             }
         })
     }
@@ -63,6 +63,6 @@ func liftToPublisher<T>(_ function: @escaping () -> T?) -> AnyPublisher<T, Error
 }
 
 func start<Output, Failure: Error, Request>(_ publisher: @escaping (Request) -> AnyPublisher<Output, Failure>) -> (Request) -> Void {
-    var cancellable = Set<AnyCancellable>()
-    return { a in publisher(a).sink().store(in: &cancellable) }
+    var cancellables = Set<AnyCancellable>()
+    return { a in publisher(a).sink().store(in: &cancellables) }
 }

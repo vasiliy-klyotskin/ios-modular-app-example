@@ -10,7 +10,7 @@ import JustChat
 import Foundation
 
 @Suite
-struct LoginTests {
+final class LoginTests {
     @Test
     func sutPerformsInitialSubmitScenario() {
         let (sut, spy) = makeSut()
@@ -169,6 +169,8 @@ struct LoginTests {
     
     typealias Sut = LoginFeature
     
+    private var leakChecker = MemoryLeakChecker()
+    
     private func makeSut() -> (Sut, LoginSpy) {
         let spy = LoginSpy()
         let sut = LoginFeature.make(
@@ -177,6 +179,14 @@ struct LoginTests {
             currentTime: spy.getCurrentTime
         )
         spy.startSpying(sut: sut)
+        leakChecker.addForChecking(sut.inputVm)
+        leakChecker.addForChecking(sut.submitVm)
+        leakChecker.addForChecking(sut.toastVm)
+        leakChecker.addForChecking(spy)
         return (sut, spy)
+    }
+    
+    deinit {
+        leakChecker.check()
     }
 }
