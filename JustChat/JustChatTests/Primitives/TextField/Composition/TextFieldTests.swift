@@ -33,6 +33,14 @@ final class TextFieldTests {
         #expect(spy.internalError == nil)
     }
     
+    @Test func sutHidesErrorOnInputChange() {
+        let (sut, spy) = makeSut()
+        spy.externalError = "error"
+        sut.changeInput("a")
+        
+        #expect(spy.internalError == nil)
+    }
+    
     typealias Sut = TextFieldViewModel
     
     private let leakChecker = MemoryLeakChecker()
