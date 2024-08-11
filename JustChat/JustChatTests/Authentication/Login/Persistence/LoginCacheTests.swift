@@ -40,11 +40,14 @@ final class LoginCacheTests {
     @Test func sutShouldUpdateModelAfterSomeTimePassed() {
         let (sut, spy) = makeSut()
         sut.save(model: .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 10))
-        spy.simulateTimePassed(seconds: 9)
         
-        let result = sut.load(for: "login")
+        spy.simulateTimePassed(seconds: 5)
+        let result1 = sut.load(for: "login")
+        #expect(result1 == .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 5))
         
-        #expect(result == .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 1))
+        spy.simulateTimePassed(seconds: 4)
+        let result2 = sut.load(for: "login")
+        #expect(result2 == .init(login: "login", confirmationToken: "token", otpLength: 4, nextAttemptAfter: 1))
     }
     
     @Test func sutShouldUpdateReturnNilIfCacheIsExpired() {
