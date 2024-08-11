@@ -20,7 +20,7 @@ public final class TextFieldViewModel: ObservableObject {
         self.error = error
     }
     
-    func handle(input: String) {
+    private func handle(input: String) {
         error = nil
         isTitleShown = !input.isEmpty
         onInputChanged(input)
