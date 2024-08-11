@@ -14,7 +14,8 @@ extension TextFieldViewModel {
     ) -> TextFieldViewModel {
         let viewModel = TextFieldViewModel()
         let cancellable = error.onOutput(weakify(viewModel, { $0.updateError })).sink()
-        viewModel.onInputChanged = captured(cancellable, in: onInput)
+        let onInput = captured(cancellable, in: onInput)
+        viewModel.onInputChanged = onInput
         return viewModel
     }
 }

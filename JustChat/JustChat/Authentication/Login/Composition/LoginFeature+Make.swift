@@ -29,7 +29,7 @@ public extension LoginFeature {
         onSuccess: @escaping (LoginModel) -> Void,
         login: LoginRequest
     ) -> AnyPublisher<LoginModel, LoginError> {
-        liftToPublisher(cache.load <~ login)
+        lift(cache.load <~ login)
             .fallback(to: remote(login.urlRequest)
                 .mapError(RemoteMapper.mapError <~ RemoteStrings.values)
                 .flatMapResult(RemoteMapper.mapSuccess <~ RemoteStrings.values)

@@ -49,7 +49,7 @@ extension Publisher {
     }
 }
 
-func liftToPublisher<T>(_ function: @escaping () -> T?) -> AnyPublisher<T, Error> {
+func lift<T>(_ function: @escaping () -> T?) -> AnyPublisher<T, Error> {
     Deferred {
         Future { promise in
             if let result = function() {
