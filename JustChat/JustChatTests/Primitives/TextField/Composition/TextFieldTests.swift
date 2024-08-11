@@ -10,7 +10,7 @@ import JustChat
 
 @Suite
 final class TextFieldTests {
-    @Test func sutNotifiesAboutNewInput() async throws {
+    @Test func sutNotifiesAboutNewInput() {
         let (sut, spy) = makeSut()
         #expect(spy.onInputCalls.isEmpty)
         
@@ -21,6 +21,18 @@ final class TextFieldTests {
         #expect(spy.onInputCalls == ["a", "ab"])
     }
     
+    @Test func sutPresentsInternalError() {
+        let (sut, spy) = makeSut()
+        _ = sut
+        #expect(spy.internalError == nil)
+        
+        spy.externalError = "error"
+        #expect(spy.internalError == "error")
+        
+        spy.externalError = nil
+        #expect(spy.internalError == nil)
+    }
+    
     typealias Sut = TextFieldViewModel
     
     private let leakChecker = MemoryLeakChecker()
@@ -28,6 +40,7 @@ final class TextFieldTests {
     private func makeSut() -> (Sut, TextFieldSpy) {
         let spy = TextFieldSpy()
         let sut = Sut.make(error: spy.$externalError, onInput: spy.appendInputCall)
+        spy.startSpying(sut: sut)
         leakChecker.addForChecking(sut)
         leakChecker.addForChecking(spy)
         return (sut, spy)
