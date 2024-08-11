@@ -5,7 +5,7 @@
 //  Created by Василий Клецкин on 8/7/24.
 //
 
-extension LoginTests.Sut {
+extension LoginFeatureTests.Sut {
     func initiateLoginSubmit() {
         self.submitVm.submit()
     }

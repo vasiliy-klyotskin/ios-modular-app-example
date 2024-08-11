@@ -17,8 +17,6 @@ final class MemoryLeakChecker {
     }
     
     func check() {
-        for block in blocks {
-            block()
-        }
+        blocks.forEach { $0() }
     }
 }

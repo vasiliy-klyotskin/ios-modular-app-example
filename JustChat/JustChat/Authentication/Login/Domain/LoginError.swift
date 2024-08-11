@@ -5,7 +5,7 @@
 //  Created by Василий Клецкин on 8/10/24.
 //
 
-enum LoginError: Error {
+public enum LoginError: Error {
     case input(String)
     case general(String)
 }

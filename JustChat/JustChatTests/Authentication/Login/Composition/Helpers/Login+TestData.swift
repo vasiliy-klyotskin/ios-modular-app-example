@@ -9,7 +9,7 @@ import Foundation
 import Testing
 import JustChat
 
-extension LoginTests {
+extension LoginFeatureTests {
     func expectRequestIsCorrect(_ request: URLRequest, for login: String, _ comment: Comment?) {
         #expect(request.url?.absoluteString == "https://justchat.com/api/v1/login", comment)
         #expect(request.allHTTPHeaderFields == ["Content-Type": "application/json"], comment)

@@ -12,9 +12,11 @@ public final class LoginViewModel {
     @Published public var inputError: String? = nil
     @Published public var generalError: String? = nil
     
-    var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
+    public var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
     
     private var login: String = ""
+    
+    public init() {}
     
     public func submit() {
         if isLoading { return }
@@ -27,19 +29,19 @@ public final class LoginViewModel {
         }
     }
     
-    func updateLogin(_ login: String) {
+    public func updateLogin(_ login: String) {
         self.login = login
     }
     
-    func startLoading() {
+    public func startLoading() {
         self.isLoading = true
     }
     
-    func finishLoading() {
+    public func finishLoading() {
         self.isLoading = false
     }
     
-    func handleError(_ error: LoginError) {
+    public func handleError(_ error: LoginError) {
         switch error {
         case .input(let inputError):
             self.inputError = inputError

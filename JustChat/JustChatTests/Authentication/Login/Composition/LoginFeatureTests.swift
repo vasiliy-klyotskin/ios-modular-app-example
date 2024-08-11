@@ -10,7 +10,7 @@ import JustChat
 import Foundation
 
 @Suite
-final class LoginTests {
+final class LoginFeatureTests {
     @Test
     func sutPerformsInitialSubmitScenario() {
         let (sut, spy) = makeSut()
