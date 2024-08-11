@@ -21,7 +21,7 @@ public final class TextFieldViewModel: ObservableObject {
     }
     
     public func clear() {
-        
+        input = ""
     }
     
     private func handle(input: String) {
