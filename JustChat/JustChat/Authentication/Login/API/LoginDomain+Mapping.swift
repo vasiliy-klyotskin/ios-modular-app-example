@@ -30,10 +30,12 @@ extension LoginError {
     }
     
     private static func from(messagesError: RemoteMessagesError) -> LoginError {
-        if let inputMessage = messagesError.messages["LOGIN_INPUT"] {
+        if let inputMessage = messagesError.messages[inputKey] {
             return .input(inputMessage)
         } else {
             return .general(messagesError.fallback)
         }
     }
+    
+    static var inputKey: String { "LOGIN_INPUT" }
 }
