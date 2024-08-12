@@ -9,6 +9,15 @@ import JustChat
 import Combine
 import Foundation
 
+extension DispatchQueue {
+    public static var test: TestSchedulerOf<DispatchQueue> {
+        TestScheduler(now: DispatchQueue.SchedulerTimeType(DispatchTime(uptimeNanoseconds: 1)))
+    }
+}
+
+public typealias TestSchedulerOf<Scheduler> = TestScheduler<Scheduler.SchedulerTimeType, Scheduler.SchedulerOptions> where Scheduler: Combine.Scheduler
+
+
 public final class TestScheduler<SchedulerTimeType: Strideable, SchedulerOptions>: Scheduler where SchedulerTimeType.Stride: SchedulerTimeIntervalConvertible {
     private var lastSequence: UInt = 0
     public let minimumTolerance: SchedulerTimeType.Stride = .zero
@@ -80,11 +89,3 @@ public final class TestScheduler<SchedulerTimeType: Strideable, SchedulerOptions
         return lastSequence
     }
 }
-
-extension DispatchQueue {
-    public static var test: TestSchedulerOf<DispatchQueue> {
-        TestScheduler(now: DispatchQueue.SchedulerTimeType(DispatchTime(uptimeNanoseconds: 1)))
-    }
-}
-
-public typealias TestSchedulerOf<Scheduler> = TestScheduler<Scheduler.SchedulerTimeType, Scheduler.SchedulerOptions> where Scheduler: Combine.Scheduler
