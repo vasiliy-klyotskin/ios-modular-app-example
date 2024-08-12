@@ -5,7 +5,7 @@
 //  Created by Василий Клецкин on 8/10/24.
 //
 
-func weakify<Object: AnyObject>(_ object: Object, _ method: @escaping (Object.Type) -> (Object) -> () -> Void) -> () -> Void {
+func weakify<Object: AnyObject>(_ object: Object?, _ method: @escaping (Object.Type) -> (Object) -> () -> Void) -> () -> Void {
     return { [weak object] in
         object.map { method(type(of: $0))($0)() }
     }

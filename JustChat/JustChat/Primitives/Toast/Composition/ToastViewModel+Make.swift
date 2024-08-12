@@ -9,26 +9,27 @@ import Combine
 import Foundation
 
 public extension ToastViewModel {
-    static var cancellables = Set<AnyCancellable>()
-
     static func make(
         error: Published<String?>.Publisher,
         scheduler: AnySchedulerOf<DispatchQueue>
     ) -> ToastViewModel {
-        let viewModel = ToastViewModel()
-        error.sink(receiveValue: { [weak viewModel] in
-            viewModel?.updateError($0)
-        }).store(in: &cancellables)
-        let action = { [weak viewModel] (delay: Int) in
-            Just(())
-                .delay(for: .seconds(delay), scheduler: scheduler)
-                .eraseToAnyPublisher()
-                .sink(receiveValue: { [weak viewModel] in
-                    viewModel?.hideAfterDelay()
-                })
-                .store(in: &cancellables)
-        }
-        viewModel.onNeedHideAfter = action
-        return viewModel
+        let vm = ToastViewModel()
+        var cancellables = Set<AnyCancellable>()
+        let hideToast = start(hide <~ scheduler <? vm)
+        let updateError = weakify(vm, { $0.updateError })
+        error.onOutput(updateError).sink().store(in: &cancellables)
+        vm.onNeedHideAfter = captured(cancellables, in: hideToast)
+        return vm
+    }
+    
+    private static func hide(
+        scheduler: AnySchedulerOf<DispatchQueue>,
+        vm: ToastViewModel?,
+        delay: Int
+    ) -> AnyPublisher<(), Never> {
+        Just(())
+            .delay(for: .seconds(delay), scheduler: scheduler)
+            .onOutput(weakify(vm, { $0.hideAfterDelay }))
+            .eraseToAnyPublisher()
     }
 }

@@ -30,6 +30,10 @@ extension Publisher {
         handleEvents(receiveOutput: { output in (action ?? { _ in })(output) })
     }
     
+    func onOutput(_ action: (() -> Void)? = nil) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveOutput: { output in (action ?? {})() })
+    }
+    
     func onFailure(_ action: ((Failure) -> Void)? = nil) -> Publishers.HandleEvents<Self> {
         handleEvents(receiveCompletion: { completion in
             if case .failure(let error) = completion {
