@@ -30,7 +30,7 @@ final class ToastTests {
         #expect(sut.toastIsPresented == true, "Toast should be presented.")
         
         // MARK: When presentation time is over
-        spy.simulateTimePassed(seconds: 10)
+        spy.simulateTimePassed(seconds: 1)
         #expect(spy.internalError == nil, "There shouldn't be an error.")
         #expect(sut.toastIsPresented == false, "Toast should be hidden.")
         
@@ -41,6 +41,46 @@ final class ToastTests {
         
         // MARK: When toast has been tapped
         sut.tapToast()
+        #expect(spy.internalError == nil, "There shouldn't be an error.")
+        #expect(sut.toastIsPresented == false, "Toast should be hidden.")
+    }
+    
+    @Test
+    func sutDoesNotHideNewErrorWhenPreviousWasHiddenByTap() {
+        let (sut, spy) = makeSut()
+        
+        // MARK: When toast presentation flow begins
+        #expect(spy.internalError == nil, "There shouldn't be an error.")
+        #expect(sut.toastIsPresented == false, "Toast should be hidden.")
+        
+        // MARK: When external error occurs
+        spy.externalError = "some error"
+        #expect(spy.internalError == "some error", "There should be an error")
+        #expect(sut.toastIsPresented == true, "Toast should be presented.")
+        
+        // MARK: When toast has been tapped after some time
+        spy.simulateTimePassed(seconds: 2)
+        sut.tapToast()
+        #expect(spy.internalError == nil, "There shouldn't be an error.")
+        #expect(sut.toastIsPresented == false, "Toast should be hidden.")
+        
+        // MARK: When another external error occurs
+        spy.externalError = "another error"
+        #expect(spy.internalError == "another error", "There should be an error")
+        #expect(sut.toastIsPresented == true, "Toast should be presented.")
+        
+        // MARK: When presentation time is over for previous error
+        spy.simulateTimePassed(seconds: 3)
+        #expect(spy.internalError == "another error", "There should be an error")
+        #expect(sut.toastIsPresented == true, "Toast should be presented.")
+        
+        // MARK: When presentation time is not over for current error
+        spy.simulateTimePassed(seconds: 1)
+        #expect(spy.internalError == "another error", "There should be an error")
+        #expect(sut.toastIsPresented == true, "Toast should be presented.")
+        
+        // MARK: When presentation time is over for current error
+        spy.simulateTimePassed(seconds: 1)
         #expect(spy.internalError == nil, "There shouldn't be an error.")
         #expect(sut.toastIsPresented == false, "Toast should be hidden.")
     }

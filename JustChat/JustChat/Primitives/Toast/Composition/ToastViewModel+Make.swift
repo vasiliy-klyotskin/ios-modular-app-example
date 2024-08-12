@@ -8,17 +8,26 @@
 import Combine
 import Foundation
 
+final class ToastStore {
+    var hide: Set<AnyCancellable> = []
+    var error: Set<AnyCancellable> = []
+}
+
 public extension ToastViewModel {
     static func make(
         error: Published<String?>.Publisher,
         scheduler: AnySchedulerOf<DispatchQueue>
     ) -> ToastViewModel {
         let vm = ToastViewModel()
-        var cancellables = Set<AnyCancellable>()
-        let hideToast = start(hide <~ scheduler <? vm)
+        let store = ToastStore()
+        let hideToast = { [weak vm] in
+            store.hide = []
+            (hide <~ scheduler <? vm)($0)
+                .sink().store(in: &store.hide)
+        }
         let updateError = weakify(vm, { $0.updateError })
-        error.onOutput(updateError).sink().store(in: &cancellables)
-        vm.onNeedHideAfter = captured(cancellables, in: hideToast)
+        error.onOutput(updateError).sink().store(in: &store.error)
+        vm.onNeedHideAfter = captured(store, in: hideToast)
         return vm
     }
     
