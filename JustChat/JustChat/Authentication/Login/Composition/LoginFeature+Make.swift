@@ -12,10 +12,11 @@ public extension LoginFeature {
     static func make(
         remote: @escaping RemoteClient,
         onReadyForOtpStep: @escaping (LoginModel) -> Void,
-        currentTime: @escaping () -> Date = Date.init
+        currentTime: @escaping () -> Date = Date.init,
+        scheduler: AnySchedulerOf<DispatchQueue> = .main
     ) -> LoginFeature {
         let submitVm = LoginViewModel()
-        let toastVm = ToastViewModel.make(error: submitVm.$generalError)
+        let toastVm = ToastViewModel.make(error: submitVm.$generalError, scheduler: scheduler)
         let inputVm = TextFieldViewModel.make(error: submitVm.$inputError, onInput: submitVm.updateLogin)
         let cache = LoginCache(currentTime: currentTime)
         submitVm.onValidatedLoginSubmit = start(submitter <~ remote <~ cache <? submitVm <~ onReadyForOtpStep)

@@ -6,12 +6,29 @@
 //
 
 import Combine
+import Foundation
 
-extension ToastViewModel {
-    static func make(error: Published<String?>.Publisher) -> ToastViewModel {
+public extension ToastViewModel {
+    static var cancellables = Set<AnyCancellable>()
+
+    static func make(
+        error: Published<String?>.Publisher,
+        scheduler: AnySchedulerOf<DispatchQueue>
+    ) -> ToastViewModel {
         let viewModel = ToastViewModel()
-        let cancellable = error.onOutput(weakify(viewModel, { $0.updateError })).sink()
-        viewModel.onNeedHideAfter = captured(cancellable, in: { _ in })
+        error.sink(receiveValue: { [weak viewModel] in
+            viewModel?.updateError($0)
+        }).store(in: &cancellables)
+        let action = { [weak viewModel] (delay: Int) in
+            Just(())
+                .delay(for: .seconds(delay), scheduler: scheduler)
+                .eraseToAnyPublisher()
+                .sink(receiveValue: { [weak viewModel] in
+                    viewModel?.hideAfterDelay()
+                })
+                .store(in: &cancellables)
+        }
+        viewModel.onNeedHideAfter = action
         return viewModel
     }
 }

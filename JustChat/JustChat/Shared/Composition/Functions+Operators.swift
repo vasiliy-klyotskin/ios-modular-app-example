@@ -34,6 +34,10 @@ func <~<A, B, C, D, E, F>(_ fun: @escaping (A, B, C, D, E) -> F, a: A) -> (B, C,
 
 infix operator <?: FunctionCurryingPrecedence
 
+func <?<A: AnyObject, B, C>(_ fun: @escaping (A?, B) -> C, a: A?) -> (B) -> C {
+    { [weak a] b in fun(a, b) }
+}
+
 func <?<A: AnyObject, B, C, D>(_ fun: @escaping (A?, B, C) -> D, a: A?) -> (B, C) -> D {
     { [weak a] b, c in fun(a, b, c) }
 }
