@@ -11,7 +11,7 @@ func weakify<Object: AnyObject>(_ object: Object?, _ method: @escaping (Object.T
     }
 }
 
-func weakify<Object: AnyObject, A>(_ object: Object, _ method: @escaping (Object.Type) -> (Object) -> (A) -> Void) -> (A) -> Void {
+func weakify<Object: AnyObject, A>(_ object: Object?, _ method: @escaping (Object.Type) -> (Object) -> (A) -> Void) -> (A) -> Void {
     return { [weak object] a in
         object.map { method(type(of: $0))($0)(a) }
     }

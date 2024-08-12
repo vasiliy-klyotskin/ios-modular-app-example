@@ -167,19 +167,25 @@ final class LoginFeatureTests {
         #expect(spy.successes.count == 7, "There should be one new success message after submission.")
     }
     
+    @Test
+    func sutDealocatesWhenRequestIsInProgress() {
+        let (sut, _) = makeSut()
+        sut.changeLoginInput("any")
+        sut.initiateLoginSubmit()
+    }
+    
     typealias Sut = LoginFeature
     
     private let leakChecker = MemoryLeakChecker()
     
-    private var spy = LoginFeatureSpy()
-    
     private func makeSut() -> (Sut, LoginFeatureSpy) {
-        let spy = LoginFeatureSpy()
+        let scheduler = DispatchQueue.test
+        let spy = LoginFeatureSpy(scheduler: scheduler)
         let sut = LoginFeature.make(
-            remote: spy.remote,
+            client: spy.remote,
             onReadyForOtpStep: spy.keepLoginModel,
             currentTime: spy.getCurrentTime,
-            scheduler: DispatchQueue.test.eraseToAnyScheduler()
+            scheduler: scheduler.eraseToAnyScheduler()
         )
         spy.startSpying(sut: sut)
         leakChecker.addForChecking(sut.inputVm)

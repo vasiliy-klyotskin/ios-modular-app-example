@@ -42,7 +42,7 @@ extension Publisher {
         })
     }
     
-    func fallback<F>(to fallbackPublisher: @escaping @autoclosure () -> AnyPublisher<Output, F>) -> AnyPublisher<Output, F> {
+    func fallback<F>(to fallbackPublisher: @escaping () -> AnyPublisher<Output, F>) -> AnyPublisher<Output, F> {
         self.catch { _ in
             fallbackPublisher()
         }.eraseToAnyPublisher()

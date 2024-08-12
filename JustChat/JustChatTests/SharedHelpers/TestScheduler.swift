@@ -9,26 +9,17 @@ import JustChat
 import Combine
 import Foundation
 
-extension DispatchQueue {
-    public static var test: TestSchedulerOf<DispatchQueue> {
-        TestScheduler(now: DispatchQueue.SchedulerTimeType(DispatchTime(uptimeNanoseconds: 1)))
-    }
-}
-
-public typealias TestSchedulerOf<Scheduler> = TestScheduler<Scheduler.SchedulerTimeType, Scheduler.SchedulerOptions> where Scheduler: Combine.Scheduler
-
-
-public final class TestScheduler<SchedulerTimeType: Strideable, SchedulerOptions>: Scheduler where SchedulerTimeType.Stride: SchedulerTimeIntervalConvertible {
+final class TestScheduler<SchedulerTimeType: Strideable, SchedulerOptions>: Scheduler where SchedulerTimeType.Stride: SchedulerTimeIntervalConvertible {
     private var lastSequence: UInt = 0
-    public let minimumTolerance: SchedulerTimeType.Stride = .zero
-    public private(set) var now: SchedulerTimeType
+    let minimumTolerance: SchedulerTimeType.Stride = .zero
+    private(set) var now: SchedulerTimeType
     private var scheduled: [(sequence: UInt, date: SchedulerTimeType, action: () -> Void)] = []
     
-    public init(now: SchedulerTimeType) {
+    init(now: SchedulerTimeType) {
         self.now = now
     }
 
-    public func advance(by duration: SchedulerTimeType.Stride = .zero) {
+    func advance(by duration: SchedulerTimeType.Stride = .zero) {
         advance(to: now.advanced(by: duration))
     }
     
@@ -48,7 +39,7 @@ public final class TestScheduler<SchedulerTimeType: Strideable, SchedulerOptions
         }
     }
     
-    public func schedule(
+    func schedule(
         after date: SchedulerTimeType,
         interval: SchedulerTimeType.Stride,
         tolerance _: SchedulerTimeType.Stride,
@@ -71,7 +62,7 @@ public final class TestScheduler<SchedulerTimeType: Strideable, SchedulerOptions
         }
     }
     
-    public func schedule(
+    func schedule(
         after date: SchedulerTimeType,
         tolerance _: SchedulerTimeType.Stride,
         options _: SchedulerOptions?,
@@ -80,12 +71,20 @@ public final class TestScheduler<SchedulerTimeType: Strideable, SchedulerOptions
         scheduled.append((nextSequence(), date, action))
     }
     
-    public func schedule(options _: SchedulerOptions?, _ action: @escaping () -> Void) {
+    func schedule(options _: SchedulerOptions?, _ action: @escaping () -> Void) {
         scheduled.append((nextSequence(), now, action))
     }
     
     private func nextSequence() -> UInt {
         lastSequence += 1
         return lastSequence
+    }
+}
+
+typealias TestSchedulerOf<Scheduler> = TestScheduler<Scheduler.SchedulerTimeType, Scheduler.SchedulerOptions> where Scheduler: Combine.Scheduler
+
+extension DispatchQueue {
+    static var test: TestSchedulerOf<DispatchQueue> {
+        TestScheduler(now: DispatchQueue.SchedulerTimeType(DispatchTime(uptimeNanoseconds: 1)))
     }
 }

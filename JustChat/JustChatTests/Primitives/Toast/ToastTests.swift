@@ -84,18 +84,24 @@ final class ToastTests {
         #expect(spy.internalError == nil, "There shouldn't be an error.")
         #expect(sut.toastIsPresented == false, "Toast should be hidden.")
     }
+    
+    @Test
+    func sutDeallocatesRitghtAfterErrorReceive() {
+        let (_, spy) = makeSut()
+        spy.externalError = "some error"
+    }
 
     typealias Sut = ToastViewModel
     
     private let leakChecker = MemoryLeakChecker()
     
-    private func makeSut() -> (Sut, ToastSpy) {
+    private func makeSut(_ loc: SourceLocation = #_sourceLocation) -> (Sut, ToastSpy) {
         let scheduler = DispatchQueue.test
         let spy = ToastSpy(scheduler: scheduler)
         let sut = Sut.make(error: spy.$externalError, scheduler: scheduler.eraseToAnyScheduler())
         spy.startSpying(sut: sut)
-        leakChecker.addForChecking(sut)
-        leakChecker.addForChecking(spy)
+        leakChecker.addForChecking(sut, sourceLocation: loc)
+        leakChecker.addForChecking(spy, sourceLocation: loc)
         return (sut, spy)
     }
 }
