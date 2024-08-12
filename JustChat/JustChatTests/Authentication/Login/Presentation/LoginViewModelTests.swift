@@ -98,8 +98,4 @@ final class LoginViewModelTests {
         leakChecker.addForChecking(spy)
         return (sut, spy)
     }
-    
-    deinit {
-        leakChecker.check()
-    }
 }

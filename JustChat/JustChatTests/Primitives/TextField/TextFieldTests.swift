@@ -62,8 +62,4 @@ final class TextFieldTests {
         leakChecker.addForChecking(spy)
         return (sut, spy)
     }
-    
-    deinit {
-        leakChecker.check()
-    }
 }

@@ -98,8 +98,4 @@ final class ToastTests {
         leakChecker.addForChecking(spy)
         return (sut, spy)
     }
-    
-    deinit {
-        leakChecker.check()
-    }
 }
