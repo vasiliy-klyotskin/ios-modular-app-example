@@ -70,3 +70,11 @@ func start<Output, Failure: Error, Request>(_ publisher: @escaping (Request) -> 
     var cancellables = Set<AnyCancellable>()
     return { a in publisher(a).sink().store(in: &cancellables) }
 }
+
+func cancellingStart<Output, Failure: Error, Request>(_ publisher: @escaping (Request) -> AnyPublisher<Output, Failure>) -> (Request) -> Void {
+    var cancellables = Set<AnyCancellable>()
+    return { a in
+        cancellables.removeAll()
+        publisher(a).sink().store(in: &cancellables)
+    }
+}
