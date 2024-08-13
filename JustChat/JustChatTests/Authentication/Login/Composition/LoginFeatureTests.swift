@@ -179,13 +179,12 @@ final class LoginFeatureTests {
     private let leakChecker = MemoryLeakChecker()
     
     private func makeSut() -> (Sut, LoginFeatureSpy) {
-        let scheduler = DispatchQueue.test
-        let spy = LoginFeatureSpy(scheduler: scheduler)
+        let spy = LoginFeatureSpy()
         let sut = LoginFeature.make(
             client: spy.remote,
             onReadyForOtpStep: spy.keepLoginModel,
             currentTime: spy.getCurrentTime,
-            scheduler: scheduler.eraseToAnyScheduler()
+            scheduler: DispatchQueue.test.eraseToAnyScheduler()
         )
         spy.startSpying(sut: sut)
         leakChecker.addForChecking(sut.inputVm)

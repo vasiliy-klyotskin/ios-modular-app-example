@@ -21,12 +21,6 @@ final class LoginFeatureSpy {
     private var currentTime: Date = Date()
     private var cancellables = Set<AnyCancellable>()
     
-    private let scheduler: TestSchedulerOf<DispatchQueue>
-    
-    init(scheduler: TestSchedulerOf<DispatchQueue>) {
-        self.scheduler = scheduler
-    }
-    
     func getCurrentTime() -> Date {
         currentTime
     }
@@ -50,13 +44,11 @@ final class LoginFeatureSpy {
     
     func finishRemoteRequestWithError(index: Int) {
         tasks[index].send(completion: .failure(NSError(domain: "", code: 1)))
-        scheduler.advance()
     }
     
     func finishRemoteRequestWith(response: (Data, HTTPURLResponse), index: Int) {
         tasks[index].send(response)
         tasks[index].send(completion: .finished)
-        scheduler.advance()
     }
     
     func simulateTimePassed(seconds: Int) {

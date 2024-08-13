@@ -39,7 +39,6 @@ public extension LoginFeature {
                 .mapError(LoginError.fromRemoteError)
                 .map(LoginModel.fromLoginAndDto <~ login)
                 .onOutput(cache.save)
-                .receive(on: scheduler)
                 .onSubscription(vm.do { $0.startLoading })
                 .onCompletion(vm.do { $0.finishLoading })
                 .onFailure(vm.do { $0.handleError })
