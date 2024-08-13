@@ -7,7 +7,7 @@
 
 import Foundation
 import Testing
-import JustChat
+@testable import JustChat
 
 extension LoginFeatureTests {
     func expectRequestIsCorrect(_ request: URLRequest, for login: String, _ comment: Comment?, sourceLocation: SourceLocation = #_sourceLocation) {

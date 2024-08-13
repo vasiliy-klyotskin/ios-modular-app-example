@@ -7,18 +7,16 @@
 
 import Combine
 
-public final class LoginViewModel {
+final class LoginViewModel {
     @Published public var isLoading: Bool = false
     @Published public var inputError: String? = nil
     @Published public var generalError: String? = nil
     
-    public var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
+    var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
     
     private var login: String = ""
     
-    public init() {}
-    
-    public func submit() {
+    func submit() {
         if isLoading { return }
         inputError = nil
         generalError = nil
@@ -29,19 +27,19 @@ public final class LoginViewModel {
         }
     }
     
-    public func updateLogin(_ login: String) {
+    func updateLogin(_ login: String) {
         self.login = login
     }
     
-    public func startLoading() {
+    func startLoading() {
         self.isLoading = true
     }
     
-    public func finishLoading() {
+    func finishLoading() {
         self.isLoading = false
     }
     
-    public func handleError(_ error: LoginError) {
+    func handleError(_ error: LoginError) {
         switch error {
         case .input(let inputError):
             self.inputError = inputError

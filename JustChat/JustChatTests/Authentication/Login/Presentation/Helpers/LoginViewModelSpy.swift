@@ -5,8 +5,8 @@
 //  Created by Василий Клецкин on 8/11/24.
 //
 
-import JustChat
 import Combine
+@testable import JustChat
 
 final class LoginViewModelSpy {
     var validatedCalls: [LoginRequest] = []

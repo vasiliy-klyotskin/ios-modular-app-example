@@ -7,21 +7,21 @@
 
 import Foundation
 
-public protocol LoginStorage {
+protocol LoginStorage {
     func set(local: LoginLocal, for login: String)
     func get(for login: String) -> LoginLocal?
 }
 
-public final class LoginCache {
+final class LoginCache {
     private let storage: LoginStorage
     private let currentTime: () -> Date
     
-    public init(storage: LoginStorage = InMemoryLoginStorage(), currentTime: @escaping () -> Date) {
+    init(storage: LoginStorage = InMemoryLoginStorage(), currentTime: @escaping () -> Date) {
         self.storage = storage
         self.currentTime = currentTime
     }
     
-    public func save(model: LoginModel) {
+    func save(model: LoginModel) {
         let local = LoginLocal(
             login: model.login,
             confirmationToken: model.confirmationToken,
@@ -32,7 +32,7 @@ public final class LoginCache {
         storage.set(local: local, for: model.login)
     }
     
-    public func load(for login: LoginRequest) -> LoginModel? {
+    func load(for login: LoginRequest) -> LoginModel? {
         guard let local = storage.get(for: login) else { return nil }
         let secondsSinceCached = Int(currentTime().timeIntervalSince(local.timestamp))
         guard secondsSinceCached < local.nextAttemptAfter else { return nil }

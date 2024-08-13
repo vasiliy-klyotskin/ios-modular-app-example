@@ -7,7 +7,7 @@
 
 import Combine
 
-public extension TextFieldViewModel {
+extension TextFieldViewModel {
     static func make(
         error: Published<String?>.Publisher,
         onInput: @escaping (String) -> Void

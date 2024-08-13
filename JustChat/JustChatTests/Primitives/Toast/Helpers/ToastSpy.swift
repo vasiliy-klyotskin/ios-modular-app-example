@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+@testable import JustChat
 
 final class ToastSpy {
     @Published var externalError: String?

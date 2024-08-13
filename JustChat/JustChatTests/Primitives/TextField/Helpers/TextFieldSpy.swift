@@ -6,6 +6,7 @@
 //
 
 import Combine
+@testable import JustChat
 
 final class TextFieldSpy {
     @Published var externalError: String?

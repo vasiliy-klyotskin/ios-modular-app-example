@@ -6,8 +6,8 @@
 //
 
 import Testing
-import JustChat
 import Foundation
+@testable import JustChat
 
 @Suite
 final class LoginFeatureTests {
@@ -180,12 +180,17 @@ final class LoginFeatureTests {
     
     private func makeSut() -> (Sut, LoginFeatureSpy) {
         let spy = LoginFeatureSpy()
-        let sut = LoginFeature.make(
-            client: spy.remote,
-            onReadyForOtpStep: spy.keepLoginModel,
+        let env = LoginEnvironment(
+            httpClient: spy.remote,
             currentTime: spy.getCurrentTime,
             scheduler: DispatchQueue.test.eraseToAnyScheduler()
         )
+        let events = LoginEvents(
+            onSuccessfulSubmitLogin: spy.keepLoginModel(_:),
+            onGoogleOAuthButtonTapped: {},
+            onRegisterButtonTapped: {}
+        )
+        let sut = LoginFeature.make(env: env, events: events)
         spy.startSpying(sut: sut)
         leakChecker.addForChecking(sut.inputVm)
         leakChecker.addForChecking(sut.submitVm)

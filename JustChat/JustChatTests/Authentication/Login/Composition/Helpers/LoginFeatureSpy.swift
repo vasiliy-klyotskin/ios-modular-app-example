@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import JustChat
 import Combine
+@testable import JustChat
 
 final class LoginFeatureSpy {
     var isLoading: Bool = false

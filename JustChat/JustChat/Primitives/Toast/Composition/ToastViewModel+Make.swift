@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-public extension ToastViewModel {
+extension ToastViewModel {
     static func make(
         error: Published<String?>.Publisher,
         scheduler: AnySchedulerOf<DispatchQueue>

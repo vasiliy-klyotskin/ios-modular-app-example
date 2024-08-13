@@ -7,16 +7,16 @@
 
 import Combine
 
-public final class ToastViewModel {
-    @Published public var error: String?
+final class ToastViewModel {
+    @Published var error: String?
     
-    public var toastIsPresented: Bool { error != nil }
+    var toastIsPresented: Bool { error != nil }
     
     var onNeedHideAfter: (Int) -> Void = { _ in }
     
     private var secondsUntilToastShouldHide: Int { 5 }
     
-    public func processTap() {
+    func processTap() {
         error = nil
     }
     

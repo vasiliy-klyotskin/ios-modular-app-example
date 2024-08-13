@@ -7,7 +7,7 @@
 
 import Testing
 import Foundation
-import JustChat
+@testable import JustChat
 
 @Suite
 final class LoginCacheTests {

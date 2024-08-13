@@ -5,14 +5,14 @@
 //  Created by Василий Клецкин on 8/6/24.
 //
 
-public enum LoginStrings {
-    public static var title: String { "Greetings 🚀" }
-    public static var subtitle: String { "Connect easily. Chat simply." }
-    public static var continueButton: String { "Continue" }
-    public static var googleButton: String { "Login with Google" }
-    public static var separator: String { "OR" }
-    public static var loginTitle: String { "E-mail or username" }
-    public static var registerTitle: String { "New to our chat?" }
-    public static var registerButton: String { "Register" }
-    public static var emptyInputError: String { "Please enter your E-mail or username" }
+enum LoginStrings {
+    static var title: String { "Greetings 🚀" }
+    static var subtitle: String { "Connect easily. Chat simply." }
+    static var continueButton: String { "Continue" }
+    static var googleButton: String { "Login with Google" }
+    static var separator: String { "OR" }
+    static var loginTitle: String { "E-mail or username" }
+    static var registerTitle: String { "New to our chat?" }
+    static var registerButton: String { "Register" }
+    static var emptyInputError: String { "Please enter your E-mail or username" }
 }

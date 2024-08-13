@@ -8,32 +8,26 @@
 import Foundation
 import Combine
 
-public extension LoginFeature {
-    static func make(
-        client: @escaping RemoteClient,
-        onReadyForOtpStep: @escaping (LoginModel) -> Void,
-        currentTime: @escaping () -> Date = Date.init,
-        scheduler: AnySchedulerOf<DispatchQueue> = .main
-    ) -> LoginFeature {
+extension LoginFeature {
+    static func make(env: LoginEnvironment, events: LoginEvents) -> LoginFeature {
         let submitVm = LoginViewModel()
-        let toastVm = ToastViewModel.make(error: submitVm.$generalError, scheduler: scheduler)
+        let toastVm = ToastViewModel.make(error: submitVm.$generalError, scheduler: env.scheduler)
         let inputVm = TextFieldViewModel.make(error: submitVm.$inputError, onInput: submitVm.updateLogin)
-        let cache = LoginCache(currentTime: currentTime)
-        let submission = submission <~ client <~ cache <~ submitVm <~ onReadyForOtpStep <~ scheduler
+        let cache = LoginCache(currentTime: env.currentTime)
+        let submission = submission <~ env <~ events <~ cache <~ submitVm
         submitVm.onValidatedLoginSubmit = start(submission)
-        return .init(submitVm: submitVm, inputVm: inputVm, toastVm: toastVm)
+        return .init(submitVm: submitVm, inputVm: inputVm, toastVm: toastVm, events: events)
     }
     
     private static func submission(
-        client: @escaping RemoteClient,
+        env: LoginEnvironment,
+        events: LoginEvents,
         cache: LoginCache,
         vm: Weak<LoginViewModel>,
-        onSuccess: @escaping (LoginModel) -> Void,
-        scheduler: AnySchedulerOf<DispatchQueue>,
         login: LoginRequest
     ) -> AnyPublisher<LoginModel, LoginError> {
         lift(cache.load <~ login)
-            .fallback(to: client(login.urlRequest)
+            .fallback(to: env.httpClient(login.urlRequest)
                 .mapError(RemoteMapper.mapError <~ RemoteStrings.values)
                 .flatMapResult(RemoteMapper.mapSuccess <~ RemoteStrings.values)
                 .mapError(LoginError.fromRemoteError)
@@ -43,7 +37,7 @@ public extension LoginFeature {
                 .onCompletion(vm.do { $0.finishLoading })
                 .onFailure(vm.do { $0.handleError })
                 .eraseToAnyPublisher())
-            .onOutput(onSuccess)
+            .onOutput(events.onSuccessfulSubmitLogin)
             .eraseToAnyPublisher()
     }
 }

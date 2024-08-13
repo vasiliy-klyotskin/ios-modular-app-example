@@ -6,7 +6,7 @@
 //
 
 import Testing
-import JustChat
+@testable import JustChat
 
 @Suite
 final class LoginViewModelTests {

@@ -5,6 +5,8 @@
 //  Created by Василий Клецкин on 8/7/24.
 //
 
+@testable import JustChat
+
 extension LoginFeatureTests.Sut {
     func initiateLoginSubmit() {
         self.submitVm.submit()
