@@ -18,31 +18,31 @@ extension Publisher {
         .eraseToAnyPublisher()
     }
     
-    func onSubscription(_ action: (() -> Void)? = nil) -> Publishers.HandleEvents<Self> {
-        handleEvents(receiveSubscription: { _ in (action ?? {})() })
+    func onSubscription(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveSubscription: { _ in action() })
     }
     
-    func onCompletion(_ action: (() -> Void)? = nil) -> Publishers.HandleEvents<Self> {
-        handleEvents(receiveCompletion: { _ in (action ?? {})() })
+    func onCompletion(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveCompletion: { _ in action() })
     }
     
-    func onOutput(_ action: ((Output) -> Void)? = nil) -> Publishers.HandleEvents<Self> {
-        handleEvents(receiveOutput: { output in (action ?? { _ in })(output) })
+    func onOutput(_ action: @escaping (Output) -> Void) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveOutput: { output in action(output) })
     }
     
-    func onOutput(_ action: (() -> Void)? = nil) -> Publishers.HandleEvents<Self> {
-        handleEvents(receiveOutput: { output in (action ?? {})() })
+    func onOutput(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveOutput: { output in action() })
     }
     
-    func onFailure(_ action: ((Failure) -> Void)? = nil) -> Publishers.HandleEvents<Self> {
+    func onFailure(_ action: @escaping (Failure) -> Void) -> Publishers.HandleEvents<Self> {
         handleEvents(receiveCompletion: { completion in
             if case .failure(let error) = completion {
-                (action ?? { _ in })(error)
+                action(error)
             }
         })
     }
     
-    func fallback<F>(to fallbackPublisher: @escaping () -> AnyPublisher<Output, F>) -> AnyPublisher<Output, F> {
+    func fallback<F>(to fallbackPublisher: @escaping @autoclosure () -> AnyPublisher<Output, F>) -> AnyPublisher<Output, F> {
         self.catch { _ in
             fallbackPublisher()
         }.eraseToAnyPublisher()

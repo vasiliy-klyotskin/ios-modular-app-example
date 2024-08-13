@@ -1,8 +1,8 @@
 //
-//  Functions+Helpers.swift
+//  Functions+Currying.swift
 //  JustChat
 //
-//  Created by Василий Клецкин on 8/9/24.
+//  Created by Василий Клецкин on 8/13/24.
 //
 
 precedencegroup FunctionCurryingPrecedence {
@@ -34,18 +34,4 @@ func <~<A, B, C, D, E, F>(_ fun: @escaping (A, B, C, D, E) -> F, a: A) -> (B, C,
 
 func <~<A, B, C, D, E, F, G>(_ fun: @escaping (A, B, C, D, E, F) -> G, a: A) -> (B, C, D, E, F) -> G {
     { b, c, d, e, f in fun(a, b, c, d, e, f) }
-}
-
-infix operator <?: FunctionCurryingPrecedence
-
-func <?<A: AnyObject, B, C>(_ fun: @escaping (A?, B) -> C, a: A?) -> (B) -> C {
-    { [weak a] b in fun(a, b) }
-}
-
-func <?<A: AnyObject, B, C, D>(_ fun: @escaping (A?, B, C) -> D, a: A?) -> (B, C) -> D {
-    { [weak a] b, c in fun(a, b, c) }
-}
-
-func <?<A: AnyObject, B, C, D, E>(_ fun: @escaping (A?, B, C, D) -> E, a: A?) -> (B, C, D) -> E {
-    { [weak a] b, c, d in fun(a, b, c, d) }
 }

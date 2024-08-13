@@ -19,41 +19,32 @@ public extension LoginFeature {
         let toastVm = ToastViewModel.make(error: submitVm.$generalError, scheduler: scheduler)
         let inputVm = TextFieldViewModel.make(error: submitVm.$inputError, onInput: submitVm.updateLogin)
         let cache = LoginCache(currentTime: currentTime)
-        let remote = remoteSubmit <~ client <~ cache <? submitVm <~ scheduler
-        let submission = cachedSubmit <~ cache <~ onReadyForOtpStep <~ remote
+        let submission = submission <~ client <~ cache <~ submitVm <~ onReadyForOtpStep <~ scheduler
         submitVm.onValidatedLoginSubmit = start(submission)
         return .init(submitVm: submitVm, inputVm: inputVm, toastVm: toastVm)
     }
     
-    private static func cachedSubmit(
-        cache: LoginCache,
-        onSuccess: @escaping (LoginModel) -> Void,
-        remote: @escaping (LoginRequest) -> AnyPublisher<LoginModel, LoginError>,
-        login: LoginRequest
-    ) -> AnyPublisher<LoginModel, LoginError> {
-        lift(cache.load <~ login)
-            .fallback(to: remote <~ login)
-            .onOutput(onSuccess)
-            .eraseToAnyPublisher()
-    }
-    
-    private static func remoteSubmit(
+    private static func submission(
         client: @escaping RemoteClient,
         cache: LoginCache,
-        vm: LoginViewModel?,
+        vm: Weak<LoginViewModel>,
+        onSuccess: @escaping (LoginModel) -> Void,
         scheduler: AnySchedulerOf<DispatchQueue>,
         login: LoginRequest
     ) -> AnyPublisher<LoginModel, LoginError> {
-        client(login.urlRequest)
-            .mapError(RemoteMapper.mapError <~ RemoteStrings.values)
-            .flatMapResult(RemoteMapper.mapSuccess <~ RemoteStrings.values)
-            .mapError(LoginError.fromRemoteError)
-            .map(LoginModel.fromLoginAndDto <~ login)
-            .onOutput(cache.save)
-            .receive(on: scheduler)
-            .onSubscription(weakify(vm, { $0.startLoading }))
-            .onCompletion(weakify(vm, { $0.finishLoading }))
-            .onFailure(weakify(vm, { $0.handleError }))
+        lift(cache.load <~ login)
+            .fallback(to: client(login.urlRequest)
+                .mapError(RemoteMapper.mapError <~ RemoteStrings.values)
+                .flatMapResult(RemoteMapper.mapSuccess <~ RemoteStrings.values)
+                .mapError(LoginError.fromRemoteError)
+                .map(LoginModel.fromLoginAndDto <~ login)
+                .onOutput(cache.save)
+                .receive(on: scheduler)
+                .onSubscription(vm.do { $0.startLoading })
+                .onCompletion(vm.do { $0.finishLoading })
+                .onFailure(vm.do { $0.handleError })
+                .eraseToAnyPublisher())
+            .onOutput(onSuccess)
             .eraseToAnyPublisher()
     }
 }

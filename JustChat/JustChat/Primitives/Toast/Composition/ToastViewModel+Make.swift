@@ -22,10 +22,10 @@ public extension ToastViewModel {
         let store = ToastStore()
         let hideToast = { [weak vm] in
             store.hide = []
-            (hide <~ scheduler <? vm)($0)
+            (hide <~ scheduler <~ vm)($0)
                 .sink().store(in: &store.hide)
         }
-        let updateError = weakify(vm, { $0.updateError })
+        let updateError = Weak(vm).do { $0.updateError }
         error.onOutput(updateError).sink().store(in: &store.error)
         vm.onNeedHideAfter = captured(store, in: hideToast)
         return vm
@@ -33,12 +33,12 @@ public extension ToastViewModel {
     
     private static func hide(
         scheduler: AnySchedulerOf<DispatchQueue>,
-        vm: ToastViewModel?,
+        vm: Weak<ToastViewModel>,
         delay: Int
     ) -> AnyPublisher<(), Never> {
         Just(())
             .delay(for: .seconds(delay), scheduler: scheduler)
-            .onOutput(weakify(vm, { $0.hideAfterDelay }))
+            .onOutput(vm.do { $0.hideAfterDelay })
             .eraseToAnyPublisher()
     }
 }
