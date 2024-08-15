@@ -21,7 +21,6 @@ struct Button: View {
                         .tint(.white)
                 } else {
                     Text(title)
-                    
                 }
             }
             .font(.headline)
@@ -32,13 +31,14 @@ struct Button: View {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color.black)
             }
+            .shadow(color: .gray.opacity(1), radius: 10, y: 5)
         }
         .disabled(isLoading)
     }
 }
 
 #Preview {
-    VStack {
+    VStack(spacing: 32) {
         Button.preview()(.init(title: "Let's go", isLoading: false))
         Button.preview()(.init(title: "Let's go", isLoading: true))
     }.padding()

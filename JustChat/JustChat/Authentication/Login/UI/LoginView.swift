@@ -83,8 +83,8 @@ public struct LoginView: View {
     LoginView(vm: .init(), subviews: .init(
         submitButton: Button.preview(),
         googleOAuthButton: Button.preview(),
-        loginInput: TextField.preview(value: "CrazyCock", error: "Huh?"),
+        loginInput: TextField.preview(value: "John Connor", error: "Huh?"),
         registerButton: LinkButton.preview(),
-        errorToast: Toast.preview(message: "Hey")
+        errorToast: Toast.preview(message: "General error message")
     ))
 }
