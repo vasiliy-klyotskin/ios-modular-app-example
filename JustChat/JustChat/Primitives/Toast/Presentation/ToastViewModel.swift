@@ -7,12 +7,16 @@
 
 import Combine
 
-final class ToastViewModel {
+final class ToastViewModel: ObservableObject {
     @Published var error: String?
     
     var toastIsPresented: Bool { error != nil }
     
     var onNeedHideAfter: (Int) -> Void = { _ in }
+    
+    init(error: String? = nil) {
+        self.error = error
+    }
     
     private var secondsUntilToastShouldHide: Int { 5 }
     

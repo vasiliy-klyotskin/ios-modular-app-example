@@ -7,7 +7,7 @@
 
 import Combine
 
-final class LoginViewModel {
+final class LoginViewModel: ObservableObject {
     @Published public var isLoading: Bool = false
     @Published public var inputError: String? = nil
     @Published public var generalError: String? = nil

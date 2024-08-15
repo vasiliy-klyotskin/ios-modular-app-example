@@ -8,7 +8,19 @@
 import Foundation
 import Combine
 
+import SwiftUI
+
 extension LoginFeature {
+    func view() -> LoginView {
+        LoginView(vm: submitVm, subviews: LoginSubviews(
+            submitButton: Button.make <~ submitVm.submit,
+            googleOAuthButton: Button.make <~ events.onGoogleOAuthButtonTapped,
+            loginInput: TextField.make <~ inputVm,
+            registerButton: LinkButton.make <~ events.onRegisterButtonTapped,
+            errorToast: Toast.make <~ toastVm
+        ))
+    }
+    
     static func make(env: LoginEnvironment, events: LoginEvents) -> LoginFeature {
         let submitVm = LoginViewModel()
         let toastVm = ToastViewModel.make(error: submitVm.$generalError, scheduler: env.scheduler)
