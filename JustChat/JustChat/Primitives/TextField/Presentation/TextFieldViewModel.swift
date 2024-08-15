@@ -15,6 +15,10 @@ final class TextFieldViewModel: ObservableObject {
     }
     
     var onInputChanged: (String) -> Void = { _ in }
+    
+    var isError: Bool {
+        error != nil
+    }
 
     func updateError(_ error: String?) {
         self.error = error
