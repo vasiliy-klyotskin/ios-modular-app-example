@@ -81,10 +81,10 @@ public struct LoginView: View {
 
 #Preview {
     LoginView(vm: .init(), subviews: .init(
-        submitButton: Button.preview,
-        googleOAuthButton: Button.preview,
-        loginInput: TextField.preview,
-        registerButton: LinkButton.preview,
-        errorToast: Toast.preview(message: nil)
+        submitButton: Button.preview(),
+        googleOAuthButton: Button.preview(),
+        loginInput: TextField.preview(value: "CrazyCock", error: "Huh?"),
+        registerButton: LinkButton.preview(),
+        errorToast: Toast.preview(message: "Hey")
     ))
 }

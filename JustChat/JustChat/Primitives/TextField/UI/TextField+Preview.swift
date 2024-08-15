@@ -6,7 +6,10 @@
 //
 
 extension TextField {
-    static func preview(config: TextField.Config) -> TextField {
-        .init(vm: .init(), title: config.title, placeholder: config.title)
+    static func preview(value: String = "Input value", error: String? = "Input error") -> (Config) -> TextField {
+        let vm = TextFieldViewModel()
+        vm.input = value
+        vm.updateError(error)
+        return { config in .init(vm: vm, title: config.title, placeholder: config.title) }
     }
 }

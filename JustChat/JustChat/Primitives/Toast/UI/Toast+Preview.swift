@@ -6,7 +6,9 @@
 //
 
 extension Toast {
-    static func preview(message: String? = nil) -> () -> Toast {{
-        .init(vm: .init(error: message))
-    }}
+    static func preview(message: String? = nil) -> () -> Toast {
+        let vm = ToastViewModel()
+        vm.updateError(message)
+        return { .init(vm: vm) }
+    }
 }

@@ -14,10 +14,6 @@ final class ToastViewModel: ObservableObject {
     
     var onNeedHideAfter: (Int) -> Void = { _ in }
     
-    init(error: String? = nil) {
-        self.error = error
-    }
-    
     private var secondsUntilToastShouldHide: Int { 5 }
     
     func processTap() {

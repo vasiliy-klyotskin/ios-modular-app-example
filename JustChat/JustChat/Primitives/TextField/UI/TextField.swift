@@ -19,21 +19,15 @@ public struct TextField: View {
     public var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                SwiftUI.TextField(title, text: $vm.input, prompt:
-                                    Text(placeholder)
-                    .foregroundStyle(Color(.systemGray2))
-                    .fontWeight(.medium)
-                    .font(.system(size: 17))
-                )
+                SwiftUI.TextField(title, text: $vm.input, prompt: prompt())
                 .font(.system(size: 17))
                 .fontWeight(.bold)
-                if true {
+                if vm.isClearButtonShown {
                     SwiftUI.Button(action: vm.clear) {
                         Image(systemName: "star")
                     }
                 }
             }
-            
             Rectangle()
                 .frame(height: 2)
                 .foregroundColor(vm.isError ? .red : Color(.systemGray5))
@@ -44,9 +38,21 @@ public struct TextField: View {
             }
         }
     }
+    
+    private func prompt() -> Text {
+        Text(placeholder)
+            .foregroundStyle(Color(.systemGray2))
+            .fontWeight(.medium)
+            .font(.system(size: 17))
+    }
 }
 
 #Preview {
-    TextField.preview(config: .init(title: "Hello"))
-        .padding()
+    let config = TextField.Config(title: "Title")
+    return VStack(spacing: 32) {
+        TextField.preview(value: "", error: nil)(config)
+        TextField.preview(value: "John Snow", error: nil)(config)
+        TextField.preview(value: "", error: "Huh?")(config)
+        TextField.preview(value: "John Snow", error: "Huh?")(config)
+    }.padding()
 }

@@ -15,8 +15,19 @@ public struct Toast: ViewModifier {
             content
             VStack {
                 if let message = vm.error {
-                    _Toast(message: message, onTap: vm.processTap)
-                        .padding()
+                    HStack {
+                        Text(message)
+                            .foregroundStyle(.white)
+                        Spacer()
+                    }
+                    .padding(28)
+                    .frame(maxWidth: .infinity)
+                    .background {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.red)
+                    }
+                    .onTapGesture(perform: vm.processTap)
+                    .padding()
                 }
                 Spacer()
             }
@@ -24,29 +35,9 @@ public struct Toast: ViewModifier {
     }
 }
 
-private struct _Toast: View {
-    let message: String
-    let onTap: () -> Void
-    
-    public var body: some View {
-        HStack {
-            Text(message)
-                .foregroundStyle(.white)
-            Spacer()
-        }
-        .padding(28)
-        .frame(maxWidth: .infinity)
-        .background {
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.red)
-        }
-        .onTapGesture(perform: onTap)
-    }
-}
-
 extension View {
     func showToast(_ toast: () -> Toast) -> some View {
-        self.modifier(toast())
+        modifier(toast())
     }
 }
 

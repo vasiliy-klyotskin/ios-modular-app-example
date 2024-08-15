@@ -39,7 +39,7 @@ struct Button: View {
 
 #Preview {
     VStack {
-        Button.preview(config: .init(title: "Let's go", isLoading: false))
-        Button.preview(config: .init(title: "Let's go", isLoading: true))
+        Button.preview()(.init(title: "Let's go", isLoading: false))
+        Button.preview()(.init(title: "Let's go", isLoading: true))
     }.padding()
 }

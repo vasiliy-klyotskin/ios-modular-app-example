@@ -6,7 +6,7 @@
 //
 
 extension Button {
-    static func preview(config: Button.Config) -> Button {
-        Button(title: config.title, isLoading: config.isLoading, action: {})
+    static func preview() -> (Config) -> Button {
+        { .init(title: $0.title, isLoading: $0.isLoading, action: {}) }
     }
 }

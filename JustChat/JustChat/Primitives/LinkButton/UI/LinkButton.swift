@@ -24,5 +24,5 @@ public struct LinkButton: View {
 }
 
 #Preview {
-    LinkButton.preview(config: .init(title: "Let's go"))
+    LinkButton.preview()(.init(title: "Let's go"))
 }
