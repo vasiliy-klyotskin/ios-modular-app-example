@@ -22,7 +22,7 @@ final class ToastSpy {
     private var cancellables: Set<AnyCancellable> = []
     
     func startSpying(sut: ToastTests.Sut) {
-        sut.$error.bind(\.internalError, to: self, storeIn: &cancellables)
+        sut.$message.bind(\.internalError, to: self, storeIn: &cancellables)
     }
     
     func simulateTimePassed(seconds: Int) {

@@ -8,26 +8,26 @@
 import Combine
 
 final class ToastViewModel: ObservableObject {
-    @Published var error: String?
+    @Published var message: String?
     
-    var toastIsPresented: Bool { error != nil }
+    var toastIsPresented: Bool { message != nil }
     
     var onNeedHideAfter: (Int) -> Void = { _ in }
     
     private var secondsUntilToastShouldHide: Int { 5 }
     
     func processTap() {
-        error = nil
+        message = nil
     }
     
-    func updateError(_ error: String?) {
-        self.error = error
+    func updateMessage(_ error: String?) {
+        self.message = error
         if error != nil {
             onNeedHideAfter(secondsUntilToastShouldHide)
         }
     }
     
     func hideAfterDelay() {
-        error = nil
+        message = nil
     }
 }

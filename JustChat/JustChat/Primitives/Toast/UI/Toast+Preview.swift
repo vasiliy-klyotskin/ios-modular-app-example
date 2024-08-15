@@ -8,7 +8,7 @@
 extension Toast {
     static func preview(message: String? = nil) -> () -> Toast {
         let vm = ToastViewModel()
-        vm.updateError(message)
+        vm.updateMessage(message)
         return { .init(vm: vm) }
     }
 }

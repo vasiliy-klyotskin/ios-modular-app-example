@@ -14,7 +14,7 @@ public struct Toast: ViewModifier {
         ZStack {
             content
             VStack {
-                if let message = vm.error {
+                if let message = vm.message {
                     HStack {
                         Text(message)
                             .foregroundStyle(.white)

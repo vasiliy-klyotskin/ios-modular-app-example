@@ -23,7 +23,7 @@ extension LoginFeature {
     
     static func make(env: LoginEnvironment, events: LoginEvents) -> LoginFeature {
         let submitVm = LoginViewModel()
-        let toastVm = ToastViewModel.make(error: submitVm.$generalError, scheduler: env.scheduler)
+        let toastVm = ToastViewModel.make(message: submitVm.$generalError, scheduler: env.scheduler)
         let inputVm = TextFieldViewModel.make(error: submitVm.$inputError, onInput: submitVm.updateLogin)
         let cache = LoginCache(currentTime: env.currentTime)
         let submission = submission <~ env <~ events <~ cache <~ submitVm

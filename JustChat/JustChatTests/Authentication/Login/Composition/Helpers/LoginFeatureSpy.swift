@@ -27,7 +27,7 @@ final class LoginFeatureSpy {
     
     func startSpying(sut: LoginFeatureTests.Sut) {
         sut.submitVm.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
-        sut.toastVm.$error.bind(\.generalError, to: self, storeIn: &cancellables)
+        sut.toastVm.$message.bind(\.generalError, to: self, storeIn: &cancellables)
         sut.inputVm.$error.bind(\.inputError, to: self, storeIn: &cancellables)
     }
     

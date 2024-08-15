@@ -10,12 +10,12 @@ import Foundation
 
 extension ToastViewModel {
     static func make(
-        error: Published<String?>.Publisher,
+        message: Published<String?>.Publisher,
         scheduler: AnySchedulerOf<DispatchQueue>
     ) -> ToastViewModel {
         let vm = ToastViewModel()
         let hideToast = cancellingStart(hide <~ scheduler <~ vm)
-        let cancellable = error.onOutput(Weak(vm).do { $0.updateError }).sink()
+        let cancellable = message.onOutput(Weak(vm).do { $0.updateMessage }).sink()
         vm.onNeedHideAfter = captured(cancellable, in: hideToast)
         return vm
     }

@@ -98,7 +98,7 @@ final class ToastTests {
     private func makeSut(_ loc: SourceLocation = #_sourceLocation) -> (Sut, ToastSpy) {
         let scheduler = DispatchQueue.test
         let spy = ToastSpy(scheduler: scheduler)
-        let sut = Sut.make(error: spy.$externalError, scheduler: scheduler.eraseToAnyScheduler())
+        let sut = Sut.make(message: spy.$externalError, scheduler: scheduler.eraseToAnyScheduler())
         spy.startSpying(sut: sut)
         leakChecker.addForChecking(sut, sourceLocation: loc)
         leakChecker.addForChecking(spy, sourceLocation: loc)
