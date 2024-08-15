@@ -8,7 +8,6 @@
 import Combine
 
 final class TextFieldViewModel: ObservableObject {
-    @Published var isTitleShown: Bool = false
     @Published var error: String? = nil
     @Published var input: String = "" {
         didSet { handle(input: input) }
@@ -18,6 +17,14 @@ final class TextFieldViewModel: ObservableObject {
     
     var isError: Bool {
         error != nil
+    }
+    
+    var isTitleShown: Bool {
+        !input.isEmpty
+    }
+    
+    var isClearButtonShown: Bool {
+        !input.isEmpty
     }
 
     func updateError(_ error: String?) {
@@ -30,7 +37,6 @@ final class TextFieldViewModel: ObservableObject {
     
     private func handle(input: String) {
         error = nil
-        isTitleShown = !input.isEmpty
         onInputChanged(input)
     }
 }

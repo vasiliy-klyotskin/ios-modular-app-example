@@ -19,6 +19,7 @@ final class TextFieldTests {
         #expect(spy.internalError == nil, "There shouldn't be an error.")
         #expect(sut.isError == false, "There shouldn't be an error.")
         #expect(sut.isTitleShown == false, "The title should be hidden.")
+        #expect(sut.isClearButtonShown == false, "Clear button shouldn't be displayed")
         
         // MARK: When input changes to "a"
         sut.changeInput("a")
@@ -26,6 +27,7 @@ final class TextFieldTests {
         #expect(spy.internalError == nil, "There shouldn't be an error after input 'a'.")
         #expect(sut.isError == false, "There shouldn't be an error.")
         #expect(sut.isTitleShown == true, "The title should be visible.")
+        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
         
         // MARK: When input changes to "ab"
         sut.changeInput("ab")
@@ -33,6 +35,7 @@ final class TextFieldTests {
         #expect(spy.internalError == nil, "There shouldn't be an error'.")
         #expect(sut.isError == false, "There shouldn't be an error.")
         #expect(sut.isTitleShown == true, "The title should remain visible.")
+        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
         
         // MARK: When external error occurs
         spy.externalError = "error"
@@ -40,6 +43,7 @@ final class TextFieldTests {
         #expect(spy.internalError == "error", "Expected internal error to be set.")
         #expect(sut.isError == true, "There should be an error.")
         #expect(sut.isTitleShown == true, "The title should remain visible despite the error.")
+        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
         
         // MARK: When input is cleared
         sut.clear()
@@ -47,6 +51,7 @@ final class TextFieldTests {
         #expect(spy.internalError == nil, "There shouldn't be an error.")
         #expect(sut.isError == false, "There shouldn't be an error.")
         #expect(sut.isTitleShown == false, "The title should be hidden.")
+        #expect(sut.isClearButtonShown == false, "Clear button shouldn't be displayed")
         
         // MARK: When input changes to "abc"
         sut.changeInput("abc")
@@ -54,6 +59,7 @@ final class TextFieldTests {
         #expect(spy.internalError == nil, "There shouldn't be an error.")
         #expect(sut.isError == false, "There shouldn't be an error.")
         #expect(sut.isTitleShown == true, "The title should be visible.")
+        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
     }
     
     typealias Sut = TextFieldViewModel
