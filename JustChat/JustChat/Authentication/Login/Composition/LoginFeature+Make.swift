@@ -8,8 +8,6 @@
 import Foundation
 import Combine
 
-import SwiftUI
-
 extension LoginFeature {
     func view() -> LoginView {
         LoginView(vm: submitVm, subviews: LoginSubviews(

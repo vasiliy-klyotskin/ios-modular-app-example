@@ -1,0 +1,422 @@
+{
+    "info": {
+        "version": 1,
+        "author": "xcode"
+    },
+    "mainPrimary.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.26",
+                        "green": "0.10",
+                        "blue": "0.00",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.71",
+                        "green": "0.53",
+                        "blue": "0.40",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "mainSecondary.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.44",
+                        "green": "0.23",
+                        "blue": "0.14",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.53",
+                        "green": "0.32",
+                        "blue": "0.24",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "textPrimary.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.23",
+                        "green": "0.10",
+                        "blue": "0.06",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.95",
+                        "green": "0.91",
+                        "blue": "0.89",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "textSecondary.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.38",
+                        "green": "0.27",
+                        "blue": "0.23",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.85",
+                        "green": "0.80",
+                        "blue": "0.78",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "textPrimaryInverted.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.95",
+                        "green": "0.91",
+                        "blue": "0.89",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.23",
+                        "green": "0.10",
+                        "blue": "0.06",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "textSecondaryInverted.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.85",
+                        "green": "0.80",
+                        "blue": "0.78",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.38",
+                        "green": "0.27",
+                        "blue": "0.23",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "textPlaceholder.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.56",
+                        "green": "0.43",
+                        "blue": "0.38",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.68",
+                        "green": "0.60",
+                        "blue": "0.57",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "statusError.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.85",
+                        "green": "0.33",
+                        "blue": "0.31",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.93",
+                        "green": "0.44",
+                        "blue": "0.42",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "separatorPrimary.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.54",
+                        "green": "0.43",
+                        "blue": "0.39",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.67",
+                        "green": "0.59",
+                        "blue": "0.56",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "backgroundPrimary.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.96",
+                        "green": "0.88",
+                        "blue": "0.78",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.10",
+                        "green": "0.06",
+                        "blue": "0.04",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "surfacePrimary.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.98",
+                        "green": "0.95",
+                        "blue": "0.91",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.20",
+                        "green": "0.15",
+                        "blue": "0.13",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "surfaceSecondary.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.90",
+                        "green": "0.83",
+                        "blue": "0.75",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.15",
+                        "green": "0.10",
+                        "blue": "0.09",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    },
+    "shadowPrimary.colorset": {
+        "info": {
+            "version": 1,
+            "author": "xcode"
+        },
+        "colors": [
+            {
+                "idiom": "universal",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.19",
+                        "green": "0.09",
+                        "blue": "0.06",
+                        "alpha": "1.0"
+                    }
+                }
+            },
+            {
+                "idiom": "dark",
+                "color": {
+                    "color-space": "srgb",
+                    "components": {
+                        "red": "0.11",
+                        "green": "0.06",
+                        "blue": "0.04",
+                        "alpha": "1.0"
+                    }
+                }
+            }
+        ]
+    }
+}

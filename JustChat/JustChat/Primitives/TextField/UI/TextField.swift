@@ -6,53 +6,73 @@
 //
 
 import SwiftUI
-import Combine
 
-public struct TextField: View {
+struct TextField: View {
     @ObservedObject var vm: TextFieldViewModel
     
+    @ScaledMetric(wrappedValue: 16, relativeTo: .body) var iconSize: CGFloat
     let title: String
     let placeholder: String
-        
-    @ScaledMetric(wrappedValue: 20, relativeTo: .body) var iconSize: CGFloat
     
-    public var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                SwiftUI.TextField(title, text: $vm.input, prompt: prompt())
-                .font(.system(size: 17))
-                .fontWeight(.bold)
+    var body: some View {
+        VStack(alignment: .leading, spacing: UI.spacing.sm) {
+            HStack(alignment: .center) {
+                textFieldBase()
                 if vm.isClearButtonShown {
-                    SwiftUI.Button(action: vm.clear) {
-                        Image(systemName: "star")
-                    }
+                    clearButton()
                 }
             }
-            Rectangle()
-                .frame(height: 2)
-                .foregroundColor(vm.isError ? .red : Color(.systemGray5))
-            
-            if let error = vm.error {
-                Text(error)
-                    .foregroundColor(.red)
-            }
+            separator()
+            error()
         }
+    }
+    
+    private func textFieldBase() -> some View {
+        SwiftUI.TextField(title, text: $vm.input, prompt: prompt())
+            .font(UI.font.bold.body)
+            .tint(UI.color.separator.primary)
+            .foregroundStyle(UI.color.text.primary)
     }
     
     private func prompt() -> Text {
         Text(placeholder)
-            .foregroundStyle(Color(.systemGray2))
-            .fontWeight(.medium)
-            .font(.system(size: 17))
+            .font(UI.font.plain.body)
+            .foregroundStyle(UI.color.text.placeholder)
+    }
+    
+    private func clearButton() -> some View {
+        SwiftUI.Button(action: vm.clear) {
+            Image(systemName: "xmark")
+                .resizable()
+                .frame(width: iconSize, height: iconSize)
+                .foregroundColor(UI.color.text.primary)
+        }
+    }
+    
+    private func separator() -> some View {
+        Rectangle()
+            .frame(height: 2)
+            .foregroundColor(vm.isError ? UI.color.status.error : UI.color.separator.primary)
+    }
+    
+    @ViewBuilder
+    private func error() -> some View {
+        if let error = vm.error {
+            Text(error)
+                .font(UI.font.bold.headline)
+                .foregroundColor(UI.color.status.error)
+        }
     }
 }
 
 #Preview {
-    let config = TextField.Config(title: "Title")
-    return VStack(spacing: 32) {
+    let config = TextField.Config(title: "Title and Placeholder")
+    return VStack(spacing: UI.spacing.lg) {
         TextField.preview(value: "", error: nil)(config)
         TextField.preview(value: "John Snow", error: nil)(config)
-        TextField.preview(value: "", error: "Huh?")(config)
-        TextField.preview(value: "John Snow", error: "Huh?")(config)
-    }.padding()
+        TextField.preview(value: "", error: "Input error")(config)
+        TextField.preview(value: "John Snow", error: "Input error")(config)
+    }
+    .padding(UI.spacing.md)
+    .background(UI.color.background.primary)
 }

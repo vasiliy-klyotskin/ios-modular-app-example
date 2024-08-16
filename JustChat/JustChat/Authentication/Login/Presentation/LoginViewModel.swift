@@ -8,9 +8,9 @@
 import Combine
 
 final class LoginViewModel: ObservableObject {
-    @Published public var isLoading: Bool = false
-    @Published public var inputError: String? = nil
-    @Published public var generalError: String? = nil
+    @Published var isLoading: Bool = false
+    @Published var inputError: String? = nil
+    @Published var generalError: String? = nil
     
     var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
     

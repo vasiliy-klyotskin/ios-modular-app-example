@@ -19,10 +19,6 @@ final class TextFieldViewModel: ObservableObject {
         error != nil
     }
     
-    var isTitleShown: Bool {
-        !input.isEmpty
-    }
-    
     var isClearButtonShown: Bool {
         !input.isEmpty
     }

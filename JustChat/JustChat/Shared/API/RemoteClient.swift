@@ -8,4 +8,4 @@
 import Combine
 import Foundation
 
-public typealias RemoteClient = (URLRequest) -> AnyPublisher<(Data, HTTPURLResponse), Error>
+typealias RemoteClient = (URLRequest) -> AnyPublisher<(Data, HTTPURLResponse), Error>

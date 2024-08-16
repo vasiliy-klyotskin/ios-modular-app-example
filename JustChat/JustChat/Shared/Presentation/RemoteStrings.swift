@@ -5,10 +5,10 @@
 //  Created by Василий Клецкин on 8/11/24.
 //
 
-public struct RemoteStrings {
-    public let system: String
+struct RemoteStrings {
+    let system: String
     
-    public static var values: RemoteStrings {
+    static var values: RemoteStrings {
         .init(system: "Something went wrong...")
     }
 }

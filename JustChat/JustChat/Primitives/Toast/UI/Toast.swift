@@ -7,31 +7,38 @@
 
 import SwiftUI
 
-public struct Toast: ViewModifier {
+struct Toast: ViewModifier {
     @ObservedObject var vm: ToastViewModel
     
-    public func body(content: Content) -> some View {
+    func body(content: Content) -> some View {
         ZStack {
             content
             VStack {
                 if let message = vm.message {
-                    HStack {
-                        Text(message)
-                            .foregroundStyle(.white)
-                        Spacer()
-                    }
-                    .padding(28)
-                    .frame(maxWidth: .infinity)
-                    .background {
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.red)
-                    }
-                    .onTapGesture(perform: vm.processTap)
-                    .padding()
+                    toastContent(message: message)
+                        .padding(UI.spacing.md)
                 }
                 Spacer()
             }
         }
+    }
+    
+    private func toastContent(message: String) -> some View {
+        HStack {
+            Text(message)
+                .font(UI.font.bold.headline)
+                .foregroundStyle(UI.color.text.primaryInverted)
+            Spacer()
+        }
+        .padding(UI.spacing.lg)
+        .frame(maxWidth: .infinity)
+        .background(background())
+        .onTapGesture(perform: vm.processTap)
+    }
+    
+    private func background() -> some View {
+        RoundedRectangle(cornerRadius: UI.radius.corner.md)
+            .fill(UI.color.status.error)
     }
 }
 
@@ -43,7 +50,7 @@ extension View {
 
 #Preview {
     Rectangle()
-        .fill()
+        .fill(UI.color.background.primary)
         .ignoresSafeArea()
-        .showToast(Toast.preview(message: "Some error"))
+        .showToast(Toast.preview(message: "Some long long long long long long long long long long long long long long long message"))
 }

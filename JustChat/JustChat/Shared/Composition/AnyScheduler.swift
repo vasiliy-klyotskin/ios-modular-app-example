@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-public struct AnyScheduler<SchedulerTimeType: Strideable, SchedulerOptions>: Scheduler where SchedulerTimeType.Stride: SchedulerTimeIntervalConvertible {
+struct AnyScheduler<SchedulerTimeType: Strideable, SchedulerOptions>: Scheduler where SchedulerTimeType.Stride: SchedulerTimeIntervalConvertible {
     private let _now: () -> SchedulerTimeType
     private let _minimumTolerance: () -> SchedulerTimeType.Stride
     private let _schedule: (SchedulerOptions?, @escaping () -> Void) -> Void
@@ -23,33 +23,33 @@ public struct AnyScheduler<SchedulerTimeType: Strideable, SchedulerOptions>: Sch
         _scheduleAfterInterval = scheduler.schedule(after:interval:tolerance:options:_:)
     }
     
-    public var now: SchedulerTimeType { _now() }
+    var now: SchedulerTimeType { _now() }
     
-    public var minimumTolerance: SchedulerTimeType.Stride { _minimumTolerance() }
+    var minimumTolerance: SchedulerTimeType.Stride { _minimumTolerance() }
     
-    public func schedule(options: SchedulerOptions?, _ action: @escaping () -> Void) {
+    func schedule(options: SchedulerOptions?, _ action: @escaping () -> Void) {
         _schedule(options, action)
     }
     
-    public func schedule(after date: SchedulerTimeType, tolerance: SchedulerTimeType.Stride, options: SchedulerOptions?, _ action: @escaping () -> Void) {
+    func schedule(after date: SchedulerTimeType, tolerance: SchedulerTimeType.Stride, options: SchedulerOptions?, _ action: @escaping () -> Void) {
         _scheduleAfter(date, tolerance, options, action)
     }
     
-    public func schedule(after date: SchedulerTimeType, interval: SchedulerTimeType.Stride, tolerance: SchedulerTimeType.Stride, options: SchedulerOptions?, _ action: @escaping () -> Void) -> Cancellable {
+    func schedule(after date: SchedulerTimeType, interval: SchedulerTimeType.Stride, tolerance: SchedulerTimeType.Stride, options: SchedulerOptions?, _ action: @escaping () -> Void) -> Cancellable {
         _scheduleAfterInterval(date, interval, tolerance, options, action)
     }
 }
 
-public typealias AnySchedulerOf<Scheduler: Combine.Scheduler> = AnyScheduler<Scheduler.SchedulerTimeType, Scheduler.SchedulerOptions>
+typealias AnySchedulerOf<Scheduler: Combine.Scheduler> = AnyScheduler<Scheduler.SchedulerTimeType, Scheduler.SchedulerOptions>
 
 extension Scheduler {
-    public func eraseToAnyScheduler() -> AnyScheduler<SchedulerTimeType, SchedulerOptions> {
+    func eraseToAnyScheduler() -> AnyScheduler<SchedulerTimeType, SchedulerOptions> {
         AnyScheduler(self)
     }
 }
 
 extension AnySchedulerOf<DispatchQueue> {
-    public static var main: Self {
+    static var main: Self {
         DispatchQueue.main.eraseToAnyScheduler()
     }
 }

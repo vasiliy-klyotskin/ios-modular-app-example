@@ -7,22 +7,21 @@
 
 import SwiftUI
 
-public struct LinkButton: View {
-    private let title: String
-    private let action: () -> Void
+struct LinkButton: View {
+    let title: String
+    let action: () -> Void
     
-    init(title: String, action: @escaping () -> Void) {
-        self.title = title
-        self.action = action
-    }
-    
-    public var body: some View {
+    var body: some View {
         SwiftUI.Button(action: action) {
             Text(title)
+                .font(UI.font.bold.body)
+                .foregroundStyle(UI.color.main.secondary)
         }
     }
 }
 
 #Preview {
     LinkButton.preview()(.init(title: "Let's go"))
+        .padding(UI.spacing.md)
+        .background(UI.color.background.primary)
 }

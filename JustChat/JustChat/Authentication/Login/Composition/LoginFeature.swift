@@ -19,14 +19,18 @@ struct LoginEnvironment {
     let currentTime: () -> Date
     let scheduler: AnySchedulerOf<DispatchQueue>
     
-    init(httpClient: @escaping RemoteClient, currentTime: @escaping () -> Date = Date.init, scheduler: AnySchedulerOf<DispatchQueue> = .main) {
+    init(
+        httpClient: @escaping RemoteClient,
+        currentTime: @escaping () -> Date = Date.init,
+        scheduler: AnySchedulerOf<DispatchQueue> = .main
+    ) {
         self.httpClient = httpClient
         self.currentTime = currentTime
         self.scheduler = scheduler
     }
 }
 
-public struct LoginEvents {
+struct LoginEvents {
     let onSuccessfulSubmitLogin: (LoginModel) -> Void
     let onGoogleOAuthButtonTapped: () -> Void
     let onRegisterButtonTapped: () -> Void

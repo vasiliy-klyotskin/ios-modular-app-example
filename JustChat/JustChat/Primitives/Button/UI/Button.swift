@@ -12,34 +12,42 @@ struct Button: View {
     let isLoading: Bool
     let action: () -> Void
     
-    public var body: some View {
+    var body: some View {
         SwiftUI.Button(action: action) {
-            Group {
+            ZStack {
+                Text(title)
+                    .opacity(isLoading ? 0 : 1)
+                    .font(UI.font.bold.headline)
                 if isLoading {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
-                        .tint(.white)
-                } else {
-                    Text(title)
+                        .tint(UI.color.text.primaryInverted)
                 }
             }
-            .font(.headline)
-            .foregroundStyle(.white)
-            .padding()
+            .padding(UI.spacing.md)
+            .foregroundStyle(UI.color.text.primaryInverted)
             .frame(maxWidth: .infinity)
-            .background {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.black)
-            }
-            .shadow(color: .gray.opacity(1), radius: 10, y: 5)
+            .background(background())
         }
         .disabled(isLoading)
+    }
+    
+    private func background() -> some View {
+        RoundedRectangle(cornerRadius: UI.radius.corner.md)
+            .fill(UI.color.main.primary)
+            .shadow(
+                color: UI.color.shadow.primary,
+                radius: UI.radius.shadow.sm,
+                y: UI.elevation.md
+            )
     }
 }
 
 #Preview {
-    VStack(spacing: 32) {
-        Button.preview()(.init(title: "Let's go", isLoading: false))
+    VStack(spacing: UI.spacing.md) {
+        Button.preview()(.init(title: "Continue", isLoading: false))
         Button.preview()(.init(title: "Let's go", isLoading: true))
-    }.padding()
+    }
+    .padding(UI.spacing.md)
+    .background(UI.color.background.primary)
 }
