@@ -10,3 +10,9 @@ struct RegisterResponseDTO {
     let otpLength: Int
     let nextAttemptAfter: Int
 }
+
+extension RegisterModel {
+    static func fromEmailAndDto(email: String, dto: RegisterResponseDTO) -> RegisterModel {
+        .init(email: email, confirmationToken: dto.confirmationToken, otpLength: dto.otpLength, nextAttemptAfter: dto.nextAttemptAfter)
+    }
+}
