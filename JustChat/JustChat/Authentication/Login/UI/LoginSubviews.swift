@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct LoginSubviews {
-    let submitButton: (Button.Config) -> Button
-    let googleOAuthButton: (Button.Config) -> Button
-    let loginInput: (TextField.Config) -> TextField
-    let registerButton: (LinkButton.Config) -> LinkButton
-    let errorToast: () -> Toast
+    let submitButton: ButtonSetup
+    let googleOAuthButton: GoogleAuthButtonSetup
+    let loginInput: TextFieldSetup
+    let registerButton: LinkButtonSetup
+    let errorToast: ToastSetup
 }

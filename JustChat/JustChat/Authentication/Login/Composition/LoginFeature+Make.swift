@@ -12,7 +12,7 @@ extension LoginFeature {
     func view() -> LoginView {
         LoginView(vm: submitVm, subviews: LoginSubviews(
             submitButton: Button.make <~ submitVm.submit,
-            googleOAuthButton: Button.make <~ events.onGoogleOAuthButtonTapped,
+            googleOAuthButton: GoogleAuthButton.init <~ events.onGoogleOAuthButtonTapped,
             loginInput: TextField.make <~ inputVm,
             registerButton: LinkButton.make <~ events.onRegisterButtonTapped,
             errorToast: Toast.make <~ toastVm

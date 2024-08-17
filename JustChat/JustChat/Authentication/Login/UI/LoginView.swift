@@ -37,7 +37,7 @@ struct LoginView: View {
             separator()
                 .padding(.bottom, UI.spacing.md)
             subviews
-                .googleOAuthButton(Button.Config(title: LoginStrings.googleButton))
+                .googleOAuthButton(LoginStrings.googleButton)
                 .padding(.bottom, UI.spacing.lg)
             registerBlock()
                 
@@ -83,7 +83,7 @@ struct LoginView: View {
 #Preview {
     LoginView(vm: .init(), subviews: .init(
         submitButton: Button.preview(),
-        googleOAuthButton: Button.preview(),
+        googleOAuthButton: GoogleAuthButton.preview(),
         loginInput: TextField.preview(value: "John Connor", error: "John Connor isn't with us yet"),
         registerButton: LinkButton.preview(),
         errorToast: Toast.preview(message: "Something went wrong...")

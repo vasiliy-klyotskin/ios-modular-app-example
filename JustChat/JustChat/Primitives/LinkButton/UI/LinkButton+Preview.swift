@@ -6,7 +6,7 @@
 //
 
 extension LinkButton {
-    static func preview() -> (Config) -> LinkButton {
+    static func preview() -> LinkButtonSetup {
         { .init(title: $0.title, action: {}) }
     }
 }

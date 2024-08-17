@@ -6,7 +6,7 @@
 //
 
 extension TextField {
-    static func preview(value: String = "Input value", error: String? = "Input error") -> (Config) -> TextField {
+    static func preview(value: String = "Input value", error: String? = "Input error") -> TextFieldSetup {
         let vm = TextFieldViewModel()
         vm.input = value
         vm.updateError(error)

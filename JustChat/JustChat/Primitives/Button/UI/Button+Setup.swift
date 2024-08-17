@@ -5,6 +5,8 @@
 //  Created by Василий Клецкин on 8/15/24.
 //
 
+typealias ButtonSetup = (Button.Config) -> Button
+
 extension Button {
     struct Config {
         let title: String
