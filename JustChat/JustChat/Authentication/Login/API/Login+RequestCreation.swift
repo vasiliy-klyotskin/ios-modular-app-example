@@ -7,6 +7,10 @@
 
 import Foundation
 
+struct LoginRequestDTO: Encodable {
+    let login: String
+}
+
 extension LoginRequest {
     var urlRequest: URLRequest {
         let url = URL(string: "https://justchat.com/api/v1/login")!
@@ -16,8 +20,4 @@ extension LoginRequest {
         request.httpBody = try? JSONEncoder().encode(LoginRequestDTO(login: self))
         return request
     }
-}
-
-struct LoginRequestDTO: Encodable {
-    let login: String
 }
