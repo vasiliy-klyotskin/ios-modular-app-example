@@ -36,6 +36,27 @@ struct LoginAPITests {
         #expect(result == .input("input message"))
     }
     
+    @Test func testInputErrorMappingWhenThereIsGeneralKey() {
+        let messages = RemoteMessagesError.init(messages: [LoginError.generalKey: "general message"], fallback: "any")
+        let remoteError = RemoteError.messages(messages)
+        
+        let result = LoginError.fromRemoteError(remoteError)
+        
+        #expect(result == .general("general message"))
+    }
+    
+    @Test func testInputErrorMappingWhenThereIsBothKeys() {
+        let messages = RemoteMessagesError.init(
+            messages: [LoginError.generalKey: "general message", LoginError.inputKey: "input message"],
+            fallback: "any"
+        )
+        let remoteError = RemoteError.messages(messages)
+        
+        let result = LoginError.fromRemoteError(remoteError)
+        
+        #expect(result == .input("input message"))
+    }
+    
     @Test func testInputErrorMappingWhenThereIsNoInputKey() {
         let messages = RemoteMessagesError.init(messages: [:], fallback: "fallback message")
         let remoteError = RemoteError.messages(messages)
