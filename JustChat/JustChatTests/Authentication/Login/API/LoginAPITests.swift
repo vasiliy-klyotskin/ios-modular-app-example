@@ -19,7 +19,7 @@ struct LoginAPITests {
         #expect(result == .init(login: "some login", confirmationToken: "token", otpLength: 5, nextAttemptAfter: 20))
     }
     
-    @Test func testSystemErrorMapping() {
+    @Test func testErrorMappingWithSystemError() {
         let remoteError = RemoteError.system("sys message")
         
         let result = LoginError.fromRemoteError(remoteError)
@@ -27,7 +27,7 @@ struct LoginAPITests {
         #expect(result == .general("sys message"))
     }
     
-    @Test func testInputErrorMappingWhenThereIsInputKey() {
+    @Test func testErrorMappingWithInputKey() {
         let messages = RemoteMessagesError.init(messages: [LoginError.inputKey: "input message"], fallback: "any")
         let remoteError = RemoteError.messages(messages)
         
@@ -36,7 +36,7 @@ struct LoginAPITests {
         #expect(result == .input("input message"))
     }
     
-    @Test func testInputErrorMappingWhenThereIsGeneralKey() {
+    @Test func testErrorMappingWithGeneralKey() {
         let messages = RemoteMessagesError.init(messages: [LoginError.generalKey: "general message"], fallback: "any")
         let remoteError = RemoteError.messages(messages)
         
@@ -45,7 +45,7 @@ struct LoginAPITests {
         #expect(result == .general("general message"))
     }
     
-    @Test func testInputErrorMappingWhenThereIsBothKeys() {
+    @Test func testErrorMappingWithAllKeys() {
         let messages = RemoteMessagesError.init(
             messages: [LoginError.generalKey: "general message", LoginError.inputKey: "input message"],
             fallback: "any"
@@ -57,7 +57,7 @@ struct LoginAPITests {
         #expect(result == .input("input message"))
     }
     
-    @Test func testInputErrorMappingWhenThereIsNoInputKey() {
+    @Test func testErrorMappingWithNoKeys() {
         let messages = RemoteMessagesError.init(messages: [:], fallback: "fallback message")
         let remoteError = RemoteError.messages(messages)
         

@@ -28,11 +28,18 @@ extension RegisterError {
     }
     
     private static func from(messagesError: RemoteMessagesError) -> RegisterError {
-        return .general("")
-//        if let inputMessage = messagesError.messages[inputKey] {
-//            return .input(inputMessage)
-//        } else {
-//            return .general(messagesError.fallback)
-//        }
+        var validations: [Validation] = []
+        messagesError.messages[emailKey].map { validations.append(.email($0)) }
+        messagesError.messages[usernameKey].map { validations.append(.username($0)) }
+        if validations.isEmpty {
+            let generalError = messagesError.messages[generalKey]
+            return .general(generalError ?? messagesError.fallback)
+        } else {
+            return .validation(validations)
+        }
     }
+    
+    static var emailKey: String { "REGISTER_EMAIL" }
+    static var usernameKey: String { "REGISTER_USERNAME" }
+    static var generalKey: String { "REGISTER_GENERAL" }
 }

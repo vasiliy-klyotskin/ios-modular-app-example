@@ -19,29 +19,43 @@ struct RegisterAPITests {
         #expect(result == .init(email: "some email", confirmationToken: "token", otpLength: 5, nextAttemptAfter: 20))
     }
     
-    @Test func testSystemErrorMapping() {
+    @Test func testErrorMappingWithSystemMessage() {
         let remoteError = RemoteError.system("sys message")
         
         let result = RegisterError.fromRemoteError(remoteError)
         
         #expect(result == .general("sys message"))
     }
-//    
-//    @Test func testInputErrorMappingWhenThereIsInputKey() {
-//        let messages = RemoteMessagesError.init(messages: [LoginError.inputKey: "input message"], fallback: "any")
-//        let remoteError = RemoteError.messages(messages)
-//        
-//        let result = LoginError.fromRemoteError(remoteError)
-//        
-//        #expect(result == .input("input message"))
-//    }
-//    
-//    @Test func testInputErrorMappingWhenThereIsNoInputKey() {
-//        let messages = RemoteMessagesError.init(messages: [:], fallback: "fallback message")
-//        let remoteError = RemoteError.messages(messages)
-//        
-//        let result = LoginError.fromRemoteError(remoteError)
-//        
-//        #expect(result == .general("fallback message"))
-//    }
+    
+    @Test func testErrorMappingWithAllKeys() {
+        let messages = RemoteMessagesError.init(
+            messages: [
+                RegisterError.emailKey: "email message",
+                RegisterError.usernameKey: "username message",
+                RegisterError.generalKey: "general message"
+            ], fallback: "any")
+        let remoteError = RemoteError.messages(messages)
+        
+        let result = RegisterError.fromRemoteError(remoteError)
+        
+        #expect(result == .validation([.email("email message"), .username("username message")]))
+    }
+    
+    @Test func testErrorMappingWithGeneralKey() {
+        let messages = RemoteMessagesError.init(messages: [ RegisterError.generalKey: "general message"], fallback: "any")
+        let remoteError = RemoteError.messages(messages)
+        
+        let result = RegisterError.fromRemoteError(remoteError)
+        
+        #expect(result == .general("general message"))
+    }
+
+    @Test func testErrorMappingWhenThereIsNoKeys() {
+        let messages = RemoteMessagesError.init(messages: [:], fallback: "fallback message")
+        let remoteError = RemoteError.messages(messages)
+        
+        let result = RegisterError.fromRemoteError(remoteError)
+        
+        #expect(result == .general("fallback message"))
+    }
 }
