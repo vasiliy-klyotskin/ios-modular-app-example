@@ -8,4 +8,12 @@
 import Combine
 import Foundation
 
-typealias RemoteClient = (URLRequest) -> AnyPublisher<(Data, HTTPURLResponse), Error>
+typealias RemoteClient = (RemoteRequest) -> AnyPublisher<RemoteResponse, Error>
+
+struct RemoteRequest: Equatable {
+    let path: String
+    let method: String
+    let body: Data?
+}
+
+typealias RemoteResponse = (Data, HTTPURLResponse)

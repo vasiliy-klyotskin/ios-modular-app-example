@@ -15,8 +15,8 @@ final class LoginFeatureSpy {
     var generalError: String?
     var successes = [LoginModel]()
     
-    var tasks = [PassthroughSubject<(Data, HTTPURLResponse), Error>]()
-    var requests = [URLRequest]()
+    var tasks = [PassthroughSubject<RemoteResponse, Error>]()
+    var requests = [RemoteRequest]()
     
     private var currentTime: Date = Date()
     private var cancellables = Set<AnyCancellable>()
@@ -31,7 +31,7 @@ final class LoginFeatureSpy {
         sut.inputVm.$error.bind(\.inputError, to: self, storeIn: &cancellables)
     }
     
-    func remote(request: URLRequest) -> AnyPublisher<(Data, HTTPURLResponse), Error> {
+    func remote(request: RemoteRequest) -> AnyPublisher<RemoteResponse, Error> {
         requests.append(request)
         let task = PassthroughSubject<(Data, HTTPURLResponse), Error>()
         tasks.append(task)

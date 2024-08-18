@@ -12,12 +12,10 @@ struct LoginRequestDTO: Encodable {
 }
 
 extension LoginRequest {
-    var urlRequest: URLRequest {
-        let url = URL(string: "https://justchat.com/api/v1/login")!
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        request.httpBody = try? JSONEncoder().encode(LoginRequestDTO(login: self))
-        return request
+    var urlRequest: RemoteRequest {
+        let path = "login"
+        let method = "POST"
+        let body = try? JSONEncoder().encode(LoginRequestDTO(login: self))
+        return .init(path: path, method: method, body: body)
     }
 }

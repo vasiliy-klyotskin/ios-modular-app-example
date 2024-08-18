@@ -10,11 +10,10 @@ import Testing
 @testable import JustChat
 
 extension LoginFeatureTests {
-    func expectRequestIsCorrect(_ request: URLRequest, for login: String, _ comment: Comment?, sourceLocation: SourceLocation = #_sourceLocation) {
-        #expect(request.url?.absoluteString == "https://justchat.com/api/v1/login", comment, sourceLocation: sourceLocation)
-        #expect(request.allHTTPHeaderFields == ["Content-Type": "application/json"], comment, sourceLocation: sourceLocation)
-        #expect(request.httpMethod == "POST", comment, sourceLocation: sourceLocation)
-        #expect(request.httpBody == requestBody(for: login), comment, sourceLocation: sourceLocation)
+    func expectRequestIsCorrect(_ request: RemoteRequest, for login: String, _ comment: Comment?, sourceLocation: SourceLocation = #_sourceLocation) {
+        #expect(request.path == "login", comment, sourceLocation: sourceLocation)
+        #expect(request.method == "POST", comment, sourceLocation: sourceLocation)
+        #expect(request.body == requestBody(for: login), comment, sourceLocation: sourceLocation)
     }
     
     func requestBody(for login: String) -> Data {
