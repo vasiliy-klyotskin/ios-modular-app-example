@@ -13,7 +13,7 @@ extension LoginFeatureTests {
     func expectRequestIsCorrect(_ request: RemoteRequest, for login: String, _ comment: Comment?, sourceLocation: SourceLocation = #_sourceLocation) {
         #expect(request.path == "login", comment, sourceLocation: sourceLocation)
         #expect(request.method == "POST", comment, sourceLocation: sourceLocation)
-        #expect(request.body == requestBody(for: login), comment, sourceLocation: sourceLocation)
+        #expect(request.bodyData == requestBody(for: login), comment, sourceLocation: sourceLocation)
     }
     
     func requestBody(for login: String) -> Data {

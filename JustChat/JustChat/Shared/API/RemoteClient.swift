@@ -10,10 +10,16 @@ import Foundation
 
 typealias RemoteClient = (RemoteRequest) -> AnyPublisher<RemoteResponse, Error>
 
-struct RemoteRequest: Equatable {
+struct RemoteRequest {
     let path: String
     let method: String
-    let body: Data?
+    let body: Body
+    
+    enum Body {
+        case noBody
+        case plain(Data)
+        case encodable(Encodable)
+    }
 }
 
 typealias RemoteResponse = (Data, HTTPURLResponse)

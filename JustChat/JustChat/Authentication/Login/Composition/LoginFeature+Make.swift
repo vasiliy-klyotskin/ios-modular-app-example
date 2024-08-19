@@ -37,7 +37,7 @@ extension LoginFeature {
         login: LoginRequest
     ) -> AnyPublisher<LoginModel, LoginError> {
         lift(cache.load <~ login)
-            .fallback(to: env.httpClient(login.remoteRequest(with: encodeDto))
+            .fallback(to: env.httpClient(login.remote)
                 .mapError(RemoteMapper.mapError <~ RemoteStrings.values)
                 .flatMapResult(RemoteMapper.mapSuccess <~ RemoteStrings.values)
                 .mapError(LoginError.fromRemoteError)

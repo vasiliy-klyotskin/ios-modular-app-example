@@ -11,10 +11,10 @@ struct RegisterRequestDTO: Encodable {
 }
 
 extension RegisterRequest {
-    func remoteRequest(with encode: RemoteEncoder<RegisterRequestDTO>) -> RemoteRequest {
+    var remoteRequest: RemoteRequest {
         let path = "register"
         let method = "POST"
-        let body = encode(RegisterRequestDTO(email: email, username: username))
-        return .init(path: path, method: method, body: body)
+        let dto = RegisterRequestDTO(email: email, username: username)
+        return .init(path: path, method: method, body: .encodable(dto))
     }
 }

@@ -12,10 +12,10 @@ struct LoginRequestDTO: Encodable {
 }
 
 extension LoginRequest {
-    func remoteRequest(with encode: RemoteEncoder<LoginRequestDTO>) -> RemoteRequest {
+    var remote: RemoteRequest {
         let path = "login"
         let method = "POST"
-        let body = encode(LoginRequestDTO(login: self))
-        return .init(path: path, method: method, body: body)
+        let dto = LoginRequestDTO(login: self)
+        return .init(path: path, method: method, body: .encodable(dto))
     }
 }
