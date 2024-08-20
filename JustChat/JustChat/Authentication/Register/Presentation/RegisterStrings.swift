@@ -13,4 +13,6 @@ enum RegisterStrings {
     static var submitButtonTitle: String { "Continue" }
     static var loginText: String { "Joined us before?" }
     static var loginButtonTitle: String { "Login" }
+    static var emptyEmailError: String { "Enter your E-mail" }
+    static var emptyUsernameError: String { "Enter your username" }
 }
