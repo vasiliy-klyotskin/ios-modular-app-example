@@ -42,28 +42,9 @@ extension Publisher {
         })
     }
     
-    func fallback<F>(to fallbackPublisher: @escaping @autoclosure () -> AnyPublisher<Output, F>) -> AnyPublisher<Output, F> {
-        self.catch { _ in
-            fallbackPublisher()
-        }.eraseToAnyPublisher()
-    }
-    
     func sink() -> AnyCancellable {
         sink(receiveCompletion: { _ in }, receiveValue: { _ in })
     }
-}
-
-func lift<T>(_ function: @escaping () -> T?) -> AnyPublisher<T, Error> {
-    Deferred {
-        Future { promise in
-            if let result = function() {
-                promise(.success(result))
-            } else {
-                promise(.failure(NSError(domain: "any", code: -1)))
-            }
-        }
-    }
-    .eraseToAnyPublisher()
 }
 
 func start<Output, Failure: Error, Request>(_ publisher: @escaping (Request) -> AnyPublisher<Output, Failure>) -> (Request) -> Void {

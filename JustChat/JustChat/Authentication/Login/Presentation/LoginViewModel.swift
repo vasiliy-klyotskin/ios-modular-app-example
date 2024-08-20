@@ -17,7 +17,6 @@ final class LoginViewModel: ObservableObject {
     private var login: String = ""
     
     func submit() {
-        if isLoading { return }
         inputError = nil
         generalError = nil
         if login.isEmpty {

@@ -16,16 +16,13 @@ struct LoginFeature {
 
 struct LoginEnvironment {
     let httpClient: RemoteClient
-    let currentTime: () -> Date
     let scheduler: AnySchedulerOf<DispatchQueue>
     
     init(
         httpClient: @escaping RemoteClient,
-        currentTime: @escaping () -> Date = Date.init,
         scheduler: AnySchedulerOf<DispatchQueue> = .main
     ) {
         self.httpClient = httpClient
-        self.currentTime = currentTime
         self.scheduler = scheduler
     }
 }
