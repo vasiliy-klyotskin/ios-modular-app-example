@@ -26,11 +26,11 @@ struct LoginView: View {
     private func content() -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer()
-            headerBlock()
+            header()
                 .padding(.bottom, UI.spacing.lg)
             subviews
                 .loginInput(TextField.Config(title: LoginStrings.loginTitle))
-                .padding(.bottom, UI.spacing.xl)
+                .padding(.bottom, UI.spacing.lg)
             subviews
                 .submitButton(Button.Config(title: LoginStrings.continueButton, isLoading: vm.isLoading))
                 .padding(.bottom, UI.spacing.md)
@@ -39,20 +39,20 @@ struct LoginView: View {
             subviews
                 .googleOAuthButton(LoginStrings.googleButton)
                 .padding(.bottom, UI.spacing.lg)
-            registerBlock()
+            register()
                 
         }
         .padding(UI.spacing.md)
         .disabled(vm.isLoading)
     }
     
-    private func headerBlock() -> some View {
+    private func header() -> some View {
         VStack(alignment: .leading, spacing: UI.spacing.md) {
             Text(LoginStrings.title)
                 .font(UI.font.bold.largeTitle)
                 .foregroundStyle(UI.color.text.primary)
             Text(LoginStrings.subtitle)
-                .font(UI.font.bold.title3)
+                .font(UI.font.plain.body)
                 .foregroundStyle(UI.color.text.secondary)
         }
     }
@@ -68,7 +68,7 @@ struct LoginView: View {
         .padding(.horizontal, UI.spacing.md)
     }
     
-    private func registerBlock() -> some View {
+    private func register() -> some View {
         HStack {
             Spacer()
             Text(LoginStrings.registerTitle)

@@ -5,6 +5,8 @@
 //  Created by Василий Клецкин on 8/17/24.
 //
 
-final class RegisterViewModel {
-    
+import Combine
+
+final class RegisterViewModel: ObservableObject {
+    @Published var isLoading = false
 }
