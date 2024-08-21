@@ -36,8 +36,7 @@ extension RegisterFeature {
         request: RegisterRequest
     ) -> AnyPublisher<RegisterModel, RegisterError> {
         env.httpClient(request.remote)
-            .mapError(RemoteMapper.mapError <~ RemoteStrings.values)
-            .flatMapResult(RemoteMapper.mapSuccess <~ RemoteStrings.values)
+            .mapResponseToDtoAndRemoteError()
             .mapError(RegisterError.fromRemoteError)
             .map(RegisterModel.fromRequestAndDto <~ request)
             .onSubscription(vm.do { $0.startLoading })

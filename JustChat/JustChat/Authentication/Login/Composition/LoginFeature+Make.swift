@@ -35,8 +35,7 @@ extension LoginFeature {
         login: LoginRequest
     ) -> AnyPublisher<LoginModel, LoginError> {
         env.httpClient(login.remote)
-            .mapError(RemoteMapper.mapError <~ RemoteStrings.values)
-            .flatMapResult(RemoteMapper.mapSuccess <~ RemoteStrings.values)
+            .mapResponseToDtoAndRemoteError()
             .mapError(LoginError.fromRemoteError)
             .map(LoginModel.fromLoginAndDto <~ login)
             .onSubscription(vm.do { $0.startLoading })
