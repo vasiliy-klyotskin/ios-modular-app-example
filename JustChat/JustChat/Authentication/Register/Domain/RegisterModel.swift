@@ -6,7 +6,7 @@
 //
 
 struct RegisterModel: Equatable {
-    let email: String
+    let request: RegisterRequest
     let confirmationToken: String
     let otpLength: Int
     let nextAttemptAfter: Int

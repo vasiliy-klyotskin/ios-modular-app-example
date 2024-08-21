@@ -10,15 +10,6 @@ import Testing
 
 @Suite
 struct RegisterAPITests {
-    @Test func testModelMapping() {
-        let dto = RegisterResponseDTO(confirmationToken: "token", otpLength: 5, nextAttemptAfter: 20)
-        let email = "some email"
-        
-        let result = RegisterModel.fromEmailAndDto(email: email, dto: dto)
-        
-        #expect(result == .init(email: "some email", confirmationToken: "token", otpLength: 5, nextAttemptAfter: 20))
-    }
-    
     @Test func testErrorMappingWithSystemMessage() {
         let remoteError = RemoteError.system("sys message")
         

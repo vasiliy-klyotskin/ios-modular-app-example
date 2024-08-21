@@ -18,7 +18,7 @@ final class LoginFeatureTests {
         // MARK: When the scenario starts
         #expect(spy.isLoading == false, "The loading state should be false.")
         #expect(spy.requests.isEmpty, "There should be no requests.")
-        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
@@ -26,7 +26,7 @@ final class LoginFeatureTests {
         sut.initiateLoginSubmit()
         #expect(spy.isLoading == false, "The loading state should remain false.")
         #expect(spy.requests.isEmpty, "There should be no requests.")
-        #expect(spy.inputError == LoginStrings.emptyInputError, "An empty input error message should be shown.")
+        #expect(spy.loginError == LoginStrings.emptyInputError, "An empty login input error message should be shown.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
@@ -34,7 +34,7 @@ final class LoginFeatureTests {
         sut.changeLoginInput("any login")
         #expect(spy.isLoading == false, "The loading state should remain false.")
         #expect(spy.requests.isEmpty, "There should be no requests.")
-        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
@@ -42,15 +42,15 @@ final class LoginFeatureTests {
         sut.initiateLoginSubmit()
         #expect(spy.isLoading == true, "The loading state should be true.")
         expectRequestIsCorrect(spy.requests[0], for: "any login", "A remote request should be made.")
-        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // MARK: When the request finishes with input error
-        spy.finishRemoteRequestWith(response: inputError("input error"), index: 0)
+        // MARK: When the request finishes with login input error
+        spy.finishRemoteRequestWith(response: inputError("login error"), index: 0)
         #expect(spy.isLoading == false, "The loading state should be false.")
         #expect(spy.requests.count == 1, "There should be no new requests.")
-        #expect(spy.inputError == "input error", "The validation error message should be shown.")
+        #expect(spy.loginError == "login error", "The validation error message should be shown.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
 
@@ -58,7 +58,7 @@ final class LoginFeatureTests {
         sut.changeLoginInput("another login")
         #expect(spy.isLoading == false, "The loading state should be false.")
         #expect(spy.requests.count == 1, "There should be no new requests.")
-        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
@@ -66,7 +66,7 @@ final class LoginFeatureTests {
         sut.initiateLoginSubmit()
         #expect(spy.isLoading == true, "The loading state should be true.")
         expectRequestIsCorrect(spy.requests[1], for: "another login", "A new remote request should be made.")
-        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
@@ -74,7 +74,7 @@ final class LoginFeatureTests {
         spy.finishRemoteRequestWithError(index: 1)
         #expect(spy.isLoading == false, "The loading state should be false.")
         #expect(spy.requests.count == 2, "There should be no new requests.")
-        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == RemoteStrings.values.system, "A general error message should be shown.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
@@ -82,7 +82,7 @@ final class LoginFeatureTests {
         sut.initiateLoginSubmit()
         #expect(spy.isLoading == true, "The loading state should be true.")
         expectRequestIsCorrect(spy.requests[2], for: "another login", "A new remote request should be made.")
-        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == nil, "The general error should be hidden.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
@@ -91,7 +91,7 @@ final class LoginFeatureTests {
         let expectedSuccess = successModel(login: "another login", token: "token", otpLength: 5, nextAttemptAfter: 120)
         #expect(spy.isLoading == false, "The loading state should be false.")
         #expect(spy.requests.count == 3, "There should be no new requests.")
-        #expect(spy.inputError == nil, "There should be no input error.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes == [expectedSuccess], "There should be a success message.")
     }
@@ -109,7 +109,7 @@ final class LoginFeatureTests {
     
     private func makeSut() -> (Sut, LoginFeatureSpy) {
         let spy = LoginFeatureSpy()
-        let env = LoginEnvironment(httpClient: spy.remote)
+        let env = LoginEnvironment(httpClient: spy.remote, scheduler: DispatchQueue.test.eraseToAnyScheduler())
         let events = LoginEvents(
             onSuccessfulSubmitLogin: spy.keepLoginModel(_:),
             onGoogleOAuthButtonTapped: {},
@@ -117,10 +117,7 @@ final class LoginFeatureTests {
         )
         let sut = LoginFeature.make(env: env, events: events)
         spy.startSpying(sut: sut)
-        leakChecker.addForChecking(sut.inputVm)
-        leakChecker.addForChecking(sut.submitVm)
-        leakChecker.addForChecking(sut.toastVm)
-        leakChecker.addForChecking(spy)
+        leakChecker.addForChecking(sut.inputVm, sut.submitVm, sut.toastVm, spy)
         return (sut, spy)
     }
 }

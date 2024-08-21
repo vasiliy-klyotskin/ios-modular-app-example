@@ -1,29 +1,31 @@
 //
-//  LoginSpy.swift
+//  RegisterFeatureSpy.swift
 //  JustChat
 //
-//  Created by Василий Клецкин on 8/6/24.
+//  Created by Василий Клецкин on 8/21/24.
 //
 
 import Foundation
 import Combine
 @testable import JustChat
 
-final class LoginFeatureSpy {
+final class RegisterFeatureSpy {
     var isLoading: Bool = false
-    var loginError: String?
+    var emailError: String?
+    var usernameError: String?
     var generalError: String?
-    var successes = [LoginModel]()
+    var successes = [RegisterModel]()
     
     var tasks = [PassthroughSubject<RemoteResponse, Error>]()
     var requests = [RemoteRequest]()
     
     private var cancellables = Set<AnyCancellable>()
     
-    func startSpying(sut: LoginFeatureTests.Sut) {
-        sut.submitVm.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
+    func startSpying(sut: RegisterFeatureTests.Sut) {
+        sut.registerVm.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
         sut.toastVm.$message.bind(\.generalError, to: self, storeIn: &cancellables)
-        sut.inputVm.$error.bind(\.loginError, to: self, storeIn: &cancellables)
+        sut.usernameInputVm.$error.bind(\.usernameError, to: self, storeIn: &cancellables)
+        sut.emailInputVm.$error.bind(\.emailError, to: self, storeIn: &cancellables)
     }
     
     func remote(request: RemoteRequest) -> AnyPublisher<RemoteResponse, Error> {
@@ -33,7 +35,7 @@ final class LoginFeatureSpy {
         return task.eraseToAnyPublisher()
     }
     
-    func keepLoginModel(_ model: LoginModel) {
+    func keepRegisterModel(_ model: RegisterModel) {
         successes.append(model)
     }
     

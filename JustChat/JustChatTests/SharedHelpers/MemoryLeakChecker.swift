@@ -10,10 +10,12 @@ import Testing
 final class MemoryLeakChecker {
     private var blocks: [() -> Void] = []
     
-    func addForChecking(_ object: AnyObject, sourceLocation: SourceLocation = #_sourceLocation) {
-        blocks.append({ [weak object] in
-            #expect(object == nil, "Object should be nil. Potential memory leak", sourceLocation: sourceLocation)
-        })
+    func addForChecking(_ objects: AnyObject..., sourceLocation: SourceLocation = #_sourceLocation) {
+        objects.forEach { object in
+            blocks.append({ [weak object] in
+                #expect(object == nil, "Object should be nil. Potential memory leak", sourceLocation: sourceLocation)
+            })
+        }
     }
     
     deinit {

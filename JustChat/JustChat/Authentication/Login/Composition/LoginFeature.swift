@@ -17,14 +17,6 @@ struct LoginFeature {
 struct LoginEnvironment {
     let httpClient: RemoteClient
     let scheduler: AnySchedulerOf<DispatchQueue>
-    
-    init(
-        httpClient: @escaping RemoteClient,
-        scheduler: AnySchedulerOf<DispatchQueue> = .main
-    ) {
-        self.httpClient = httpClient
-        self.scheduler = scheduler
-    }
 }
 
 struct LoginEvents {
