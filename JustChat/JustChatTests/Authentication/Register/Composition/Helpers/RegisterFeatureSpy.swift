@@ -15,6 +15,7 @@ final class RegisterFeatureSpy {
     var usernameError: String?
     var generalError: String?
     var successes = [RegisterModel]()
+    var loginCalls = 0
     
     var tasks = [PassthroughSubject<RemoteResponse, Error>]()
     var requests = [RemoteRequest]()
@@ -46,5 +47,9 @@ final class RegisterFeatureSpy {
     func finishRemoteRequestWith(response: (Data, HTTPURLResponse), index: Int) {
         tasks[index].send(response)
         tasks[index].send(completion: .finished)
+    }
+    
+    func incrementLoginCalls() {
+        loginCalls += 1
     }
 }

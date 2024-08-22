@@ -13,6 +13,8 @@ final class LoginViewModel: ObservableObject {
     @Published var generalError: String? = nil
     
     var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
+    var onGoogleAuthTap: () -> Void = {}
+    var onRegisterTap: () -> Void = {}
     
     private var login: String = ""
     
@@ -45,5 +47,13 @@ final class LoginViewModel: ObservableObject {
         case .general(let generalError):
             self.generalError = generalError
         }
+    }
+    
+    func registerTapped() {
+        onRegisterTap()
+    }
+    
+    func googleAuthTapped() {
+        onGoogleAuthTap()
     }
 }

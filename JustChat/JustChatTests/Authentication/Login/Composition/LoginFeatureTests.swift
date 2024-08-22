@@ -97,6 +97,21 @@ final class LoginFeatureTests {
     }
     
     @Test
+    func sutSendsTapEvents() {
+        let (sut, spy) = makeSut()
+        #expect(spy.googleAuthCalls == 0)
+        #expect(spy.regiterCalls == 0)
+        
+        sut.simulateRegisterTap()
+        #expect(spy.googleAuthCalls == 0)
+        #expect(spy.regiterCalls == 1)
+        
+        sut.simulateGoogleAuthTap()
+        #expect(spy.googleAuthCalls == 1)
+        #expect(spy.regiterCalls == 1)
+    }
+    
+    @Test
     func sutDealocatesWhenRequestIsInProgress() {
         let (sut, _) = makeSut()
         sut.changeLoginInput("any")
@@ -112,8 +127,8 @@ final class LoginFeatureTests {
         let env = LoginEnvironment(httpClient: spy.remote, scheduler: DispatchQueue.test.eraseToAnyScheduler())
         let events = LoginEvents(
             onSuccessfulSubmitLogin: spy.keepLoginModel(_:),
-            onGoogleOAuthButtonTapped: {},
-            onRegisterButtonTapped: {}
+            onGoogleOAuthButtonTapped: spy.incrementGoogleAuth,
+            onRegisterButtonTapped: spy.incrementRegister
         )
         let sut = LoginFeature.make(env: env, events: events)
         spy.startSpying(sut: sut)

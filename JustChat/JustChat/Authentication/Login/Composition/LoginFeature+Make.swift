@@ -10,13 +10,7 @@ import Combine
 
 extension LoginFeature {
     func view() -> LoginView {
-        LoginView(vm: submitVm, subviews: LoginSubviews(
-            submitButton: Button.make <~ submitVm.submit,
-            googleOAuthButton: GoogleAuthButton.init <~ events.onGoogleOAuthButtonTapped,
-            loginInput: TextField.make <~ inputVm,
-            registerButton: LinkButton.make <~ events.onRegisterButtonTapped,
-            errorToast: Toast.make <~ toastVm
-        ))
+        .init(vm: submitVm, input: inputVm.view, toast: toastVm.view)
     }
     
     static func make(env: LoginEnvironment, events: LoginEvents) -> LoginFeature {
@@ -25,7 +19,9 @@ extension LoginFeature {
         let inputVm = TextFieldViewModel.make(error: submitVm.$inputError, onInput: submitVm.updateLogin)
         let submission = submission <~ env <~ events <~ submitVm
         submitVm.onValidatedLoginSubmit = start(submission)
-        return .init(submitVm: submitVm, inputVm: inputVm, toastVm: toastVm, events: events)
+        submitVm.onRegisterTap = events.onRegisterButtonTapped
+        submitVm.onGoogleAuthTap = events.onGoogleOAuthButtonTapped
+        return .init(submitVm: submitVm, inputVm: inputVm, toastVm: toastVm)
     }
     
     private static func submission(

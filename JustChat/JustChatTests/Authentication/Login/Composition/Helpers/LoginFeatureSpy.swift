@@ -14,6 +14,8 @@ final class LoginFeatureSpy {
     var loginError: String?
     var generalError: String?
     var successes = [LoginModel]()
+    var regiterCalls = 0
+    var googleAuthCalls = 0
     
     var tasks = [PassthroughSubject<RemoteResponse, Error>]()
     var requests = [RemoteRequest]()
@@ -44,5 +46,13 @@ final class LoginFeatureSpy {
     func finishRemoteRequestWith(response: (Data, HTTPURLResponse), index: Int) {
         tasks[index].send(response)
         tasks[index].send(completion: .finished)
+    }
+    
+    func incrementRegister() {
+        regiterCalls += 1
+    }
+    
+    func incrementGoogleAuth() {
+        googleAuthCalls += 1
     }
 }

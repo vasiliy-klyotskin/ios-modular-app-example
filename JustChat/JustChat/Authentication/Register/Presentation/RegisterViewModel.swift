@@ -13,10 +13,11 @@ final class RegisterViewModel: ObservableObject {
     @Published var usernameError: String? = nil
     @Published var generalError: String? = nil
     
+    var onValidatedRegisterSubmit: (RegisterRequest) -> Void = { _ in }
+    var onLoginTapped: () -> Void = {}
+    
     private var emailInput: String = ""
     private var usernameInput: String = ""
-    
-    var onValidatedRegisterSubmit: (RegisterRequest) -> Void = { _ in }
     
     func submit() {
         emailError = nil
@@ -65,5 +66,9 @@ final class RegisterViewModel: ObservableObject {
         case .username(let error):
             usernameError = error
         }
+    }
+    
+    func loginTapped() {
+        onLoginTapped()
     }
 }

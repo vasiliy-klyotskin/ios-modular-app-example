@@ -46,16 +46,8 @@ struct GoogleAuthButton: View {
     }
 }
 
-typealias GoogleAuthButtonSetup = (String) -> GoogleAuthButton
-
-extension GoogleAuthButton {
-    static func preview() -> GoogleAuthButtonSetup {
-        return { .init(action: {}, title: $0) }
-    }
-}
-
 #Preview {
-    GoogleAuthButton.preview()("Sign in with Google")
+    GoogleAuthButton(action: {}, title: "Sign in with Google")
         .padding(UI.spacing.md)
         .background(UI.color.background.primary)
 }

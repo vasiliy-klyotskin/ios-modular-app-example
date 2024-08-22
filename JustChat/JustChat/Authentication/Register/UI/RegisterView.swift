@@ -9,29 +9,29 @@ import SwiftUI
 
 struct RegisterView: View {
     @ObservedObject var vm: RegisterViewModel
-    let subviews: RegisterSubviews
+    
+    let emailInput: TextFieldSetup
+    let usernameInput: TextFieldSetup
+    let toast: ToastSetup
     
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                content
+                content()
                     .padding(UI.spacing.md)
                     .frame(minHeight: geometry.size.height)
             }
         }
         .background(UI.color.background.primary)
-        .showToast(subviews.toast)
+        .showToast(toast)
     }
     
-    private var content: some View {
+    private func content() -> some View {
         VStack(alignment: .leading, spacing: UI.spacing.lg) {
             Spacer()
             header()
             inputs().padding(.vertical, UI.spacing.md)
-            subviews.submitButton(.init(
-                title: RegisterStrings.submitButtonTitle,
-                isLoading: vm.isLoading
-            ))
+            submitButton()
             login()
         }
     }
@@ -49,8 +49,8 @@ struct RegisterView: View {
     
     private func inputs() -> some View {
         VStack(spacing: UI.spacing.xl) {
-            subviews.emailInput(.init(title: RegisterStrings.emailInputTitle))
-            subviews.usernameInput(.init(title: RegisterStrings.usernameInputTitle))
+            emailInput(RegisterStrings.emailInputTitle)
+            usernameInput(RegisterStrings.usernameInputTitle)
         }
     }
     
@@ -60,18 +60,21 @@ struct RegisterView: View {
             Text(RegisterStrings.loginText)
                 .font(UI.font.plain.body)
                 .foregroundStyle(UI.color.text.primary)
-            subviews.loginButton(.init(title: RegisterStrings.loginButtonTitle))
+            LinkButton(title: RegisterStrings.loginButtonTitle, action: vm.loginTapped)
             Spacer()
         }
+    }
+    
+    private func submitButton() -> some View {
+        Button(action: vm.submit, config: .standard(title: RegisterStrings.submitButtonTitle, isLoading: vm.isLoading))
     }
 }
 
 #Preview {
-    RegisterView(vm: .init(), subviews: .init(
-        usernameInput: TextField.preview(),
+    RegisterView(
+        vm: .init(),
         emailInput: TextField.preview(),
-        submitButton: Button.preview(),
-        loginButton: LinkButton.preview(),
-        toast: Toast.preview(message: "General error")
-    ))
+        usernameInput: TextField.preview(),
+        toast: Toast.preview()
+    )
 }

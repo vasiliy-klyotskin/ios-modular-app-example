@@ -9,11 +9,10 @@ import SwiftUI
 
 struct TextField: View {
     @ObservedObject var vm: TextFieldViewModel
+    let title: String
     
     @ScaledMetric(wrappedValue: 16, relativeTo: .body) var iconSize: CGFloat
-    let title: String
-    let placeholder: String
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: UI.spacing.sm) {
             HStack(alignment: .center) {
@@ -35,7 +34,7 @@ struct TextField: View {
     }
     
     private func prompt() -> Text {
-        Text(placeholder)
+        Text(title)
             .font(UI.font.plain.body)
             .foregroundStyle(UI.color.text.placeholder)
     }
@@ -66,13 +65,24 @@ struct TextField: View {
 }
 
 #Preview {
-    let config = TextField.Config(title: "Title and Placeholder")
-    return VStack(spacing: UI.spacing.lg) {
-        TextField.preview(value: "", error: nil)(config)
-        TextField.preview(value: "John Snow", error: nil)(config)
-        TextField.preview(value: "", error: "Input error")(config)
-        TextField.preview(value: "John Snow", error: "Input error")(config)
+    let title = "Title"
+    VStack(spacing: UI.spacing.lg) {
+        TextField.preview(value: "", error: nil)(title)
+        TextField.preview(value: "John Snow", error: nil)(title)
+        TextField.preview(value: "", error: "Input error")(title)
+        TextField.preview(value: "John Snow", error: "Input error")(title)
     }
     .padding(UI.spacing.md)
     .background(UI.color.background.primary)
+}
+
+typealias TextFieldSetup = (String) -> TextField
+
+extension TextField {
+    static func preview(value: String = "Input value", error: String? = "Input error") -> TextFieldSetup {
+        let vm = TextFieldViewModel()
+        vm.input = value
+        vm.updateError(error)
+        return { title in .init(vm: vm, title: title) }
+    }
 }

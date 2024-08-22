@@ -9,14 +9,18 @@
 
 extension RegisterFeatureTests.Sut {
     func initiateRegistration() {
-        self.registerVm.submit()
+        registerVm.submit()
     }
     
     func changeEmailInput(_ value: String) {
-        self.emailInputVm.input = value
+        emailInputVm.input = value
     }
     
     func changeUsernameInput(_ value: String) {
-        self.usernameInputVm.input = value
+        usernameInputVm.input = value
+    }
+    
+    func simulateLoginTap() {
+        registerVm.loginTapped()
     }
 }

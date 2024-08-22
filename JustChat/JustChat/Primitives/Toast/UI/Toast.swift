@@ -48,9 +48,19 @@ extension View {
     }
 }
 
+typealias ToastSetup = () -> Toast
+
 #Preview {
     Rectangle()
         .fill(UI.color.background.primary)
         .ignoresSafeArea()
         .showToast(Toast.preview(message: "Some long long long long long long long long long long long long long long long message"))
+}
+
+extension Toast {
+    static func preview(message: String? = "Attention! Thank you for attention :)") -> ToastSetup {
+        let vm = ToastViewModel()
+        vm.updateMessage(message)
+        return { .init(vm: vm) }
+    }
 }

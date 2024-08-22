@@ -9,10 +9,18 @@
 
 extension LoginFeatureTests.Sut {
     func initiateLoginSubmit() {
-        self.submitVm.submit()
+        submitVm.submit()
     }
     
     func changeLoginInput(_ value: String) {
-        self.inputVm.input = value
+        inputVm.input = value
+    }
+    
+    func simulateGoogleAuthTap() {
+        submitVm.googleAuthTapped()
+    }
+    
+    func simulateRegisterTap() {
+        submitVm.registerTapped()
     }
 }

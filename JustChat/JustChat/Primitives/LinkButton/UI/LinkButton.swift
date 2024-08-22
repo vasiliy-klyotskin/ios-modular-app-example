@@ -21,7 +21,7 @@ struct LinkButton: View {
 }
 
 #Preview {
-    LinkButton.preview()(.init(title: "Let's go"))
+    LinkButton(title: "Let's go", action: {})
         .padding(UI.spacing.md)
         .background(UI.color.background.primary)
 }

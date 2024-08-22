@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct Button: View {
-    let title: String
-    let isLoading: Bool
     let action: () -> Void
+    let config: ButtonConfig
     
     var body: some View {
         SwiftUI.Button(action: action) {
             ZStack {
-                Text(title)
-                    .opacity(isLoading ? 0 : 1)
+                Text(config.title)
+                    .opacity(config.textAlpha)
                     .font(UI.font.bold.headline)
-                if isLoading {
+                if config.isLoadingDisplayed {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .tint(UI.color.text.primaryInverted)
@@ -29,7 +28,8 @@ struct Button: View {
             .frame(maxWidth: .infinity)
             .background(background())
         }
-        .disabled(isLoading)
+        .opacity(config.contentAlpha)
+        .disabled(config.isInteractionDisabled)
     }
     
     private func background() -> some View {
@@ -45,8 +45,10 @@ struct Button: View {
 
 #Preview {
     VStack(spacing: UI.spacing.md) {
-        Button.preview()(.init(title: "Continue", isLoading: false))
-        Button.preview()(.init(title: "Let's go", isLoading: true))
+        Button(action: {}, config: .standard(title: "Let's go", isLoading: true, isDimmed: false))
+        Button(action: {}, config: .standard(title: "Let's go", isLoading: false, isDimmed: false))
+        Button(action: {}, config: .standard(title: "Let's go", isLoading: true, isDimmed: true))
+        Button(action: {}, config: .standard(title: "Let's go", isLoading: false, isDimmed: true))
     }
     .padding(UI.spacing.md)
     .background(UI.color.background.primary)

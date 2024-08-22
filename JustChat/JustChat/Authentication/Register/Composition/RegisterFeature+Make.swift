@@ -10,13 +10,7 @@ import Combine
 
 extension RegisterFeature {
     func view() -> RegisterView {
-        RegisterView(vm: registerVm, subviews: .init(
-            usernameInput: TextField.make <~ usernameInputVm,
-            emailInput: TextField.make <~ emailInputVm,
-            submitButton: Button.make <~ registerVm.submit,
-            loginButton: LinkButton.make <~ events.onLoginButtonTapped,
-            toast: Toast.make <~ toastVm
-        ))
+        .init(vm: registerVm, emailInput: emailInputVm.view, usernameInput: usernameInputVm.view, toast: toastVm.view)
     }
     
     static func make(env: RegisterEnvironment, events: RegisterEvents) -> RegisterFeature {
@@ -26,7 +20,8 @@ extension RegisterFeature {
         let toastVm = ToastViewModel.make(message: registerVm.$generalError, scheduler: env.scheduler)
         let submission = submission <~ env <~ events <~ registerVm
         registerVm.onValidatedRegisterSubmit = start(submission)
-        return .init(emailInputVm: emailInputVm, usernameInputVm: usernameInputVm, toastVm: toastVm, registerVm: registerVm, events: events)
+        registerVm.onLoginTapped = events.onLoginButtonTapped
+        return .init(emailInputVm: emailInputVm, usernameInputVm: usernameInputVm, toastVm: toastVm, registerVm: registerVm)
     }
     
     private static func submission(

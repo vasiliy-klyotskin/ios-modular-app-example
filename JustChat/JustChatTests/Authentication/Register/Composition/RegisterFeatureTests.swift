@@ -109,6 +109,15 @@ final class RegisterFeatureTests {
     }
     
     @Test
+    func sutSendsTapEvents() {
+        let (sut, spy) = makeSut()
+        #expect(spy.loginCalls == 0)
+
+        sut.simulateLoginTap()
+        #expect(spy.loginCalls == 1)
+    }
+    
+    @Test
     func sutDealocatesWhenRequestIsInProgress() {
         let (sut, _) = makeSut()
         sut.changeEmailInput("any")
@@ -125,7 +134,7 @@ final class RegisterFeatureTests {
         let env = RegisterEnvironment(httpClient: spy.remote, scheduler: DispatchQueue.test.eraseToAnyScheduler())
         let events = RegisterEvents(
             onSuccessfulSubmitRegister: spy.keepRegisterModel(_:),
-            onLoginButtonTapped: {}
+            onLoginButtonTapped: spy.incrementLoginCalls
         )
         let sut = RegisterFeature.make(env: env, events: events)
         spy.startSpying(sut: sut)

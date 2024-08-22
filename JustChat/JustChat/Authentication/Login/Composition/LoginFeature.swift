@@ -11,7 +11,6 @@ struct LoginFeature {
     let submitVm: LoginViewModel
     let inputVm: TextFieldViewModel
     let toastVm: ToastViewModel
-    let events: LoginEvents
 }
 
 struct LoginEnvironment {

@@ -12,7 +12,6 @@ struct RegisterFeature {
     let usernameInputVm: TextFieldViewModel
     let toastVm: ToastViewModel
     let registerVm: RegisterViewModel
-    let events: RegisterEvents
 }
 
 struct RegisterEnvironment {

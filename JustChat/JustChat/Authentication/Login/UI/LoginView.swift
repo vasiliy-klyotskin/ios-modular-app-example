@@ -10,7 +10,8 @@ import SwiftUI
 struct LoginView: View {
     @ObservedObject var vm: LoginViewModel
     
-    let subviews: LoginSubviews
+    let input: TextFieldSetup
+    let toast: ToastSetup
     
     var body: some View {
         GeometryReader { geometry in
@@ -20,27 +21,18 @@ struct LoginView: View {
             }
         }
         .background(UI.color.background.primary)
-        .showToast(subviews.errorToast)
+        .showToast(toast)
     }
     
     private func content() -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer()
-            header()
-                .padding(.bottom, UI.spacing.lg)
-            subviews
-                .loginInput(TextField.Config(title: LoginStrings.loginTitle))
-                .padding(.bottom, UI.spacing.lg)
-            subviews
-                .submitButton(Button.Config(title: LoginStrings.continueButton, isLoading: vm.isLoading))
-                .padding(.bottom, UI.spacing.md)
-            separator()
-                .padding(.bottom, UI.spacing.md)
-            subviews
-                .googleOAuthButton(LoginStrings.googleButton)
-                .padding(.bottom, UI.spacing.lg)
+            header().padding(.bottom, UI.spacing.lg)
+            input(LoginStrings.loginTitle).padding(.bottom, UI.spacing.lg)
+            submitButton().padding(.bottom, UI.spacing.md)
+            separator().padding(.bottom, UI.spacing.md)
+            googleAuthButton().padding(.bottom, UI.spacing.lg)
             register()
-                
         }
         .padding(UI.spacing.md)
         .disabled(vm.isLoading)
@@ -74,18 +66,24 @@ struct LoginView: View {
             Text(LoginStrings.registerTitle)
                 .font(UI.font.plain.body)
                 .foregroundStyle(UI.color.text.primary)
-            subviews.registerButton(LinkButton.Config(title: LoginStrings.registerButton))
+            LinkButton(title: LoginStrings.registerButton, action: vm.registerTapped)
             Spacer()
         }
+    }
+    
+    private func submitButton() -> some View {
+        Button(action: vm.submit, config: .standard(title: LoginStrings.continueButton))
+    }
+    
+    private func googleAuthButton() -> some View {
+        GoogleAuthButton(action: vm.googleAuthTapped, title: LoginStrings.googleButton)
     }
 }
 
 #Preview {
-    LoginView(vm: .init(), subviews: .init(
-        submitButton: Button.preview(),
-        googleOAuthButton: GoogleAuthButton.preview(),
-        loginInput: TextField.preview(value: "John Connor", error: "John Connor isn't with us yet"),
-        registerButton: LinkButton.preview(),
-        errorToast: Toast.preview(message: "Something went wrong...")
-    ))
+    LoginView(
+        vm: .init(),
+        input: TextField.preview(),
+        toast: Toast.preview()
+    )
 }
