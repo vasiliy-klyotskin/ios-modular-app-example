@@ -7,20 +7,25 @@
 
 @testable import JustChat
 
-extension LoginFeatureTests.Sut {
+extension LoginTests.Sut {
     func initiateLoginSubmit() {
-        submitVm.submit()
+        submit()
     }
     
     func changeLoginInput(_ value: String) {
-        inputVm.input = value
+        input.input = value
     }
     
     func simulateGoogleAuthTap() {
-        submitVm.googleAuthTapped()
+        googleAuthTapped()
     }
     
     func simulateRegisterTap() {
-        submitVm.registerTapped()
+        registerTapped()
+    }
+    
+    func initiateLoginWithValidInput() {
+        changeLoginInput("any login")
+        initiateLoginSubmit()
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 import Testing
 @testable import JustChat
 
-extension RegisterFeatureTests {
+extension RegisterTests {
     func expectRequestIsCorrect(_ request: RemoteRequest, for email: String, username: String, _ comment: Comment?, sourceLocation: SourceLocation = #_sourceLocation) {
         #expect(request.path == "register", comment, sourceLocation: sourceLocation)
         #expect(request.method == "POST", comment, sourceLocation: sourceLocation)
@@ -27,9 +27,13 @@ extension RegisterFeatureTests {
         return apiSuccess(json: json)
     }
     
-    func apiErrorResponse(email: String, username: String) -> RemoteResponse {
+    func apiValidationErrorResponse(email: String, username: String) -> RemoteResponse {
         let messages = [RegisterError.emailKey: email, RegisterError.usernameKey: username]
         return apiError(messages: messages)
+    }
+    
+    func apiGeneralErrorResponse(message: String) -> RemoteResponse {
+        apiError(messages: [RegisterError.generalKey: message])
     }
                 
     func successModel(email: String = "", username: String = "", token: String = "", otpLength: Int = 0, nextAttemptAfter: Int = 0) -> RegisterModel {

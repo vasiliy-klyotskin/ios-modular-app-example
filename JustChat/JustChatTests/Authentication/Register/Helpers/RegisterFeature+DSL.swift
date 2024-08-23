@@ -7,20 +7,26 @@
 
 @testable import JustChat
 
-extension RegisterFeatureTests.Sut {
+extension RegisterTests.Sut {
     func initiateRegistration() {
-        registerVm.submit()
+        submit()
     }
     
     func changeEmailInput(_ value: String) {
-        emailInputVm.input = value
+        email.input = value
     }
     
     func changeUsernameInput(_ value: String) {
-        usernameInputVm.input = value
+        username.input = value
     }
     
     func simulateLoginTap() {
-        registerVm.loginTapped()
+        loginTapped()
+    }
+    
+    func initiateRegistrationWithValidEmailAndUsername() {
+        changeEmailInput("any email")
+        changeUsernameInput("any username")
+        initiateRegistration()
     }
 }

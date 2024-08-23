@@ -5,13 +5,6 @@
 //  Created by Василий Клецкин on 8/13/24.
 //
 
-func captured<A>(_ values: Any..., in block: @escaping (A) -> Void) -> (A) -> Void {
-    { [values] in
-        _ = values
-        block($0)
-    }
-}
-
 func <~<A: AnyObject, B, C>(_ fun: @escaping (Weak<A>, B) -> C, a: A?) -> (B) -> C {
     let a = Weak(a)
     return { b in fun(a, b) }

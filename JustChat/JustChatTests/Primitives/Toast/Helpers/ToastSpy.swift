@@ -10,8 +10,7 @@ import Foundation
 @testable import JustChat
 
 final class ToastSpy {
-    @Published var externalError: String?
-    var internalError: String?
+    var message: String?
     
     private let scheduler: TestSchedulerOf<DispatchQueue>
     
@@ -22,7 +21,7 @@ final class ToastSpy {
     private var cancellables: Set<AnyCancellable> = []
     
     func startSpying(sut: ToastTests.Sut) {
-        sut.$message.bind(\.internalError, to: self, storeIn: &cancellables)
+        sut.$message.bind(\.message, to: self, storeIn: &cancellables)
     }
     
     func simulateTimePassed(seconds: Int) {

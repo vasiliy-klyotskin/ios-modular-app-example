@@ -43,24 +43,16 @@ struct Toast: ViewModifier {
 }
 
 extension View {
-    func showToast(_ toast: () -> Toast) -> some View {
-        modifier(toast())
+    func showToast(_ toast: Toast) -> some View {
+        modifier(toast)
     }
 }
-
-typealias ToastSetup = () -> Toast
 
 #Preview {
-    Rectangle()
+    let vm = ToastViewModel()
+    vm.updateMessage("Some important message")
+    return Rectangle()
         .fill(UI.color.background.primary)
         .ignoresSafeArea()
-        .showToast(Toast.preview(message: "Some long long long long long long long long long long long long long long long message"))
-}
-
-extension Toast {
-    static func preview(message: String? = "Attention! Thank you for attention :)") -> ToastSetup {
-        let vm = ToastViewModel()
-        vm.updateMessage(message)
-        return { .init(vm: vm) }
-    }
+        .showToast(Toast(vm: vm))
 }

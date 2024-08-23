@@ -13,8 +13,6 @@ final class TextFieldViewModel: ObservableObject {
         didSet { handle(input: input) }
     }
     
-    var onInputChanged: (String) -> Void = { _ in }
-    
     var isError: Bool {
         error != nil
     }
@@ -33,6 +31,5 @@ final class TextFieldViewModel: ObservableObject {
     
     private func handle(input: String) {
         error = nil
-        onInputChanged(input)
     }
 }

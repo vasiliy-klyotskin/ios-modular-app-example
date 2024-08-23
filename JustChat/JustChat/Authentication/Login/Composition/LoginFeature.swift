@@ -7,11 +7,7 @@
 
 import Foundation
 
-struct LoginFeature {
-    let submitVm: LoginViewModel
-    let inputVm: TextFieldViewModel
-    let toastVm: ToastViewModel
-}
+typealias LoginFeature = LoginViewModel
 
 struct LoginEnvironment {
     let httpClient: RemoteClient

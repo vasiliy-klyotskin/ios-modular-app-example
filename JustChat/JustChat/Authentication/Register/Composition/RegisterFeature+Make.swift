@@ -10,18 +10,14 @@ import Combine
 
 extension RegisterFeature {
     func view() -> RegisterView {
-        .init(vm: registerVm, emailInput: emailInputVm.view, usernameInput: usernameInputVm.view, toast: toastVm.view)
+        .init(vm: self)
     }
     
     static func make(env: RegisterEnvironment, events: RegisterEvents) -> RegisterFeature {
-        let registerVm = RegisterViewModel()
-        let emailInputVm = TextFieldViewModel.make(error: registerVm.$emailError, onInput: registerVm.updateEmail)
-        let usernameInputVm = TextFieldViewModel.make(error: registerVm.$usernameError, onInput: registerVm.updateUsername)
-        let toastVm = ToastViewModel.make(message: registerVm.$generalError, scheduler: env.scheduler)
-        let submission = submission <~ env <~ events <~ registerVm
-        registerVm.onValidatedRegisterSubmit = start(submission)
-        registerVm.onLoginTapped = events.onLoginButtonTapped
-        return .init(emailInputVm: emailInputVm, usernameInputVm: usernameInputVm, toastVm: toastVm, registerVm: registerVm)
+        let vm = RegisterViewModel(username: .init(), email: .init(), toast: .make(scheduler: env.scheduler))
+        vm.onValidatedRegisterSubmit = start(submission <~ env <~ events <~ vm)
+        vm.onLoginTapped = events.onLoginButtonTapped
+        return vm
     }
     
     private static func submission(

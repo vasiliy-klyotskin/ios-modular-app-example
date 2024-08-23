@@ -10,10 +10,6 @@ import SwiftUI
 struct RegisterView: View {
     @ObservedObject var vm: RegisterViewModel
     
-    let emailInput: TextFieldSetup
-    let usernameInput: TextFieldSetup
-    let toast: ToastSetup
-    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -23,7 +19,7 @@ struct RegisterView: View {
             }
         }
         .background(UI.color.background.primary)
-        .showToast(toast)
+        .showToast(Toast(vm: vm.toast))
     }
     
     private func content() -> some View {
@@ -49,8 +45,8 @@ struct RegisterView: View {
     
     private func inputs() -> some View {
         VStack(spacing: UI.spacing.xl) {
-            emailInput(RegisterStrings.emailInputTitle)
-            usernameInput(RegisterStrings.usernameInputTitle)
+            TextField(vm: vm.email, title: RegisterStrings.emailInputTitle)
+            TextField(vm: vm.username, title: RegisterStrings.usernameInputTitle)
         }
     }
     
@@ -71,10 +67,5 @@ struct RegisterView: View {
 }
 
 #Preview {
-    RegisterView(
-        vm: .init(),
-        emailInput: TextField.preview(),
-        usernameInput: TextField.preview(),
-        toast: Toast.preview()
-    )
+    RegisterView(vm: .init(username: .init(), email: .init(), toast: .init()))
 }

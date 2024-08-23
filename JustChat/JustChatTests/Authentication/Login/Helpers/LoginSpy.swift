@@ -22,10 +22,10 @@ final class LoginFeatureSpy {
     
     private var cancellables = Set<AnyCancellable>()
     
-    func startSpying(sut: LoginFeatureTests.Sut) {
-        sut.submitVm.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
-        sut.toastVm.$message.bind(\.generalError, to: self, storeIn: &cancellables)
-        sut.inputVm.$error.bind(\.loginError, to: self, storeIn: &cancellables)
+    func startSpying(sut: LoginTests.Sut) {
+        sut.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
+        sut.toast.$message.bind(\.generalError, to: self, storeIn: &cancellables)
+        sut.input.$error.bind(\.loginError, to: self, storeIn: &cancellables)
     }
     
     func remote(request: RemoteRequest) -> AnyPublisher<RemoteResponse, Error> {

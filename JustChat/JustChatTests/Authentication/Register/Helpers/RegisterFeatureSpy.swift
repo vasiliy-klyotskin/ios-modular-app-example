@@ -22,11 +22,11 @@ final class RegisterFeatureSpy {
     
     private var cancellables = Set<AnyCancellable>()
     
-    func startSpying(sut: RegisterFeatureTests.Sut) {
-        sut.registerVm.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
-        sut.toastVm.$message.bind(\.generalError, to: self, storeIn: &cancellables)
-        sut.usernameInputVm.$error.bind(\.usernameError, to: self, storeIn: &cancellables)
-        sut.emailInputVm.$error.bind(\.emailError, to: self, storeIn: &cancellables)
+    func startSpying(sut: RegisterTests.Sut) {
+        sut.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
+        sut.toast.$message.bind(\.generalError, to: self, storeIn: &cancellables)
+        sut.username.$error.bind(\.usernameError, to: self, storeIn: &cancellables)
+        sut.email.$error.bind(\.emailError, to: self, storeIn: &cancellables)
     }
     
     func remote(request: RemoteRequest) -> AnyPublisher<RemoteResponse, Error> {

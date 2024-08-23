@@ -10,9 +10,6 @@ import SwiftUI
 struct LoginView: View {
     @ObservedObject var vm: LoginViewModel
     
-    let input: TextFieldSetup
-    let toast: ToastSetup
-    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -21,14 +18,14 @@ struct LoginView: View {
             }
         }
         .background(UI.color.background.primary)
-        .showToast(toast)
+        .showToast(Toast(vm: vm.toast))
     }
     
     private func content() -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer()
             header().padding(.bottom, UI.spacing.lg)
-            input(LoginStrings.loginTitle).padding(.bottom, UI.spacing.lg)
+            input().padding(.bottom, UI.spacing.lg)
             submitButton().padding(.bottom, UI.spacing.md)
             separator().padding(.bottom, UI.spacing.md)
             googleAuthButton().padding(.bottom, UI.spacing.lg)
@@ -49,6 +46,14 @@ struct LoginView: View {
         }
     }
     
+    private func input() -> some View {
+        TextField(vm: vm.input, title: LoginStrings.loginTitle)
+    }
+    
+    private func submitButton() -> some View {
+        Button(action: vm.submit, config: .standard(title: LoginStrings.continueButton))
+    }
+    
     private func separator() -> some View {
         HStack(spacing: UI.spacing.md) {
             Rectangle().frame(height: 1)
@@ -58,6 +63,10 @@ struct LoginView: View {
         .foregroundColor(UI.color.separator.primary)
         .opacity(UI.opacity.lg)
         .padding(.horizontal, UI.spacing.md)
+    }
+    
+    private func googleAuthButton() -> some View {
+        GoogleAuthButton(action: vm.googleAuthTapped, title: LoginStrings.googleButton)
     }
     
     private func register() -> some View {
@@ -70,20 +79,8 @@ struct LoginView: View {
             Spacer()
         }
     }
-    
-    private func submitButton() -> some View {
-        Button(action: vm.submit, config: .standard(title: LoginStrings.continueButton))
-    }
-    
-    private func googleAuthButton() -> some View {
-        GoogleAuthButton(action: vm.googleAuthTapped, title: LoginStrings.googleButton)
-    }
 }
 
 #Preview {
-    LoginView(
-        vm: .init(),
-        input: TextField.preview(),
-        toast: Toast.preview()
-    )
+    LoginView(vm: .init(inputVm: .init(), toastVm: .init()))
 }

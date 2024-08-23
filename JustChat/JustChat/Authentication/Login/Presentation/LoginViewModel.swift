@@ -9,43 +9,42 @@ import Combine
 
 final class LoginViewModel: ObservableObject {
     @Published var isLoading: Bool = false
-    @Published var inputError: String? = nil
-    @Published var generalError: String? = nil
+    let toast: ToastViewModel
+    let input: TextFieldViewModel
     
     var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
     var onGoogleAuthTap: () -> Void = {}
     var onRegisterTap: () -> Void = {}
     
-    private var login: String = ""
+    init(inputVm: TextFieldViewModel, toastVm: ToastViewModel) {
+        self.input = inputVm
+        self.toast = toastVm
+    }
     
     func submit() {
-        inputError = nil
-        generalError = nil
-        if login.isEmpty {
-            inputError = LoginStrings.emptyInputError
+        input.updateError(nil)
+        toast.updateMessage(nil)
+        if input.input.isEmpty {
+            input.updateError(LoginStrings.emptyInputError)
         } else {
-            onValidatedLoginSubmit(login)
+            onValidatedLoginSubmit(input.input)
         }
     }
     
-    func updateLogin(_ login: String) {
-        self.login = login
-    }
-    
     func startLoading() {
-        self.isLoading = true
+        isLoading = true
     }
     
     func finishLoading() {
-        self.isLoading = false
+        isLoading = false
     }
     
     func handleError(_ error: LoginError) {
         switch error {
         case .input(let inputError):
-            self.inputError = inputError
+            input.updateError(inputError)
         case .general(let generalError):
-            self.generalError = generalError
+            toast.updateMessage(generalError)
         }
     }
     

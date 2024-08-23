@@ -9,18 +9,9 @@ import Combine
 import Foundation
 
 extension ToastViewModel {
-    func view() -> Toast {
-        .init(vm: self)
-    }
-    
-    static func make(
-        message: Published<String?>.Publisher,
-        scheduler: AnySchedulerOf<DispatchQueue>
-    ) -> ToastViewModel {
+    static func make(scheduler: AnySchedulerOf<DispatchQueue>) -> ToastViewModel {
         let vm = ToastViewModel()
-        let hideToast = cancellingStart(hide <~ scheduler <~ vm)
-        let cancellable = message.onOutput(Weak(vm).do { $0.updateMessage }).sink()
-        vm.onNeedHideAfter = captured(cancellable, in: hideToast)
+        vm.onNeedHideAfter = cancellingStart(hide <~ scheduler <~ vm)
         return vm
     }
     

@@ -9,9 +9,7 @@ import Combine
 
 final class ToastViewModel: ObservableObject {
     @Published var message: String?
-    
     var toastIsPresented: Bool { message != nil }
-    
     var onNeedHideAfter: (Int) -> Void = { _ in }
     
     private var secondsUntilToastShouldHide: Int { 5 }
@@ -21,7 +19,7 @@ final class ToastViewModel: ObservableObject {
     }
     
     func updateMessage(_ error: String?) {
-        self.message = error
+        message = error
         if error != nil {
             onNeedHideAfter(secondsUntilToastShouldHide)
         }

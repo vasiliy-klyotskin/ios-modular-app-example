@@ -65,24 +65,19 @@ struct TextField: View {
 }
 
 #Preview {
-    let title = "Title"
     VStack(spacing: UI.spacing.lg) {
-        TextField.preview(value: "", error: nil)(title)
-        TextField.preview(value: "John Snow", error: nil)(title)
-        TextField.preview(value: "", error: "Input error")(title)
-        TextField.preview(value: "John Snow", error: "Input error")(title)
+        _preview(value: "", error: nil)
+        _preview(value: "John Snow", error: nil)
+        _preview(value: "", error: "Input error")
+        _preview(value: "John Snow", error: "Input error")
     }
     .padding(UI.spacing.md)
     .background(UI.color.background.primary)
 }
 
-typealias TextFieldSetup = (String) -> TextField
-
-extension TextField {
-    static func preview(value: String = "Input value", error: String? = "Input error") -> TextFieldSetup {
-        let vm = TextFieldViewModel()
-        vm.input = value
-        vm.updateError(error)
-        return { title in .init(vm: vm, title: title) }
-    }
+private func _preview(value: String, error: String?) -> TextField {
+    let vm = TextFieldViewModel()
+    vm.input = value
+    vm.updateError(error)
+    return .init(vm: vm, title: "Title")
 }

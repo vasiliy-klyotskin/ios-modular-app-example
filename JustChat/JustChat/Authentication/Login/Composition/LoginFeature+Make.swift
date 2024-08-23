@@ -9,19 +9,14 @@ import Foundation
 import Combine
 
 extension LoginFeature {
-    func view() -> LoginView {
-        .init(vm: submitVm, input: inputVm.view, toast: toastVm.view)
-    }
+    func view() -> LoginView { .init(vm: self) }
     
     static func make(env: LoginEnvironment, events: LoginEvents) -> LoginFeature {
-        let submitVm = LoginViewModel()
-        let toastVm = ToastViewModel.make(message: submitVm.$generalError, scheduler: env.scheduler)
-        let inputVm = TextFieldViewModel.make(error: submitVm.$inputError, onInput: submitVm.updateLogin)
-        let submission = submission <~ env <~ events <~ submitVm
-        submitVm.onValidatedLoginSubmit = start(submission)
-        submitVm.onRegisterTap = events.onRegisterButtonTapped
-        submitVm.onGoogleAuthTap = events.onGoogleOAuthButtonTapped
-        return .init(submitVm: submitVm, inputVm: inputVm, toastVm: toastVm)
+        let vm = LoginViewModel(inputVm: .init(), toastVm: .make(scheduler: env.scheduler))
+        vm.onValidatedLoginSubmit = start(submission <~ env <~ events <~ vm)
+        vm.onRegisterTap = events.onRegisterButtonTapped
+        vm.onGoogleAuthTap = events.onGoogleOAuthButtonTapped
+        return vm
     }
     
     private static func submission(

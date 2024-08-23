@@ -9,24 +9,14 @@ import Testing
 import Foundation
 @testable import JustChat
 
-@Suite
-final class LoginFeatureTests {
-    @Test
-    func sutPerformsInitialSubmitScenario() {
+@Suite final class LoginTests {
+    @Test func happyPath() {
         let (sut, spy) = makeSut()
         
         // MARK: When the scenario starts
         #expect(spy.isLoading == false, "The loading state should be false.")
         #expect(spy.requests.isEmpty, "There should be no requests.")
         #expect(spy.loginError == nil, "There should be no login input error.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
-        
-        // MARK: When the user submits an empty login
-        sut.initiateLoginSubmit()
-        #expect(spy.isLoading == false, "The loading state should remain false.")
-        #expect(spy.requests.isEmpty, "There should be no requests.")
-        #expect(spy.loginError == LoginStrings.emptyInputError, "An empty login input error message should be shown.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
@@ -46,6 +36,20 @@ final class LoginFeatureTests {
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
+        // MARK: When the request finishes successfully
+        spy.finishRemoteRequestWith(response: successResponse(token: "token", otpLength: 5, next: 120), index: 0)
+        let expectedSuccess = successModel(login: "any login", token: "token", otpLength: 5, nextAttemptAfter: 120)
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.requests.count == 1, "There should be no new requests.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes == [expectedSuccess], "There should be a success message.")
+    }
+    
+    @Test func validationError() {
+        let (sut, spy) = makeSut()
+        sut.initiateLoginWithValidInput()
+        
         // MARK: When the request finishes with login input error
         spy.finishRemoteRequestWith(response: inputError("login error"), index: 0)
         #expect(spy.isLoading == false, "The loading state should be false.")
@@ -53,51 +57,74 @@ final class LoginFeatureTests {
         #expect(spy.loginError == "login error", "The validation error message should be shown.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
-
-        // MARK: When the user changes login to another one
-        sut.changeLoginInput("another login")
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.requests.count == 1, "There should be no new requests.")
-        #expect(spy.loginError == nil, "There should be no login input error.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // MARK: When the user submits another login
+        // MARK: When the user initiates login again at once
         sut.initiateLoginSubmit()
         #expect(spy.isLoading == true, "The loading state should be true.")
-        expectRequestIsCorrect(spy.requests[1], for: "another login", "A new remote request should be made.")
+        #expect(spy.requests.count == 2, "There should be a new request.")
         #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == nil, "There should be no general error.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // MARK: When the request fails
-        spy.finishRemoteRequestWithError(index: 1)
+        // MARK: When the user modifies login after another validation error
+        spy.finishRemoteRequestWith(response: inputError("login error"), index: 1)
+        sut.changeLoginInput("another login")
         #expect(spy.isLoading == false, "The loading state should be false.")
         #expect(spy.requests.count == 2, "There should be no new requests.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
+    }
+    
+    @Test func generalError() {
+        let (sut, spy) = makeSut()
+        sut.initiateLoginWithValidInput()
+        
+        // MARK: When the request fails
+        spy.finishRemoteRequestWithError(index: 0)
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.requests.count == 1, "There should be no new requests.")
         #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == RemoteStrings.values.system, "A general error message should be shown.")
         #expect(spy.successes.isEmpty, "There should be no success messages.")
         
-        // MARK: When the user submits again
+        // MARK: When the user initiates login again at once
         sut.initiateLoginSubmit()
         #expect(spy.isLoading == true, "The loading state should be true.")
-        expectRequestIsCorrect(spy.requests[2], for: "another login", "A new remote request should be made.")
-        #expect(spy.loginError == nil, "There should be no login input error.")
-        #expect(spy.generalError == nil, "The general error should be hidden.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
-        
-        // MARK: When the request finishes successfully
-        spy.finishRemoteRequestWith(response: successResponse(token: "token", otpLength: 5, next: 120), index: 2)
-        let expectedSuccess = successModel(login: "another login", token: "token", otpLength: 5, nextAttemptAfter: 120)
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.requests.count == 3, "There should be no new requests.")
+        #expect(spy.requests.count == 2, "There should be a new request.")
         #expect(spy.loginError == nil, "There should be no login input error.")
         #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes == [expectedSuccess], "There should be a success message.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        
+        // MARK: When the request fails with remote general error
+        spy.finishRemoteRequestWith(response: generalError("general error"), index: 1)
+        #expect(spy.isLoading == false, "The loading state should be false.")
+        #expect(spy.requests.count == 2, "There should be no new requests.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
+        #expect(spy.generalError == "general error", "A general error message should be shown.")
+        #expect(spy.successes.isEmpty, "There should be no success messages.")
     }
     
-    @Test
-    func sutSendsTapEvents() {
+    @Test func emptyInputError() {
+        let (sut, spy) = makeSut()
+        
+        // MARK: When the user submits an empty login
+        sut.initiateLoginSubmit()
+        #expect(spy.isLoading == false, "The loading state should remain false.")
+        #expect(spy.requests.isEmpty, "There should be no requests.")
+        #expect(spy.loginError == LoginStrings.emptyInputError, "An empty login input error message should be shown.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+        
+        // MARK: When the user submits a not empty login
+        sut.changeLoginInput("any")
+        sut.initiateLoginSubmit()
+        #expect(spy.isLoading == true, "The loading state should be true.")
+        #expect(spy.requests.count == 1, "There should be a new request.")
+        #expect(spy.loginError == nil, "There should be no login input error.")
+        #expect(spy.generalError == nil, "There should be no general error.")
+    }
+    
+    @Test func tapEvents() {
         let (sut, spy) = makeSut()
         #expect(spy.googleAuthCalls == 0)
         #expect(spy.regiterCalls == 0)
@@ -111,18 +138,16 @@ final class LoginFeatureTests {
         #expect(spy.regiterCalls == 1)
     }
     
-    @Test
-    func sutDealocatesWhenRequestIsInProgress() {
+    @Test func sutDealocatesWhenRequestIsInProgress() {
         let (sut, _) = makeSut()
-        sut.changeLoginInput("any")
-        sut.initiateLoginSubmit()
+        sut.initiateLoginWithValidInput()
     }
     
     typealias Sut = LoginFeature
     
     private let leakChecker = MemoryLeakChecker()
     
-    private func makeSut() -> (Sut, LoginFeatureSpy) {
+    private func makeSut(_ loc: SourceLocation = #_sourceLocation) -> (Sut, LoginFeatureSpy) {
         let spy = LoginFeatureSpy()
         let env = LoginEnvironment(httpClient: spy.remote, scheduler: DispatchQueue.test.eraseToAnyScheduler())
         let events = LoginEvents(
@@ -132,7 +157,7 @@ final class LoginFeatureTests {
         )
         let sut = LoginFeature.make(env: env, events: events)
         spy.startSpying(sut: sut)
-        leakChecker.addForChecking(sut.inputVm, sut.submitVm, sut.toastVm, spy)
+        leakChecker.addForChecking(sut, spy, sourceLocation: loc)
         return (sut, spy)
     }
 }

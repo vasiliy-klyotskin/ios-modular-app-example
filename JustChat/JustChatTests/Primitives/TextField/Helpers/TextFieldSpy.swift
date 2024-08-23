@@ -9,18 +9,11 @@ import Combine
 @testable import JustChat
 
 final class TextFieldSpy {
-    @Published var externalError: String?
-    
-    var internalError: String?
-    var onInputCalls: [String] = []
+    var error: String?
     
     private var cancellables: Set<AnyCancellable> = []
     
     func startSpying(sut: TextFieldTests.Sut) {
-        sut.$error.bind(\.internalError, to: self, storeIn: &cancellables)
-    }
-    
-    func appendInputCall(_ input: String) {
-        onInputCalls.append(input)
+        sut.$error.bind(\.error, to: self, storeIn: &cancellables)
     }
 }

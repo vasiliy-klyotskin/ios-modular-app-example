@@ -7,12 +7,7 @@
 
 import Foundation
 
-struct RegisterFeature {
-    let emailInputVm: TextFieldViewModel
-    let usernameInputVm: TextFieldViewModel
-    let toastVm: ToastViewModel
-    let registerVm: RegisterViewModel
-}
+typealias RegisterFeature = RegisterViewModel
 
 struct RegisterEnvironment {
     let httpClient: RemoteClient

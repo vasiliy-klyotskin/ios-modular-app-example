@@ -9,37 +9,33 @@ import Combine
 
 final class RegisterViewModel: ObservableObject {
     @Published var isLoading = false
-    @Published var emailError: String? = nil
-    @Published var usernameError: String? = nil
-    @Published var generalError: String? = nil
     
     var onValidatedRegisterSubmit: (RegisterRequest) -> Void = { _ in }
     var onLoginTapped: () -> Void = {}
     
-    private var emailInput: String = ""
-    private var usernameInput: String = ""
+    let email: TextFieldViewModel
+    let username: TextFieldViewModel
+    let toast: ToastViewModel
+    
+    init(username: TextFieldViewModel, email: TextFieldViewModel, toast: ToastViewModel) {
+        self.toast = toast
+        self.email = email
+        self.username = username
+    }
     
     func submit() {
-        emailError = nil
-        usernameError = nil
-        generalError = nil
-        if emailInput.isEmpty {
-            emailError = RegisterStrings.emptyEmailError
+        email.updateError(nil)
+        username.updateError(nil)
+        toast.updateMessage(nil)
+        if email.input.isEmpty {
+            email.updateError(RegisterStrings.emptyEmailError)
         }
-        if usernameInput.isEmpty {
-            usernameError = RegisterStrings.emptyUsernameError
+        if username.input.isEmpty {
+            username.updateError(RegisterStrings.emptyUsernameError)
         }
-        if !emailInput.isEmpty && !usernameInput.isEmpty {
-            onValidatedRegisterSubmit(.init(email: emailInput, username: usernameInput))
+        if !email.input.isEmpty && !username.input.isEmpty {
+            onValidatedRegisterSubmit(.init(email: email.input, username: username.input))
         }
-    }
-    
-    func updateEmail(_ value: String) {
-        emailInput = value
-    }
-    
-    func updateUsername(_ value: String) {
-        usernameInput = value
     }
     
     func startLoading() {
@@ -55,16 +51,16 @@ final class RegisterViewModel: ObservableObject {
         case .validation(let validationErrors):
             validationErrors.forEach(handleValidationError)
         case .general(let error):
-            generalError = error
+            toast.updateMessage(error)
         }
     }
     
     private func handleValidationError(_ error: RegisterError.Validation) {
         switch error {
         case .email(let error):
-            emailError = error
+            email.updateError(error)
         case .username(let error):
-            usernameError = error
+            username.updateError(error)
         }
     }
     
