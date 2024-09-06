@@ -29,6 +29,7 @@ struct EnterCodeView: View {
             resendInfo()
             resendButton()
         }
+        .onAppear(perform: vm.viewAppeared)
     }
     
     private func header() -> some View {
@@ -48,9 +49,10 @@ struct EnterCodeView: View {
                 .font(UI.font.plain.body)
                 .foregroundStyle(UI.color.text.primary)
             Text(vm.timeRemainingUntilNextAttempt)
-                .font(UI.font.plain.body)
+                .font(UI.font.bold.body)
                 .foregroundStyle(UI.color.text.primary)
         }
+        .padding(.bottom, UI.spacing.md)
         .opacity(vm.showTimeUntilNextAttempt ? 1 : 0)
     }
     
