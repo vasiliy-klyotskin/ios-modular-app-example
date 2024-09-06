@@ -8,7 +8,9 @@
 import Combine
 
 final class LoginViewModel: ObservableObject {
-    @Published var isLoading: Bool = false
+    @Published var submitButtonConfig: ButtonConfig = .standard(title: LoginStrings.continueButton)
+    @Published var isContentDisabled = false
+    
     let toast: ToastViewModel
     let input: TextFieldViewModel
     
@@ -32,11 +34,13 @@ final class LoginViewModel: ObservableObject {
     }
     
     func startLoading() {
-        isLoading = true
+        submitButtonConfig = .loading()
+        isContentDisabled = true
     }
     
     func finishLoading() {
-        isLoading = false
+        submitButtonConfig = .standard(title: LoginStrings.continueButton)
+        isContentDisabled = false
     }
     
     func handleError(_ error: LoginError) {

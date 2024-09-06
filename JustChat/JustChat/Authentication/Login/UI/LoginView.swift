@@ -32,7 +32,7 @@ struct LoginView: View {
             register()
         }
         .padding(UI.spacing.md)
-        .disabled(vm.isLoading)
+        .disabled(vm.isContentDisabled)
     }
     
     private func header() -> some View {
@@ -51,7 +51,7 @@ struct LoginView: View {
     }
     
     private func submitButton() -> some View {
-        Button(action: vm.submit, config: .standard(title: LoginStrings.continueButton))
+        Button(onTap: vm.submit, config: vm.submitButtonConfig)
     }
     
     private func separator() -> some View {

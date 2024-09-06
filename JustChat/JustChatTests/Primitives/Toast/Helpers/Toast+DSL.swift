@@ -8,7 +8,7 @@
 @testable import JustChat
 
 extension ToastTests.Sut {
-    func tapToast() {
-        self.processTap()
+    func simulateTappingToast() {
+        processTap()
     }
 }

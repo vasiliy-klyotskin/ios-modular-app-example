@@ -9,56 +9,44 @@ import Testing
 @testable import JustChat
 
 @Suite final class TextFieldTests {
-    @Test func basicFlow() {
+    @Test func error() {
         let (sut, spy) = makeSut()
         
-        // MARK: When input flow begins
-        #expect(spy.error == nil, "There shouldn't be an error.")
-        #expect(sut.isError == false, "There shouldn't be an error.")
-        #expect(sut.isClearButtonShown == false, "Clear button shouldn't be displayed")
+        #expect(spy.error == nil, "There shouldn't be an error initially.")
+        #expect(sut.isError == false, "There shouldn't be an error initially.")
         
-        // MARK: When input changes to "a"
-        sut.changeInput("a")
-        #expect(spy.error == nil, "There shouldn't be an error after input 'a'.")
-        #expect(sut.isError == false, "There shouldn't be an error.")
-        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
-        
-        // MARK: When input changes to "ab"
-        sut.changeInput("ab")
-        #expect(spy.error == nil, "There shouldn't be an error'.")
-        #expect(sut.isError == false, "There shouldn't be an error.")
-        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
-        
-        // MARK: When external error occurs
         sut.updateError("error")
-        #expect(spy.error == "error", "Expected internal error to be set.")
-        #expect(sut.isError == true, "There should be an error.")
-        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
+        #expect(spy.error == "error", "There should be an error after error set.")
+        #expect(sut.isError == true, "There should be an error after error set.")
         
-        // MARK: When input is cleared
+        sut.simulateChangingInput("any")
+        #expect(spy.error == nil, "There shouldn't be an error after the user changes input.")
+        #expect(sut.isError == false, "There shouldn't be an error after the user changes input.")
+        
+        sut.updateError("error")
         sut.clear()
-        #expect(spy.error == nil, "There shouldn't be an error.")
-        #expect(sut.isError == false, "There shouldn't be an error.")
-        #expect(sut.isClearButtonShown == false, "Clear button shouldn't be displayed")
+        #expect(spy.error == nil, "There shouldn't be an error after the user clears input.")
+        #expect(sut.isError == false, "There shouldn't be an error after the user clears input.")
         
-        // MARK: When input changes to "abc"
-        sut.changeInput("abc")
-        #expect(spy.error == nil, "There shouldn't be an error.")
-        #expect(sut.isError == false, "There shouldn't be an error.")
-        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
-        
-        // MARK: When external error occurs
         sut.updateError("error")
-        #expect(spy.error == "error", "Expected internal error to be set.")
-        #expect(sut.isError == true, "There should be an error.")
-        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
-        
-        // MARK: When external error is nil
         sut.updateError(nil)
-        #expect(spy.error == nil, "There shouldn't be an error.")
-        #expect(sut.isError == false, "There shouldn't be an error.")
-        #expect(sut.isClearButtonShown == true, "Clear button should be displayed")
+        #expect(spy.error == nil, "There shouldn't be an error after the external error is nil.")
+        #expect(sut.isError == false, "There shouldn't be an error after the external error is nil.")
     }
+    
+    @Test func clearButtonIsShown() {
+        let (sut, _) = makeSut()
+        
+        #expect(sut.isClearButtonShown == false, "Clear button shouldn't be displayed initially.")
+        
+        sut.simulateChangingInput("a")
+        #expect(sut.isClearButtonShown == true, "Clear button should be displayed after the user enters something.")
+        
+        sut.clear()
+        #expect(sut.isClearButtonShown == false, "Clear button shouldn't be displayed after the user clears the input.")
+    }
+    
+    // MARK: - Helpers
     
     typealias Sut = TextFieldViewModel
     

@@ -14,7 +14,7 @@ extension RegisterFeature {
     }
     
     static func make(env: RegisterEnvironment, events: RegisterEvents) -> RegisterFeature {
-        let vm = RegisterViewModel(username: .init(), email: .init(), toast: .make(scheduler: env.scheduler))
+        let vm = RegisterViewModel(toast: .make(scheduler: env.scheduler))
         vm.onValidatedRegisterSubmit = start(submission <~ env <~ events <~ vm)
         vm.onLoginTapped = events.onLoginButtonTapped
         return vm
@@ -29,7 +29,7 @@ extension RegisterFeature {
         env.httpClient(request.remote)
             .mapResponseToDtoAndRemoteError()
             .mapError(RegisterError.fromRemoteError)
-            .map(RegisterModel.fromRequestAndDto <~ request)
+            .map(RegisterModel.fromDto)
             .onSubscription(vm.do { $0.startLoading })
             .onCompletion(vm.do { $0.finishLoading })
             .onFailure(vm.do { $0.handleError })

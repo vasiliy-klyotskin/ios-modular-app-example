@@ -8,19 +8,20 @@
 import Combine
 
 final class RegisterViewModel: ObservableObject {
-    @Published var isLoading = false
-    
-    var onValidatedRegisterSubmit: (RegisterRequest) -> Void = { _ in }
-    var onLoginTapped: () -> Void = {}
+    @Published var submitButtonConfig: ButtonConfig = .standard(title: RegisterStrings.submitButtonTitle)
+    @Published var isContentDisabled: Bool = false
     
     let email: TextFieldViewModel
     let username: TextFieldViewModel
     let toast: ToastViewModel
     
-    init(username: TextFieldViewModel, email: TextFieldViewModel, toast: ToastViewModel) {
+    var onValidatedRegisterSubmit: (RegisterRequest) -> Void = { _ in }
+    var onLoginTapped: () -> Void = {}
+    
+    init(toast: ToastViewModel) {
         self.toast = toast
-        self.email = email
-        self.username = username
+        self.email = .init()
+        self.username = .init()
     }
     
     func submit() {
@@ -39,11 +40,13 @@ final class RegisterViewModel: ObservableObject {
     }
     
     func startLoading() {
-        isLoading = true
+        submitButtonConfig = .loading()
+        isContentDisabled = true
     }
     
     func finishLoading() {
-        isLoading = false
+        submitButtonConfig = .standard(title: RegisterStrings.submitButtonTitle)
+        isContentDisabled = false
     }
     
     func handleError(_ error: RegisterError) {

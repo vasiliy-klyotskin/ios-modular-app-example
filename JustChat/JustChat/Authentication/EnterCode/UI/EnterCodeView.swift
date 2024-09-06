@@ -25,7 +25,7 @@ struct EnterCodeView: View {
         VStack(alignment: .leading) {
             Spacer()
             header()
-            OTPView()
+            OTPView(length: vm.otpLength, onChange: vm.updateCode)
             resendInfo()
             resendButton()
         }
@@ -47,17 +47,18 @@ struct EnterCodeView: View {
             Text(EnterCodeStrings.resendCodeIn)
                 .font(UI.font.plain.body)
                 .foregroundStyle(UI.color.text.primary)
-            Text("5:10")
+            Text(vm.timeRemainingUntilNextAttempt)
                 .font(UI.font.plain.body)
                 .foregroundStyle(UI.color.text.primary)
         }
+        .opacity(vm.showTimeUntilNextAttempt ? 1 : 0)
     }
     
     private func resendButton() -> some View {
-        Button(action: vm.resendTapped, config: .standard(title: EnterCodeStrings.resendButton))
+        Button(onTap: vm.resend, config: .standard(title: EnterCodeStrings.resendButton))
     }
 }
 
 #Preview {
-    EnterCodeView(vm: .init())
+    EnterCodeView(vm: .init(toastVm: .init(), ticker: .init(), model: .init(confirmationToken: "any", otpLength: 4, nextAttemptAfter: 120)))
 }

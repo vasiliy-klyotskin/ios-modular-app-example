@@ -9,6 +9,9 @@ import SwiftUI
 
 struct OTPView: View {
     @ScaledMetric(wrappedValue: 46, relativeTo: .body) var size: CGFloat
+    
+    init(length: Int, onChange: (String) -> Void) {}
+    
     var body: some View {
         HStack {
             ForEach(0..<4) { index in
@@ -21,5 +24,5 @@ struct OTPView: View {
 }
 
 #Preview {
-    OTPView()
+    OTPView(length: 4, onChange: { _ in })
 }

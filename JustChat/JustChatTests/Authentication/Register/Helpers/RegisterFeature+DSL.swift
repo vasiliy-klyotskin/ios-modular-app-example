@@ -8,25 +8,29 @@
 @testable import JustChat
 
 extension RegisterTests.Sut {
-    func initiateRegistration() {
+    func simulateUserInitiatesRegistration() {
         submit()
     }
     
-    func changeEmailInput(_ value: String) {
+    func simulateUserChangesEmailInput(_ value: String) {
         email.input = value
     }
     
-    func changeUsernameInput(_ value: String) {
+    func simulateUserChangesUsernameInput(_ value: String) {
         username.input = value
     }
     
-    func simulateLoginTap() {
+    func simulateUserTapsLogin() {
         loginTapped()
     }
     
-    func initiateRegistrationWithValidEmailAndUsername() {
-        changeEmailInput("any email")
-        changeUsernameInput("any username")
-        initiateRegistration()
+    func simulateUserInitiatesRegistrationWithValidEmailAndUsername() {
+        simulateUserEntersAnyCredentials()
+        simulateUserInitiatesRegistration()
+    }
+    
+    func simulateUserEntersAnyCredentials() {
+        simulateUserChangesEmailInput("any email")
+        simulateUserChangesUsernameInput("any username")
     }
 }

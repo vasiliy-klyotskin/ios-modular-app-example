@@ -12,8 +12,9 @@ typealias EnterCodeFeature = EnterCodeViewModel
 struct EnterCodeEnvironment {
     let httpClient: RemoteClient
     let scheduler: AnySchedulerOf<DispatchQueue>
+    let makeTimer: MakeTimer
 }
 
 struct EnterCodeEvents {
-    let onCorrectOtpEnter: (EnterCodeModel) -> Void
+    let onCorrectOtpEnter: (EnterCodeSubmitModel) -> Void
 }

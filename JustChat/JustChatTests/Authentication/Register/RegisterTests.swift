@@ -10,163 +10,145 @@ import Foundation
 @testable import JustChat
 
 @Suite final class RegisterTests {
-    @Test func happyPath() {
+    @Test func registrationRequest() {
         let (sut, spy) = makeSut()
         
-        // MARK: When the scenario starts
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.requests.isEmpty, "There should be no requests.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "There should be no username input error.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        #expect(spy.remote.requests.isEmpty, "There should be no requests initially.")
         
-        // MARK: When the user changes email and username input to valid ones
-        sut.changeEmailInput("any email")
-        sut.changeUsernameInput("any username")
-        #expect(spy.isLoading == false, "The loading state should remain false.")
-        #expect(spy.requests.isEmpty, "There should be no requests.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "There should be no username input error.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        sut.simulateUserChangesEmailInput("email")
+        sut.simulateUserChangesUsernameInput("username")
+        #expect(spy.remote.requests.isEmpty, "There should be no requests after the user enters credentials.")
         
-        // MARK: When the user submits valid email and username
-        sut.initiateRegistration()
-        #expect(spy.isLoading == true, "The loading state should be true.")
-        expectRequestIsCorrect(spy.requests[0], for: "any email", username: "any username", "A remote request should be made.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "There should be no username input error.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        sut.simulateUserInitiatesRegistration()
+        expectRequestIsCorrect(spy.remote.requests[0], for: "email", username: "username", "A remote request should be made after the user initiates registration.")
         
-        // MARK: When the request finishes successfully
-        spy.finishRemoteRequestWith(response: apiSuccessResponse(token: "token", otpLength: 5, next: 120), index: 0)
-        let expectedSuccess = successModel(email: "any email", username: "any username", token: "token", otpLength: 5, nextAttemptAfter: 120)
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.requests.count == 1, "There should be no new requests.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "There should be no username input error.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes == [expectedSuccess], "There should be a success message.")
+        spy.remote.finishWithError(index: 0)
+        #expect(spy.remote.requests.count == 1, "There should be no new requests after receiving an error.")
+        
+        sut.simulateUserChangesEmailInput("new email")
+        sut.simulateUserChangesUsernameInput("new username")
+        sut.simulateUserInitiatesRegistration()
+        expectRequestIsCorrect(spy.remote.requests[1], for: "new email", username: "new username", "A remote request should be made after the user initiates registration with new credentials.")
+        
+        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 4), index: 1)
+        #expect(spy.remote.requests.count == 2, "There should be no new requests after receiving success.")
     }
     
-    @Test func validationErrors() {
+    @Test func loadingIndicator() {
         let (sut, spy) = makeSut()
-        sut.initiateRegistrationWithValidEmailAndUsername()
         
-        // MARK: When the request finishes with email and username validation errors
-        spy.finishRemoteRequestWith(response: apiValidationErrorResponse(email: "email error", username: "username error"), index: 0)
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.requests.count == 1, "There should be no new requests.")
-        #expect(spy.emailError == "email error", "The email validation error message should be shown.")
-        #expect(spy.usernameError == "username error", "The username validation error message should be shown.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false initially.")
         
-        // MARK: When the user initiates registration again at once
-        sut.initiateRegistration()
-        #expect(spy.isLoading == true, "The loading state should be false.")
-        #expect(spy.requests.count == 2, "There should be a new requests.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "There should be no username input error.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        sut.simulateUserEntersAnyCredentials()
+        #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false after the user enters credentials.")
         
-        // MARK: When the user modifies email after validation error
-        spy.finishRemoteRequestWith(response: apiValidationErrorResponse(email: "email error", username: "username error"), index: 1)
-        sut.changeEmailInput("any new email")
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.requests.count == 2, "There should be no new requests.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == "username error", "The username validation error message should be shown.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
-
-        // MARK: When the user modifies username
-        sut.changeUsernameInput("any new usernmae")
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.requests.count == 2, "There should be no new requests.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "There should be no username input error.")
-        #expect(spy.generalError == nil, "There should be no general error.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        sut.simulateUserInitiatesRegistration()
+        #expect(spy.isLoadingIndicatorDisplayed == true, "The loading state should be true after the user initiates registration.")
+        
+        spy.remote.finishWithError(index: 0)
+        #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false after receiving an error.")
+        
+        sut.simulateUserInitiatesRegistration()
+        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 4), index: 1)
+        #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false after receiving success.")
+    }
+    
+    @Test func emptyInputValidationErrors() {
+        let (sut, spy) = makeSut()
+        
+        #expect(spy.emailError == nil, "There should be no email input error initially.")
+        #expect(spy.usernameError == nil, "There should be no username input error initially.")
+        
+        sut.simulateUserInitiatesRegistration()
+        #expect(spy.emailError == RegisterStrings.emptyEmailError, "There should be an email empty input error after the user initiates registration.")
+        #expect(spy.usernameError == RegisterStrings.emptyUsernameError, "There should be a username empty input error after the user initiates registration.")
+        
+        sut.simulateUserChangesEmailInput("new email")
+        sut.simulateUserChangesUsernameInput("new username")
+        #expect(spy.emailError == nil, "There should be no email input error after the user changes email input.")
+        #expect(spy.usernameError == nil, "There should be no username input error after the user changes username.")
+    }
+    
+    @Test func remoteInputValidationErrors() {
+        let (sut, spy) = makeSut()
+        
+        sut.simulateUserInitiatesRegistrationWithValidEmailAndUsername()
+        #expect(spy.emailError == nil, "There should be no email input error after the user initiates registration.")
+        #expect(spy.usernameError == nil, "There should be no username input error after the user initiates registration.")
+        
+        spy.remote.finishWith(response: validationErrorResponse(email: "email error", username: "username error"), index: 0)
+        #expect(spy.emailError == "email error", "There should be an email input error after receiving a validation error.")
+        #expect(spy.usernameError == "username error", "There should be an username input error after receiving a validation error.")
     }
     
     @Test func generalError() {
         let (sut, spy) = makeSut()
-        sut.initiateRegistrationWithValidEmailAndUsername()
         
-        // MARK: When the request fails
-        spy.finishRemoteRequestWithError(index: 0)
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.requests.count == 1, "There should be no new requests.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "There should be no username input error.")
-        #expect(spy.generalError == RemoteStrings.values.system, "A general error message should be shown.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        #expect(spy.generalError == nil, "There should be no general error initially.")
         
-        // MARK: When the user submits again
-        sut.initiateRegistration()
-        #expect(spy.isLoading == true, "The loading state should be true.")
-        #expect(spy.requests.count == 2, "There should be a new request.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "There should be no username input error.")
-        #expect(spy.generalError == nil, "The general error should be hidden.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        sut.simulateUserInitiatesRegistrationWithValidEmailAndUsername()
+        #expect(spy.generalError == nil, "There should be no general error after the user initiates registration.")
         
-        // MARK: When the request finishes with remote general error
-        spy.finishRemoteRequestWith(response: apiGeneralErrorResponse(message: "general error"), index: 1)
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.requests.count == 2, "There should be no new requests.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "There should be no username input error.")
-        #expect(spy.generalError == "general error", "A general error message should be shown.")
-        #expect(spy.successes.isEmpty, "There should be no success messages.")
+        spy.remote.finishWithError(index: 0)
+        #expect(spy.generalError == RemoteStrings.values.system, "There should be a general error after the request fails.")
+        
+        sut.simulateUserInitiatesRegistration()
+        #expect(spy.generalError == nil, "There should be no general error after the user initiates registration again.")
+        
+        spy.remote.finishWith(response: generalErrorResponse(message: "general error"), index: 1)
+        #expect(spy.generalError == "general error", "There should be a general error after receiving general error.")
+        
+        sut.simulateUserInitiatesRegistration()
+        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 4), index: 2)
+        #expect(spy.generalError == nil, "There should be no general error after receiving success.")
     }
     
-    @Test func emptyInputErrors() {
+    @Test func contentIsDisabled() {
         let (sut, spy) = makeSut()
         
-        // MARK: When the user submits an empty empty email and username
-        sut.submit()
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.emailError == RegisterStrings.emptyEmailError, "An empty email input error message should be shown.")
-        #expect(spy.usernameError == RegisterStrings.emptyUsernameError, "An empty username input error message should be shown.")
-        #expect(spy.generalError == nil, "The general error should be hidden.")
-        #expect(spy.requests.count == 0, "There should be no new requests.")
+        #expect(spy.isContentDisabled == false, "Content should not be disabled initially.")
         
-        // MARK: When the user enters email and submits again
-        sut.changeEmailInput("any email")
-        sut.submit()
-        #expect(spy.isLoading == false, "The loading state should be false.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == RegisterStrings.emptyUsernameError, "An empty username input error message should be shown.")
-        #expect(spy.generalError == nil, "The general error should be hidden.")
-        #expect(spy.requests.count == 0, "There should be no new requests.")
+        sut.simulateUserInitiatesRegistrationWithValidEmailAndUsername()
+        #expect(spy.isContentDisabled == true, "Content should be disabled after the user initiates registration.")
         
-        // MARK: When the user enters email and submits again
-        sut.changeUsernameInput("any username")
-        sut.submit()
-        #expect(spy.isLoading == true, "The loading state should be true.")
-        #expect(spy.emailError == nil, "There should be no email input error.")
-        #expect(spy.usernameError == nil, "An empty username input error message should be shown.")
-        #expect(spy.generalError == nil, "The general error should be hidden.")
-        #expect(spy.requests.count == 1, "There should be a new request.")
+        spy.remote.finishWithError(index: 0)
+        #expect(spy.isContentDisabled == false, "Content should not be disabled after the request fails.")
+        
+        sut.simulateUserInitiatesRegistration()
+        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 0), index: 1)
+        #expect(spy.isContentDisabled == false, "Content should not be disabled after success.")
     }
     
-    @Test func tapEvents() {
+    @Test func successMessage() {
+        let (sut, spy) = makeSut()
+        
+        #expect(spy.successes.isEmpty, "There should not be a success message initially.")
+        
+        sut.simulateUserInitiatesRegistrationWithValidEmailAndUsername()
+        #expect(spy.successes.isEmpty, "There should not be a success message after the user initiates registration.")
+        
+        spy.remote.finishWithError(index: 0)
+        #expect(spy.successes.isEmpty, "There should not be a success message after the request fails.")
+        
+        sut.simulateUserInitiatesRegistration()
+        spy.remote.finishWith(response: successResponse(token: "token", otpLength: 4, next: 30), index: 1)
+        #expect(spy.successes == [successModel(token: "token", otpLength: 4, nextAttemptAfter: 30)], "There should be a message after receiving success.")
+    }
+    
+    @Test func loginButtonTap() {
         let (sut, spy) = makeSut()
         #expect(spy.loginCalls == 0)
 
-        sut.simulateLoginTap()
+        sut.simulateUserTapsLogin()
         #expect(spy.loginCalls == 1)
     }
     
     @Test func sutDealocatesWhenRequestIsInProgress() {
         let (sut, _) = makeSut()
-        sut.initiateRegistrationWithValidEmailAndUsername()
+        sut.simulateUserInitiatesRegistrationWithValidEmailAndUsername()
     }
+    
+    // MARK: - Helpers
     
     typealias Sut = RegisterFeature
     
@@ -174,7 +156,7 @@ import Foundation
     
     private func makeSut(_ loc: SourceLocation = #_sourceLocation) -> (Sut, RegisterFeatureSpy) {
         let spy = RegisterFeatureSpy()
-        let env = RegisterEnvironment(httpClient: spy.remote, scheduler: DispatchQueue.test.eraseToAnyScheduler())
+        let env = RegisterEnvironment(httpClient: spy.remote.load, scheduler: DispatchQueue.test.eraseToAnyScheduler())
         let events = RegisterEvents(
             onSuccessfulSubmitRegister: spy.keepRegisterModel(_:),
             onLoginButtonTapped: spy.incrementLoginCalls

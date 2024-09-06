@@ -16,7 +16,7 @@ extension RegisterTests {
         #expect(request.dto() == RegisterRequestDTO(email: email, username: username), comment, sourceLocation: sourceLocation)
     }
     
-    func apiSuccessResponse(token: String, otpLength: Int, next: Int = 60) -> RemoteResponse {
+    func successResponse(token: String, otpLength: Int, next: Int = 60) -> RemoteResponse {
         let json = """
         {
             "confirmationToken": "\(token)",
@@ -27,16 +27,16 @@ extension RegisterTests {
         return apiSuccess(json: json)
     }
     
-    func apiValidationErrorResponse(email: String, username: String) -> RemoteResponse {
+    func validationErrorResponse(email: String, username: String) -> RemoteResponse {
         let messages = [RegisterError.emailKey: email, RegisterError.usernameKey: username]
         return apiError(messages: messages)
     }
     
-    func apiGeneralErrorResponse(message: String) -> RemoteResponse {
+    func generalErrorResponse(message: String) -> RemoteResponse {
         apiError(messages: [RegisterError.generalKey: message])
     }
                 
-    func successModel(email: String = "", username: String = "", token: String = "", otpLength: Int = 0, nextAttemptAfter: Int = 0) -> RegisterModel {
-        .init(request: .init(email: email, username: username), confirmationToken: token, otpLength: otpLength, nextAttemptAfter: nextAttemptAfter)
+    func successModel(token: String = "", otpLength: Int = 0, nextAttemptAfter: Int = 0) -> RegisterModel {
+        .init(confirmationToken: token, otpLength: otpLength, nextAttemptAfter: nextAttemptAfter)
     }
 }

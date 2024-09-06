@@ -12,8 +12,8 @@ struct RegisterResponseDTO: Decodable {
 }
 
 extension RegisterModel {
-    static func fromRequestAndDto(request: RegisterRequest, dto: RegisterResponseDTO) -> RegisterModel {
-        .init(request: request, confirmationToken: dto.confirmationToken, otpLength: dto.otpLength, nextAttemptAfter: dto.nextAttemptAfter)
+    static func fromDto(dto: RegisterResponseDTO) -> RegisterModel {
+        .init(confirmationToken: dto.confirmationToken, otpLength: dto.otpLength, nextAttemptAfter: dto.nextAttemptAfter)
     }
 }
 

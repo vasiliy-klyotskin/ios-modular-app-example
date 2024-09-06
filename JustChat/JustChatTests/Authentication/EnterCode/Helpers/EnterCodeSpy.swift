@@ -10,42 +10,35 @@ import Combine
 @testable import JustChat
 
 final class EnterCodeFeatureSpy {
-//    var isLoading: Bool = false
-//    var loginError: String?
-//    var generalError: String?
-    var successes = [EnterCodeModel]()
-//    var regiterCalls = 0
-//    var googleAuthCalls = 0
-//    
-    var tasks = [PassthroughSubject<RemoteResponse, Error>]()
-    var requests = [RemoteRequest]()
-
+    var isSubmittionLoadingIndicatorDisplayed = false
+    var isResendingLoadingIndicatorDisplayed: Bool { resendButtonConfig.isLoadingIndicatorShown }
+    var isResendButtonDisabled: Bool { resendButtonConfig.isInteractionDisabled }
+    var isCodeInputDisabled = false
+    var generalError: String? = nil
+    var validationError: String? = nil
+    var timeRemainingUntilNextAttempt = ""
+    var showRemainingTime = false
+    var otpLength = 0
+    var successes = [EnterCodeSubmitModel]()
+    
+    let remote = RemoteSpy()
+    let timer = TimerSpy()
     
     private var cancellables = Set<AnyCancellable>()
-    
-    func keepSuccess(model: EnterCodeModel) {
-        successes.append(model)
-    }
-    
+    private var resendButtonConfig: ButtonConfig = .loading()
+
     func startSpying(sut: EnterCodeTests.Sut) {
-//        sut.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
-//        sut.toast.$message.bind(\.generalError, to: self, storeIn: &cancellables)
-//        sut.input.$error.bind(\.loginError, to: self, storeIn: &cancellables)
+        sut.$isCodeInputDisabled.bind(\.isCodeInputDisabled, to: self, storeIn: &cancellables)
+        sut.$resendButtonConfig.bind(\.resendButtonConfig, to: self, storeIn: &cancellables)
+        sut.$isSubmissionIndicatorVisible.bind(\.isSubmittionLoadingIndicatorDisplayed, to: self, storeIn: &cancellables)
+        sut.toastVm.$message.bind(\.generalError, to: self, storeIn: &cancellables)
+        sut.$validationError.bind(\.validationError, to: self, storeIn: &cancellables)
+        sut.$timeRemainingUntilNextAttempt.bind(\.timeRemainingUntilNextAttempt, to: self, storeIn: &cancellables)
+        sut.$showTimeUntilNextAttempt.bind(\.showRemainingTime, to: self, storeIn: &cancellables)
+        sut.$otpLength.bind(\.otpLength, to: self, storeIn: &cancellables)
     }
     
-    func remote(request: RemoteRequest) -> AnyPublisher<RemoteResponse, Error> {
-        requests.append(request)
-        let task = PassthroughSubject<(Data, HTTPURLResponse), Error>()
-        tasks.append(task)
-        return task.eraseToAnyPublisher()
-    }
-    
-    func finishRemoteRequestWithError(index: Int) {
-        tasks[index].send(completion: .failure(NSError(domain: "", code: 1)))
-    }
-    
-    func finishRemoteRequestWith(response: (Data, HTTPURLResponse), index: Int) {
-        tasks[index].send(response)
-        tasks[index].send(completion: .finished)
+    func keepSuccess(model: EnterCodeSubmitModel) {
+        successes.append(model)
     }
 }

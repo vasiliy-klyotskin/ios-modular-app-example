@@ -27,8 +27,8 @@ extension LoginTests {
         return apiSuccess(json: json)
     }
                 
-    func successModel(login: String = "", token: String = "", otpLength: Int = 0, nextAttemptAfter: Int = 0) -> LoginModel {
-        .init(login: login, confirmationToken: token, otpLength: otpLength, nextAttemptAfter: nextAttemptAfter)
+    func successModel(token: String = "", otpLength: Int = 0, nextAttemptAfter: Int = 0) -> LoginModel {
+        .init(confirmationToken: token, otpLength: otpLength, nextAttemptAfter: nextAttemptAfter)
     }
     
     func inputError(_ error: String) -> RemoteResponse {

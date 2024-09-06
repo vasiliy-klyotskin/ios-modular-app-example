@@ -10,42 +10,29 @@ import Combine
 @testable import JustChat
 
 final class LoginFeatureSpy {
-    var isLoading: Bool = false
+    var isLoadingIndicatorDisplayed: Bool { submitButtonConfig.isLoadingIndicatorShown }
+    var isContentDisabled = false
     var loginError: String?
     var generalError: String?
+    
     var successes = [LoginModel]()
     var regiterCalls = 0
     var googleAuthCalls = 0
     
-    var tasks = [PassthroughSubject<RemoteResponse, Error>]()
-    var requests = [RemoteRequest]()
+    let remote = RemoteSpy()
     
     private var cancellables = Set<AnyCancellable>()
+    private var submitButtonConfig: ButtonConfig = .standard(title: "")
     
     func startSpying(sut: LoginTests.Sut) {
-        sut.$isLoading.bind(\.isLoading, to: self, storeIn: &cancellables)
+        sut.$isContentDisabled.bind(\.isContentDisabled, to: self, storeIn: &cancellables)
+        sut.$submitButtonConfig.bind(\.submitButtonConfig, to: self, storeIn: &cancellables)
         sut.toast.$message.bind(\.generalError, to: self, storeIn: &cancellables)
         sut.input.$error.bind(\.loginError, to: self, storeIn: &cancellables)
     }
     
-    func remote(request: RemoteRequest) -> AnyPublisher<RemoteResponse, Error> {
-        requests.append(request)
-        let task = PassthroughSubject<(Data, HTTPURLResponse), Error>()
-        tasks.append(task)
-        return task.eraseToAnyPublisher()
-    }
-    
     func keepLoginModel(_ model: LoginModel) {
         successes.append(model)
-    }
-    
-    func finishRemoteRequestWithError(index: Int) {
-        tasks[index].send(completion: .failure(NSError(domain: "", code: 1)))
-    }
-    
-    func finishRemoteRequestWith(response: (Data, HTTPURLResponse), index: Int) {
-        tasks[index].send(response)
-        tasks[index].send(completion: .finished)
     }
     
     func incrementRegister() {

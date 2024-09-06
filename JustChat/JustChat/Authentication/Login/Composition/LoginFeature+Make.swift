@@ -28,7 +28,7 @@ extension LoginFeature {
         env.httpClient(login.remote)
             .mapResponseToDtoAndRemoteError()
             .mapError(LoginError.fromRemoteError)
-            .map(LoginModel.fromLoginAndDto <~ login)
+            .map(LoginModel.fromDto)
             .onSubscription(vm.do { $0.startLoading })
             .onCompletion(vm.do { $0.finishLoading })
             .onFailure(vm.do { $0.handleError })

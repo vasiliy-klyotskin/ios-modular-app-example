@@ -16,6 +16,7 @@ struct RegisterView: View {
                 content()
                     .padding(UI.spacing.md)
                     .frame(minHeight: geometry.size.height)
+                    .disabled(vm.isContentDisabled)
             }
         }
         .background(UI.color.background.primary)
@@ -62,10 +63,10 @@ struct RegisterView: View {
     }
     
     private func submitButton() -> some View {
-        Button(action: vm.submit, config: .standard(title: RegisterStrings.submitButtonTitle, isLoading: vm.isLoading))
+        Button(onTap: vm.submit, config: vm.submitButtonConfig)
     }
 }
 
 #Preview {
-    RegisterView(vm: .init(username: .init(), email: .init(), toast: .init()))
+    RegisterView(vm: .init(toast: .init()))
 }

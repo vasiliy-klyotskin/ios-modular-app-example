@@ -8,24 +8,24 @@
 @testable import JustChat
 
 extension LoginTests.Sut {
-    func initiateLoginSubmit() {
+    func simulateUserInitiateLogin() {
         submit()
     }
     
-    func changeLoginInput(_ value: String) {
+    func simulateUserChangesLoginInput(_ value: String) {
         input.input = value
     }
     
-    func simulateGoogleAuthTap() {
+    func simulateUserTapsGoogleAuth() {
         googleAuthTapped()
     }
     
-    func simulateRegisterTap() {
+    func simulateUserTapsRegister() {
         registerTapped()
     }
     
-    func initiateLoginWithValidInput() {
-        changeLoginInput("any login")
-        initiateLoginSubmit()
+    func simulateUserInitiateLoginWithValidInput() {
+        simulateUserChangesLoginInput("any login")
+        simulateUserInitiateLogin()
     }
 }

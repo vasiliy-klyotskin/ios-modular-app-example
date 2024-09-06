@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct Button: View {
-    let action: () -> Void
+    let onTap: () -> Void
     let config: ButtonConfig
     
     var body: some View {
-        SwiftUI.Button(action: action) {
+        SwiftUI.Button(action: onTap) {
             ZStack {
                 Text(config.title)
                     .opacity(config.textAlpha)
                     .font(UI.font.bold.headline)
-                if config.isLoadingDisplayed {
+                if config.isLoadingIndicatorShown {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .tint(UI.color.text.primaryInverted)
@@ -45,10 +45,9 @@ struct Button: View {
 
 #Preview {
     VStack(spacing: UI.spacing.md) {
-        Button(action: {}, config: .standard(title: "Let's go", isLoading: true, isDimmed: false))
-        Button(action: {}, config: .standard(title: "Let's go", isLoading: false, isDimmed: false))
-        Button(action: {}, config: .standard(title: "Let's go", isLoading: true, isDimmed: true))
-        Button(action: {}, config: .standard(title: "Let's go", isLoading: false, isDimmed: true))
+        Button(onTap: {}, config: .inactive(title: "Inactive"))
+        Button(onTap: {}, config: .loading())
+        Button(onTap: {}, config: .standard(title: "Standard"))
     }
     .padding(UI.spacing.md)
     .background(UI.color.background.primary)

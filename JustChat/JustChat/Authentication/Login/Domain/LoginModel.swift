@@ -6,7 +6,6 @@
 //
 
 struct LoginModel: Equatable {
-    let login: String
     let confirmationToken: String
     let otpLength: Int
     let nextAttemptAfter: Int
