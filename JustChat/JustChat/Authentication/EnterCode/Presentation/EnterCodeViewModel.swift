@@ -96,9 +96,10 @@ final class EnterCodeViewModel: ObservableObject {
     }
     
     func viewAppeared() {
-        guard !ticker.isTicking(), secondsLeftBeforeResend > 0 else { return }
         updateResendUI()
-        ticker.start()
+        if !ticker.isTicking(), secondsLeftBeforeResend > 0 {
+            ticker.start()
+        }
     }
 
     private func handleCodeUpdate() {

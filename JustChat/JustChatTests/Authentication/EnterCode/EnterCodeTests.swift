@@ -101,8 +101,12 @@ import Foundation
     }
     
     @Test func resendingTimeLeft() {
-        let (sut, spy) = makeSut(nextAttempt: 150)
+        let (sut, spy) = makeSut(nextAttempt: 0)
         
+        #expect(spy.showRemainingTime == false, "Remaining time should not be displayed initially if next attempt time is zero.")
+        
+        sut.simulateUserTapsResend()
+        spy.remote.finishWith(response: successResendResponse(token: "any", otpLength: 4, next: 150), index: 0)
         #expect(spy.showRemainingTime == true, "Remaining time should be displayed initially.")
         #expect(spy.timeRemainingUntilNextAttempt == "2:29", "Remaining time should be correct initially.")
         
@@ -118,7 +122,7 @@ import Foundation
         #expect(spy.showRemainingTime == false, "Remaining time should be hidden after time is over.")
         
         sut.simulateUserTapsResend()
-        spy.remote.finishWith(response: successResendResponse(token: "any", otpLength: 4, next: 25), index: 0)
+        spy.remote.finishWith(response: successResendResponse(token: "any", otpLength: 4, next: 25), index: 1)
         #expect(spy.showRemainingTime == true, "Remaining time should be displayed after resending.")
         #expect(spy.timeRemainingUntilNextAttempt == "0:24", "Remaining time should be correct after resending.")
     }

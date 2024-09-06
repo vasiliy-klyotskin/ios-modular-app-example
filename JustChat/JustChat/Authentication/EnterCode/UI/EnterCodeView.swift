@@ -19,6 +19,7 @@ struct EnterCodeView: View {
             }
         }
         .background(UI.color.background.primary)
+        .showToast(Toast(vm: vm.toastVm))
     }
     
     private func content() -> some View {
@@ -57,10 +58,11 @@ struct EnterCodeView: View {
     }
     
     private func resendButton() -> some View {
-        Button(onTap: vm.resend, config: .standard(title: EnterCodeStrings.resendButton))
+        Button(onTap: vm.resend, config: vm.resendButtonConfig)
     }
 }
 
 #Preview {
-    EnterCodeView(vm: .init(toastVm: .init(), ticker: .init(), model: .init(confirmationToken: "any", otpLength: 4, nextAttemptAfter: 120)))
+    let vm = EnterCodeViewModel(toastVm: .init(), ticker: .init(), model: .init(confirmationToken: "any", otpLength: 4, nextAttemptAfter: 123))
+    return EnterCodeView(vm: vm)
 }
