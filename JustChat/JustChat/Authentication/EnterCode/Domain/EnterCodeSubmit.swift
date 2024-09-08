@@ -12,6 +12,7 @@ struct EnterCodeSubmitModel: Equatable {
 
 struct EnterCodeSubmitRequest {
     let code: String
+    let confirmationToken: String
 }
 
 enum EnterCodeSubmitError: Error {

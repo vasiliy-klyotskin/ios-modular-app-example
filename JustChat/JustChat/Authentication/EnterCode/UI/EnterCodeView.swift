@@ -26,11 +26,11 @@ struct EnterCodeView: View {
         VStack(alignment: .leading) {
             Spacer()
             header()
-            OTPView(length: vm.otpLength, onChange: vm.updateCode)
+            CodeInputView(vm: vm.codeInputVm).padding(.vertical, UI.spacing.xxl)
             resendInfo()
             resendButton()
         }
-        .onAppear(perform: vm.viewAppeared)
+        .onAppear(perform: vm.handleViewAppear)
     }
     
     private func header() -> some View {
@@ -63,6 +63,11 @@ struct EnterCodeView: View {
 }
 
 #Preview {
-    let vm = EnterCodeViewModel(toastVm: .init(), ticker: .init(), model: .init(confirmationToken: "any", otpLength: 4, nextAttemptAfter: 123))
-    return EnterCodeView(vm: vm)
+    let vm = EnterCodeViewModel(
+        model:  .init(confirmationToken: "any", otpLength: 4, nextAttemptAfter: 123),
+        codeInputVm: .init(length: 4),
+        toastVm: .init(),
+        ticker: .init()
+    )
+    EnterCodeView(vm: vm)
 }

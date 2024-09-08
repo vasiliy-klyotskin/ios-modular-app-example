@@ -147,7 +147,7 @@ import Foundation
     // MARK: Submission
     
     @Test func submissionRequest() {
-        let (sut, spy) = makeSut(otpLength: 4)
+        let (sut, spy) = makeSut(token: "confirmation token", otpLength: 4, nextAttempt: 20)
         
         #expect(spy.remote.requests.isEmpty, "There should be no requests initially.")
         
@@ -155,13 +155,16 @@ import Foundation
         #expect(spy.remote.requests.isEmpty, "There should be no requests before the user enters full code.")
         
         sut.simulateUserEntersOtp("4523")
-        expectSubmitRequestIsCorrect(spy.remote.requests[0], code: "4523", "There should be a request when the user enters full code")
+        expectSubmitRequestIsCorrect(spy.remote.requests[0], code: "4523", token: "confirmation token", "There should be a request when the user enters full code")
         
         spy.remote.finishWithError(index: 0)
         #expect(spy.remote.requests.count == 1, "There should be no new requests after receiving error.")
         
+        spy.timer.simulateTimePassed(seconds: 20)
+        sut.simulateUserTapsResend()
+        spy.remote.finishWith(response: successResendResponse(token: "new token", otpLength: 4), index: 1)
         sut.simulateUserEntersOtp("5432")
-        expectSubmitRequestIsCorrect(spy.remote.requests[1], code: "5432", "There should be a new request when the user enters a full code")
+        expectSubmitRequestIsCorrect(spy.remote.requests[2], code: "5432", token: "new token", "There should be a new request with new token when the user enters a full code after resending")
     }
     
     @Test func submissionLoadingIndicator() {

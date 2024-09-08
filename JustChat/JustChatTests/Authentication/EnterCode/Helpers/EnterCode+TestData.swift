@@ -16,10 +16,10 @@ extension EnterCodeTests {
         #expect(request.dto() == EnterCodeResendRequestDTO(confirmationToken: token), comment, sourceLocation: sourceLocation)
     }
     
-    func expectSubmitRequestIsCorrect(_ request: RemoteRequest, code: String, _ comment: Comment?, sourceLocation: SourceLocation = #_sourceLocation) {
+    func expectSubmitRequestIsCorrect(_ request: RemoteRequest, code: String, token: String, _ comment: Comment?, sourceLocation: SourceLocation = #_sourceLocation) {
         #expect(request.path == "submit-otp", comment, sourceLocation: sourceLocation)
         #expect(request.method == "POST", comment, sourceLocation: sourceLocation)
-        #expect(request.dto() == EnterCodeSubmitRequestDTO(code: code), comment, sourceLocation: sourceLocation)
+        #expect(request.dto() == EnterCodeSubmitRequestDTO(code: code, confirmationToken: token), comment, sourceLocation: sourceLocation)
     }
     
     func successResendResponse(token: String, otpLength: Int, next: Int = 60) -> RemoteResponse {

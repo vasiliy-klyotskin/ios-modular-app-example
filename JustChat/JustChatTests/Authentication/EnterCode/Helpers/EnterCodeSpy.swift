@@ -35,7 +35,7 @@ final class EnterCodeFeatureSpy {
         sut.$validationError.bind(\.validationError, to: self, storeIn: &cancellables)
         sut.$timeRemainingUntilNextAttempt.bind(\.timeRemainingUntilNextAttempt, to: self, storeIn: &cancellables)
         sut.$showTimeUntilNextAttempt.bind(\.showRemainingTime, to: self, storeIn: &cancellables)
-        sut.$otpLength.bind(\.otpLength, to: self, storeIn: &cancellables)
+        sut.codeInputVm.$length.bind(\.otpLength, to: self, storeIn: &cancellables)
     }
     
     func keepSuccess(model: EnterCodeSubmitModel) {

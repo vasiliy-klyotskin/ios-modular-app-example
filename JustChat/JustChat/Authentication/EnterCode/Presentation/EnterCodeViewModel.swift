@@ -13,17 +13,15 @@ final class EnterCodeViewModel: ObservableObject {
     @Published var isCodeInputDisabled = false
     @Published var resendButtonConfig: ButtonConfig = .standard(title: EnterCodeStrings.resendButton)
     @Published var validationError: String? = nil
-    @Published var otpLength: Int = 0
     @Published var timeRemainingUntilNextAttempt: String = ""
     @Published var showTimeUntilNextAttempt = true
-    @Published var code = "" {
-        didSet { handleCodeUpdate() }
-    }
     
     var onNeedSubmit: (EnterCodeSubmitRequest) -> Void = { _ in }
     var onNeedResend: (EnterCodeResendRequest) -> Void = { _ in }
 
+    let codeInputVm: CodeInputViewModel
     let toastVm: ToastViewModel
+    
     private let ticker: SecondTicker
     
     private var confirmationToken: String
@@ -31,63 +29,67 @@ final class EnterCodeViewModel: ObservableObject {
     private var isSubmitting = false
     private var isResending = false
     
-    init(toastVm: ToastViewModel, ticker: SecondTicker, model: EnterCodeResendModel) {
+    init(
+        model: EnterCodeResendModel,
+        codeInputVm: CodeInputViewModel,
+        toastVm: ToastViewModel,
+        ticker: SecondTicker
+    ) {
         self.toastVm = toastVm
+        self.codeInputVm = codeInputVm
         self.ticker = ticker
         self.confirmationToken = model.confirmationToken
-        self.otpLength = model.otpLength
         self.secondsLeftBeforeResend = model.nextAttemptAfter
     }
     
     func resend() {
         guard secondsLeftBeforeResend <= 0 else { return }
-        clearToastMessage()
+        toastVm.updateMessage(nil)
         onNeedResend(.init(confirmationToken: confirmationToken))
     }
 
-    func updateCode(_ code: String) {
-        guard code.count == otpLength else { return }
-        onNeedSubmit(.init(code: code))
-    }
-
     func startResendLoading() {
-        toggleResending(true)
+        isResending = true
+        updateUIState()
     }
 
     func finishResendLoading() {
-        toggleResending(false)
+        isResending = false
+        updateUIState()
     }
     
     func updateResendModel(_ resendModel: EnterCodeResendModel) {
         confirmationToken = resendModel.confirmationToken
         secondsLeftBeforeResend = resendModel.nextAttemptAfter
-        otpLength = resendModel.otpLength
+        codeInputVm.updateLength(resendModel.otpLength)
         updateResendUI()
         ticker.start()
     }
 
     func handleResendError(_ error: EnterCodeResendError) {
-        showToastMessage(error.message)
+        toastVm.updateMessage(error.message)
     }
 
     func startSubmitLoading() {
-        toggleSubmitting(true)
+        isSubmitting = true
+        updateUIState()
     }
 
     func finishSubmitLoading() {
-        toggleSubmitting(false)
+        isSubmitting = false
+        updateUIState()
     }
 
     func handleSubmitError(_ error: EnterCodeSubmitError) {
         switch error {
         case .general(let message):
-            showToastMessage(message)
+            toastVm.updateMessage(message)
         case .validation(let validation):
             validationError = validation
         }
     }
 
-    func processNextTick() {
+    func handleNextTick() {
         secondsLeftBeforeResend -= 1
         if secondsLeftBeforeResend <= 0 {
             ticker.invalidate()
@@ -95,38 +97,28 @@ final class EnterCodeViewModel: ObservableObject {
         updateResendUI()
     }
     
-    func viewAppeared() {
+    func handleViewAppear() {
         updateResendUI()
         if !ticker.isTicking(), secondsLeftBeforeResend > 0 {
             ticker.start()
         }
     }
 
-    private func handleCodeUpdate() {
-        guard code.count == otpLength else { return }
-        clearToastMessage()
+    func handleEnteredCode(_ code: String) {
+        toastVm.updateMessage(nil)
         validationError = nil
-        onNeedSubmit(.init(code: code))
-    }
-    
-    private func toggleSubmitting(_ isSubmitting: Bool) {
-        self.isSubmitting = isSubmitting
-        updateUIState()
-    }
-
-    private func toggleResending(_ isResending: Bool) {
-        self.isResending = isResending
-        updateUIState()
+        onNeedSubmit(.init(code: code, confirmationToken: confirmationToken))
     }
 
     private func updateUIState() {
-        updateCodeInput()
-        updateResendButton()
-    }
-
-    private func updateCodeInput() {
         isSubmissionIndicatorVisible = isSubmitting
         isCodeInputDisabled = isResending
+        updateResendButton()
+    }
+    
+    private func updateResendUI() {
+        updateTimeRemainingUi()
+        updateResendButton()
     }
 
     private func updateResendButton() {
@@ -141,12 +133,7 @@ final class EnterCodeViewModel: ObservableObject {
             resendButtonConfig = .standard(title: title)
         }
     }
-
-    private func updateResendUI() {
-        updateTimeRemainingUi()
-        updateResendButton()
-    }
-
+    
     private func updateTimeRemainingUi() {
         timeRemainingUntilNextAttempt = formatSecondsToMinutesAndSeconds(secondsLeftBeforeResend - 1)
         showTimeUntilNextAttempt = secondsLeftBeforeResend > 0
@@ -156,13 +143,5 @@ final class EnterCodeViewModel: ObservableObject {
         let minutes = totalSeconds / 60
         let seconds = totalSeconds % 60
         return String(format: "%d:%02d", minutes, seconds)
-    }
-
-    private func clearToastMessage() {
-        toastVm.updateMessage(nil)
-    }
-
-    private func showToastMessage(_ message: String?) {
-        toastVm.updateMessage(message)
     }
 }
