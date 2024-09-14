@@ -28,9 +28,11 @@ struct TextField: View {
     
     private func textFieldBase() -> some View {
         SwiftUI.TextField(title, text: $vm.input, prompt: prompt())
+            .autocorrectionDisabled()
             .font(UI.font.bold.body)
             .tint(UI.color.separator.primary)
             .foregroundStyle(UI.color.text.primary)
+            .onChange(of: vm.input) { old, new in vm.handle(oldInput: old, newInput: new) }
     }
     
     private func prompt() -> Text {

@@ -5,7 +5,7 @@
 //  Created by Василий Клецкин on 8/30/24.
 //
 
-struct EnterCodeResendModel {
+struct EnterCodeResendModel: Hashable {
     let confirmationToken: String
     let otpLength: Int
     let nextAttemptAfter: Int

@@ -9,7 +9,7 @@
 
 extension EnterCodeTests.Sut {
     func simulateUserEntersOtp(_ value: String) {
-        codeInputVm.updateInput(value)
+        codeInputVm.rawInput = value
     }
     
     func simulateUserTapsResend() {
@@ -18,5 +18,9 @@ extension EnterCodeTests.Sut {
     
     func simulateViewAppeared() {
         handleViewAppear()
+    }
+    
+    func code() -> String {
+        (0..<codeInputVm.length).map(codeInputVm.getCharacter).joined()
     }
 }

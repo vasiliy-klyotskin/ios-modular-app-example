@@ -8,8 +8,8 @@
 import Combine
 
 final class RegisterViewModel: ObservableObject {
-    @Published var submitButtonConfig: ButtonConfig = .standard(title: RegisterStrings.submitButtonTitle)
-    @Published var isContentDisabled: Bool = false
+    @Published private(set) var submitButtonConfig: ButtonConfig = .standard(title: RegisterStrings.submitButtonTitle)
+    @Published private(set) var isContentDisabled: Bool = false
     
     let email: TextFieldViewModel
     let username: TextFieldViewModel

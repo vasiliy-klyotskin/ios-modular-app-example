@@ -8,7 +8,9 @@
 @testable import JustChat
 
 extension TextFieldTests.Sut {
-    func simulateChangingInput(_ newInput: String) {
-        input = newInput
+    func simulateChangingInput(_ value: String) {
+        let oldValue = input
+        input = value
+        handle(oldInput: oldValue, newInput: value)
     }
 }

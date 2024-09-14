@@ -9,27 +9,26 @@ import Combine
 
 final class TextFieldViewModel: ObservableObject {
     @Published var error: String? = nil
-    @Published var input: String = "" {
-        didSet { handle(input: input) }
-    }
-    
-    var isError: Bool {
-        error != nil
-    }
-    
-    var isClearButtonShown: Bool {
-        !input.isEmpty
-    }
+    @Published var isError = false
+    @Published var isClearButtonShown = false
+    @Published var input = ""
 
     func updateError(_ error: String?) {
         self.error = error
+        isError = error != nil
     }
     
     func clear() {
         input = ""
+        error = nil
+        isError = false
+        isClearButtonShown = false
     }
     
-    private func handle(input: String) {
+    func handle(oldInput: String, newInput: String) {
+        if oldInput == newInput { return }
         error = nil
+        isError = false
+        isClearButtonShown = !input.isEmpty
     }
 }

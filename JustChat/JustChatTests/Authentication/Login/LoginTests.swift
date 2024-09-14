@@ -43,11 +43,11 @@ import Foundation
         sut.simulateUserInitiateLogin()
         #expect(spy.isLoadingIndicatorDisplayed == true, "The loading state should be true after the user submits.")
         
-        spy.remote.finishWithError(index: 0)
+        spy.finishRemoteWithError(index: 0)
         #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false after receiving an error.")
         
         sut.simulateUserInitiateLogin()
-        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 4), index: 1)
+        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 4), index: 1)
         #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false after success.")
     }
     
@@ -60,7 +60,7 @@ import Foundation
         sut.simulateUserInitiateLogin()
         #expect(spy.generalError == nil, "There should be no general error after the user submits.")
         
-        spy.remote.finishWithError(index: 0)
+        spy.finishRemoteWithError(index: 0)
         #expect(spy.generalError == RemoteStrings.values.system, "There should be a system general error after the request fails.")
         
         sut.simulateUserChangesLoginInput("new login")
@@ -69,7 +69,7 @@ import Foundation
         sut.simulateUserInitiateLogin()
         #expect(spy.generalError == nil, "There should be no general error after the user resubmits.")
         
-        spy.remote.finishWith(response: generalError("error message"), index: 1)
+        spy.finishRemoteWith(response: generalError("error message"), index: 1)
         #expect(spy.generalError == "error message", "There should be a general error after the user receives a remote general error.")
     }
     
@@ -87,7 +87,7 @@ import Foundation
         sut.simulateUserInitiateLogin()
         #expect(spy.loginError == nil, "There should be no login input error after the user submits.")
         
-        spy.remote.finishWith(response: inputError("login error"), index: 0)
+        spy.finishRemoteWith(response: inputError("login error"), index: 0)
         #expect(spy.loginError == "login error", "There should be a login input error after receiving an error.")
         
         sut.simulateUserInitiateLogin()
@@ -105,12 +105,21 @@ import Foundation
         sut.simulateUserInitiateLogin()
         #expect(spy.isContentDisabled == true, "Content should be disabled after the user submits.")
         
-        spy.remote.finishWithError(index: 0)
+        spy.finishRemoteWithError(index: 0)
         #expect(spy.isContentDisabled == false, "Content should not be disabled after receiving an error.")
         
         sut.simulateUserInitiateLogin()
-        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 4), index: 1)
+        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 4), index: 1)
         #expect(spy.isContentDisabled == false, "Content should not be disabled after success.")
+    }
+    
+    @Test func loginInput() {
+        let (sut, spy) = makeSut()
+        
+        sut.simulateUserChangesLoginInput("login")
+        sut.simulateUserInitiateLogin()
+        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 4), index: 0)
+        #expect(spy.input == "login", "Input should not be cleared after success")
     }
     
     @Test func successMessage() {
@@ -122,11 +131,11 @@ import Foundation
         sut.simulateUserInitiateLogin()
         #expect(spy.successes.isEmpty, "There should not be a success message after the user submits.")
         
-        spy.remote.finishWithError(index: 0)
+        spy.finishRemoteWithError(index: 0)
         #expect(spy.successes.isEmpty, "There should not be a success message after receiving an error.")
         
         sut.simulateUserInitiateLogin()
-        spy.remote.finishWith(response: successResponse(token: "token", otpLength: 4, next: 30), index: 1)
+        spy.finishRemoteWith(response: successResponse(token: "token", otpLength: 4, next: 30), index: 1)
         #expect(spy.successes == [successModel(token: "token", otpLength: 4, nextAttemptAfter: 30)], "There should be a success message after receiving an error.")
     }
 
@@ -159,7 +168,7 @@ import Foundation
     
     private func makeSut(_ loc: SourceLocation = #_sourceLocation) -> (Sut, LoginFeatureSpy) {
         let spy = LoginFeatureSpy()
-        let env = LoginEnvironment(httpClient: spy.remote.load, scheduler: DispatchQueue.test.eraseToAnyScheduler())
+        let env = LoginEnvironment(httpClient: spy.remote.load, scheduler: spy.scheduler.eraseToAnyScheduler())
         let events = LoginEvents(
             onSuccessfulSubmitLogin: spy.keepLoginModel(_:),
             onGoogleOAuthButtonTapped: spy.incrementGoogleAuth,

@@ -13,11 +13,11 @@ extension RegisterTests.Sut {
     }
     
     func simulateUserChangesEmailInput(_ value: String) {
-        email.input = value
+        email.simulateChangingInput(value)
     }
     
     func simulateUserChangesUsernameInput(_ value: String) {
-        username.input = value
+        username.simulateChangingInput(value)
     }
     
     func simulateUserTapsLogin() {

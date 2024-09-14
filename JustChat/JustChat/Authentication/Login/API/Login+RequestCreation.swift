@@ -12,8 +12,10 @@ struct LoginRequestDTO: Encodable, Equatable {
 }
 
 extension LoginRequest {
+    static var path: String { "login" }
+    
     var remote: RemoteRequest {
-        let path = "login"
+        let path = Self.path
         let method = "POST"
         let dto = LoginRequestDTO(login: self)
         return .init(path: path, method: method, body: .encodable(dto))

@@ -2,7 +2,7 @@
 //  SecondTicker.swift
 //  JustChat
 //
-//  Created by Василий Клецкин on 8/30/24.
+//  Created by Василий Клецкин on 9/14/24.
 //
 
 import Foundation
@@ -34,5 +34,13 @@ final class SecondTicker {
     
     func isTicking() -> Bool {
         timer != nil
+    }
+}
+
+extension Timer {
+    static func scheduledOnMainRunLoop(interval: TimeInterval, repeats: Bool, block: @escaping (Timer) -> Void) -> Timer {
+        let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: repeats, block: block)
+        RunLoop.main.add(timer, forMode: .common)
+        return timer
     }
 }

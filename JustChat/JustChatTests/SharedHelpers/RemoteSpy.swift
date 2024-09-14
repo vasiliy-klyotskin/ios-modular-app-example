@@ -24,7 +24,7 @@ final class RemoteSpy {
         tasks[index].send(completion: .failure(NSError(domain: "", code: 1)))
     }
     
-    func finishWith(response: (Data, HTTPURLResponse), index: Int) {
+    func finishWith(response: RemoteResponse, index: Int) {
         tasks[index].send(response)
         tasks[index].send(completion: .finished)
     }

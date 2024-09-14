@@ -10,11 +10,14 @@ import SwiftUI
 struct LoginView: View {
     @ObservedObject var vm: LoginViewModel
     
+    private var separatorHeight: CGFloat { 1 }
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 content()
                     .frame(minHeight: geometry.size.height)
+                    
             }
         }
         .background(UI.color.background.primary)
@@ -22,7 +25,7 @@ struct LoginView: View {
     }
     
     private func content() -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading) {
             Spacer()
             header().padding(.bottom, UI.spacing.lg)
             input().padding(.bottom, UI.spacing.lg)
@@ -56,9 +59,9 @@ struct LoginView: View {
     
     private func separator() -> some View {
         HStack(spacing: UI.spacing.md) {
-            Rectangle().frame(height: 1)
+            Rectangle().frame(height: separatorHeight)
             Text(LoginStrings.separator).font(UI.font.plain.body)
-            Rectangle().frame(height: 1)
+            Rectangle().frame(height: separatorHeight)
         }
         .foregroundColor(UI.color.separator.primary)
         .opacity(UI.opacity.lg)

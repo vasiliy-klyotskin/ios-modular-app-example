@@ -9,9 +9,7 @@ import Foundation
 import Combine
 
 extension RegisterFeature {
-    func view() -> RegisterView {
-        .init(vm: self)
-    }
+    func view() -> RegisterView { .init(vm: self) }
     
     static func make(env: RegisterEnvironment, events: RegisterEvents) -> RegisterFeature {
         let vm = RegisterViewModel(toast: .make(scheduler: env.scheduler))
@@ -30,10 +28,11 @@ extension RegisterFeature {
             .mapResponseToDtoAndRemoteError()
             .mapError(RegisterError.fromRemoteError)
             .map(RegisterModel.fromDto)
-            .onSubscription(vm.do { $0.startLoading })
-            .onCompletion(vm.do { $0.finishLoading })
-            .onFailure(vm.do { $0.handleError })
-            .onOutput(events.onSuccessfulSubmitRegister)
+            .receive(on: env.scheduler)
+            .onLoadingStart(vm.do { $0.startLoading })
+            .onLoadingFinish(vm.do { $0.finishLoading })
+            .onLoadingFailure(vm.do { $0.handleError })
+            .onLoadingSuccess(events.onSuccessfulSubmitRegister)
             .eraseToAnyPublisher()
     }
 }

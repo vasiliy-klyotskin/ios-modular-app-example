@@ -22,7 +22,7 @@ import Foundation
         sut.simulateUserInitiatesRegistration()
         expectRequestIsCorrect(spy.remote.requests[0], for: "email", username: "username", "A remote request should be made after the user initiates registration.")
         
-        spy.remote.finishWithError(index: 0)
+        spy.finishRemoteWithError(index: 0)
         #expect(spy.remote.requests.count == 1, "There should be no new requests after receiving an error.")
         
         sut.simulateUserChangesEmailInput("new email")
@@ -30,7 +30,7 @@ import Foundation
         sut.simulateUserInitiatesRegistration()
         expectRequestIsCorrect(spy.remote.requests[1], for: "new email", username: "new username", "A remote request should be made after the user initiates registration with new credentials.")
         
-        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 4), index: 1)
+        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 4), index: 1)
         #expect(spy.remote.requests.count == 2, "There should be no new requests after receiving success.")
     }
     
@@ -45,11 +45,11 @@ import Foundation
         sut.simulateUserInitiatesRegistration()
         #expect(spy.isLoadingIndicatorDisplayed == true, "The loading state should be true after the user initiates registration.")
         
-        spy.remote.finishWithError(index: 0)
+        spy.finishRemoteWithError(index: 0)
         #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false after receiving an error.")
         
         sut.simulateUserInitiatesRegistration()
-        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 4), index: 1)
+        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 4), index: 1)
         #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false after receiving success.")
     }
     
@@ -76,7 +76,7 @@ import Foundation
         #expect(spy.emailError == nil, "There should be no email input error after the user initiates registration.")
         #expect(spy.usernameError == nil, "There should be no username input error after the user initiates registration.")
         
-        spy.remote.finishWith(response: validationErrorResponse(email: "email error", username: "username error"), index: 0)
+        spy.finishRemoteWith(response: validationErrorResponse(email: "email error", username: "username error"), index: 0)
         #expect(spy.emailError == "email error", "There should be an email input error after receiving a validation error.")
         #expect(spy.usernameError == "username error", "There should be an username input error after receiving a validation error.")
     }
@@ -89,17 +89,17 @@ import Foundation
         sut.simulateUserInitiatesRegistrationWithValidEmailAndUsername()
         #expect(spy.generalError == nil, "There should be no general error after the user initiates registration.")
         
-        spy.remote.finishWithError(index: 0)
+        spy.finishRemoteWithError(index: 0)
         #expect(spy.generalError == RemoteStrings.values.system, "There should be a general error after the request fails.")
         
         sut.simulateUserInitiatesRegistration()
         #expect(spy.generalError == nil, "There should be no general error after the user initiates registration again.")
         
-        spy.remote.finishWith(response: generalErrorResponse(message: "general error"), index: 1)
+        spy.finishRemoteWith(response: generalErrorResponse(message: "general error"), index: 1)
         #expect(spy.generalError == "general error", "There should be a general error after receiving general error.")
         
         sut.simulateUserInitiatesRegistration()
-        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 4), index: 2)
+        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 4), index: 2)
         #expect(spy.generalError == nil, "There should be no general error after receiving success.")
     }
     
@@ -111,11 +111,11 @@ import Foundation
         sut.simulateUserInitiatesRegistrationWithValidEmailAndUsername()
         #expect(spy.isContentDisabled == true, "Content should be disabled after the user initiates registration.")
         
-        spy.remote.finishWithError(index: 0)
+        spy.finishRemoteWithError(index: 0)
         #expect(spy.isContentDisabled == false, "Content should not be disabled after the request fails.")
         
         sut.simulateUserInitiatesRegistration()
-        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 0), index: 1)
+        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 0), index: 1)
         #expect(spy.isContentDisabled == false, "Content should not be disabled after success.")
     }
     
@@ -127,11 +127,11 @@ import Foundation
         sut.simulateUserInitiatesRegistrationWithValidEmailAndUsername()
         #expect(spy.successes.isEmpty, "There should not be a success message after the user initiates registration.")
         
-        spy.remote.finishWithError(index: 0)
+        spy.finishRemoteWithError(index: 0)
         #expect(spy.successes.isEmpty, "There should not be a success message after the request fails.")
         
         sut.simulateUserInitiatesRegistration()
-        spy.remote.finishWith(response: successResponse(token: "token", otpLength: 4, next: 30), index: 1)
+        spy.finishRemoteWith(response: successResponse(token: "token", otpLength: 4, next: 30), index: 1)
         #expect(spy.successes == [successModel(token: "token", otpLength: 4, nextAttemptAfter: 30)], "There should be a message after receiving success.")
     }
     
@@ -156,7 +156,7 @@ import Foundation
     
     private func makeSut(_ loc: SourceLocation = #_sourceLocation) -> (Sut, RegisterFeatureSpy) {
         let spy = RegisterFeatureSpy()
-        let env = RegisterEnvironment(httpClient: spy.remote.load, scheduler: DispatchQueue.test.eraseToAnyScheduler())
+        let env = RegisterEnvironment(httpClient: spy.remote.load, scheduler: spy.scheduler.eraseToAnyScheduler())
         let events = RegisterEvents(
             onSuccessfulSubmitRegister: spy.keepRegisterModel(_:),
             onLoginButtonTapped: spy.incrementLoginCalls

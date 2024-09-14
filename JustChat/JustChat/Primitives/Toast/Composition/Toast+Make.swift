@@ -22,7 +22,7 @@ extension ToastViewModel {
     ) -> AnyPublisher<(), Never> {
         Just(())
             .delay(for: .seconds(delay), scheduler: scheduler)
-            .onOutput(vm.do { $0.hideAfterDelay })
+            .onLoadingSuccess(vm.do { $0.hideAfterDelay })
             .eraseToAnyPublisher()
     }
 }

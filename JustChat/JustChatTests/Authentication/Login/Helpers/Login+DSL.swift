@@ -13,7 +13,7 @@ extension LoginTests.Sut {
     }
     
     func simulateUserChangesLoginInput(_ value: String) {
-        input.input = value
+        input.simulateChangingInput(value)
     }
     
     func simulateUserTapsGoogleAuth() {

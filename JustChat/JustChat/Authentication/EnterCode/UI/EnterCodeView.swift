@@ -26,7 +26,7 @@ struct EnterCodeView: View {
         VStack(alignment: .leading) {
             Spacer()
             header()
-            CodeInputView(vm: vm.codeInputVm).padding(.vertical, UI.spacing.xxl)
+            CodeInputView(vm: vm.codeInputVm).padding(.vertical, UI.spacing.md)
             resendInfo()
             resendButton()
         }
@@ -64,7 +64,7 @@ struct EnterCodeView: View {
 
 #Preview {
     let vm = EnterCodeViewModel(
-        model:  .init(confirmationToken: "any", otpLength: 4, nextAttemptAfter: 123),
+        model: .init(confirmationToken: "any", otpLength: 4, nextAttemptAfter: 123),
         codeInputVm: .init(length: 4),
         toastVm: .init(),
         ticker: .init()

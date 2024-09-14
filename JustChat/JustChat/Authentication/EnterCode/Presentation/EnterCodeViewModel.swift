@@ -9,12 +9,9 @@ import Combine
 import Foundation
 
 final class EnterCodeViewModel: ObservableObject {
-    @Published var isSubmissionIndicatorVisible = false
-    @Published var isCodeInputDisabled = false
-    @Published var resendButtonConfig: ButtonConfig = .standard(title: EnterCodeStrings.resendButton)
-    @Published var validationError: String? = nil
-    @Published var timeRemainingUntilNextAttempt: String = ""
-    @Published var showTimeUntilNextAttempt = true
+    @Published private(set) var resendButtonConfig: ButtonConfig = .standard(title: EnterCodeStrings.resendButton)
+    @Published private(set) var timeRemainingUntilNextAttempt: String = ""
+    @Published private(set) var showTimeUntilNextAttempt = true
     
     var onNeedSubmit: (EnterCodeSubmitRequest) -> Void = { _ in }
     var onNeedResend: (EnterCodeResendRequest) -> Void = { _ in }
@@ -45,6 +42,7 @@ final class EnterCodeViewModel: ObservableObject {
     func resend() {
         guard secondsLeftBeforeResend <= 0 else { return }
         toastVm.updateMessage(nil)
+        codeInputVm.updateError(nil)
         onNeedResend(.init(confirmationToken: confirmationToken))
     }
 
@@ -63,6 +61,7 @@ final class EnterCodeViewModel: ObservableObject {
         secondsLeftBeforeResend = resendModel.nextAttemptAfter
         codeInputVm.updateLength(resendModel.otpLength)
         updateResendUI()
+        codeInputVm.clearInput()
         ticker.start()
     }
 
@@ -81,11 +80,12 @@ final class EnterCodeViewModel: ObservableObject {
     }
 
     func handleSubmitError(_ error: EnterCodeSubmitError) {
+        codeInputVm.clearInput()
         switch error {
         case .general(let message):
             toastVm.updateMessage(message)
         case .validation(let validation):
-            validationError = validation
+            codeInputVm.updateError(validation)
         }
     }
 
@@ -106,13 +106,13 @@ final class EnterCodeViewModel: ObservableObject {
 
     func handleEnteredCode(_ code: String) {
         toastVm.updateMessage(nil)
-        validationError = nil
         onNeedSubmit(.init(code: code, confirmationToken: confirmationToken))
     }
 
     private func updateUIState() {
-        isSubmissionIndicatorVisible = isSubmitting
-        isCodeInputDisabled = isResending
+        codeInputVm.updateIsLoading(isSubmitting)
+        codeInputVm.updateIsDimmed(isResending)
+        codeInputVm.updateIsDisabled(isSubmitting || isResending)
         updateResendButton()
     }
     

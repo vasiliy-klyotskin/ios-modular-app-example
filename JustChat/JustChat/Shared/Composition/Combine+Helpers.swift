@@ -10,31 +10,31 @@ import Foundation
 
 extension Publisher {
     func flatMapResult<T>(_ map: @escaping (Output) -> Result<T, Failure>) -> AnyPublisher<T, Failure> {
-        flatMap { output in
-            map(output)
-                .publisher
-                .eraseToAnyPublisher()
-        }
+        flatMap { map($0).publisher }
         .eraseToAnyPublisher()
     }
     
-    func onSubscription(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
+    func onLoadingStart(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
         handleEvents(receiveSubscription: { _ in action() })
     }
     
-    func onCompletion(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
-        handleEvents(receiveCompletion: { _ in action() })
+    func onLoadingFinish(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveOutput: { _ in action() }, receiveCompletion: {
+            if case .failure = $0 {
+                action()
+            }
+        })
     }
     
-    func onOutput(_ action: @escaping (Output) -> Void) -> Publishers.HandleEvents<Self> {
+    func onLoadingSuccess(_ action: @escaping (Output) -> Void) -> Publishers.HandleEvents<Self> {
         handleEvents(receiveOutput: { output in action(output) })
     }
     
-    func onOutput(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
-        handleEvents(receiveOutput: { output in action() })
+    func onLoadingSuccess(_ action: @escaping () -> Void) -> Publishers.HandleEvents<Self> {
+        handleEvents(receiveOutput: { _ in action() })
     }
     
-    func onFailure(_ action: @escaping (Failure) -> Void) -> Publishers.HandleEvents<Self> {
+    func onLoadingFailure(_ action: @escaping (Failure) -> Void) -> Publishers.HandleEvents<Self> {
         handleEvents(receiveCompletion: { completion in
             if case .failure(let error) = completion {
                 action(error)

@@ -8,6 +8,8 @@
 import Combine
 
 extension EnterCodeFeature {
+    func view() -> EnterCodeView { .init(vm: self) }
+    
     static func make(env: EnterCodeEnvironment, events: EnterCodeEvents, model: EnterCodeResendModel) -> EnterCodeFeature {
         let ticker = SecondTicker(makeTimer: env.makeTimer)
         let codeInputVm = CodeInputViewModel(length: model.otpLength)
@@ -32,10 +34,11 @@ extension EnterCodeFeature {
             .mapResponseToDtoAndRemoteError()
             .mapError(EnterCodeResendError.fromRemoteError)
             .map(EnterCodeResendModel.fromDto)
-            .onSubscription(vm.do { $0.startResendLoading })
-            .onCompletion(vm.do { $0.finishResendLoading })
-            .onFailure(vm.do { $0.handleResendError })
-            .onOutput(vm.do { $0.updateResendModel })
+            .receive(on: env.scheduler)
+            .onLoadingStart(vm.do { $0.startResendLoading })
+            .onLoadingFinish(vm.do { $0.finishResendLoading })
+            .onLoadingFailure(vm.do { $0.handleResendError })
+            .onLoadingSuccess(vm.do { $0.updateResendModel })
             .eraseToAnyPublisher()
     }
     
@@ -49,10 +52,11 @@ extension EnterCodeFeature {
             .mapResponseToDtoAndRemoteError()
             .mapError(EnterCodeSubmitError.fromRemoteError)
             .map(EnterCodeSubmitModel.fromDto)
-            .onSubscription(vm.do { $0.startSubmitLoading })
-            .onCompletion(vm.do { $0.finishSubmitLoading })
-            .onFailure(vm.do { $0.handleSubmitError })
-            .onOutput(events.onCorrectOtpEnter)
+            .receive(on: env.scheduler)
+            .onLoadingStart(vm.do { $0.startSubmitLoading })
+            .onLoadingFinish(vm.do { $0.finishSubmitLoading })
+            .onLoadingFailure(vm.do { $0.handleSubmitError })
+            .onLoadingSuccess(events.onCorrectOtpEnter)
             .eraseToAnyPublisher()
     }
 }

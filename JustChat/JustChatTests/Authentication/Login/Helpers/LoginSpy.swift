@@ -14,21 +14,34 @@ final class LoginFeatureSpy {
     var isContentDisabled = false
     var loginError: String?
     var generalError: String?
+    var input = ""
     
     var successes = [LoginModel]()
     var regiterCalls = 0
     var googleAuthCalls = 0
     
     let remote = RemoteSpy()
+    let scheduler = DispatchQueue.test
     
     private var cancellables = Set<AnyCancellable>()
     private var submitButtonConfig: ButtonConfig = .standard(title: "")
     
     func startSpying(sut: LoginTests.Sut) {
+        sut.input.$input.bind(\.input, to: self, storeIn: &cancellables)
         sut.$isContentDisabled.bind(\.isContentDisabled, to: self, storeIn: &cancellables)
         sut.$submitButtonConfig.bind(\.submitButtonConfig, to: self, storeIn: &cancellables)
         sut.toast.$message.bind(\.generalError, to: self, storeIn: &cancellables)
         sut.input.$error.bind(\.loginError, to: self, storeIn: &cancellables)
+    }
+    
+    func finishRemoteWithError(index: Int) {
+        remote.finishWithError(index: index)
+        scheduler.advance()
+    }
+    
+    func finishRemoteWith(response: RemoteResponse, index: Int) {
+        remote.finishWith(response: response, index: index)
+        scheduler.advance()
     }
     
     func keepLoginModel(_ model: LoginModel) {

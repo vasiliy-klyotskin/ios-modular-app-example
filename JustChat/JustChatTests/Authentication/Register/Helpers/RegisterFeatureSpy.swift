@@ -19,6 +19,7 @@ final class RegisterFeatureSpy {
     var loginCalls = 0
     
     let remote = RemoteSpy()
+    let scheduler = DispatchQueue.test
     
     private var cancellables = Set<AnyCancellable>()
     private var submitButtonConfig: ButtonConfig = .standard(title: "")
@@ -29,6 +30,16 @@ final class RegisterFeatureSpy {
         sut.toast.$message.bind(\.generalError, to: self, storeIn: &cancellables)
         sut.username.$error.bind(\.usernameError, to: self, storeIn: &cancellables)
         sut.email.$error.bind(\.emailError, to: self, storeIn: &cancellables)
+    }
+    
+    func finishRemoteWithError(index: Int) {
+        remote.finishWithError(index: index)
+        scheduler.advance()
+    }
+    
+    func finishRemoteWith(response: RemoteResponse, index: Int) {
+        remote.finishWith(response: response, index: index)
+        scheduler.advance()
     }
     
     func keepRegisterModel(_ model: RegisterModel) {

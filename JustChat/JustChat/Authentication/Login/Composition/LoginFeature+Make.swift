@@ -29,10 +29,11 @@ extension LoginFeature {
             .mapResponseToDtoAndRemoteError()
             .mapError(LoginError.fromRemoteError)
             .map(LoginModel.fromDto)
-            .onSubscription(vm.do { $0.startLoading })
-            .onCompletion(vm.do { $0.finishLoading })
-            .onFailure(vm.do { $0.handleError })
-            .onOutput(events.onSuccessfulSubmitLogin)
+            .receive(on: env.scheduler)
+            .onLoadingStart(vm.do { $0.startLoading })
+            .onLoadingFinish(vm.do { $0.finishLoading })
+            .onLoadingFailure(vm.do { $0.handleError })
+            .onLoadingSuccess(events.onSuccessfulSubmitLogin)
             .eraseToAnyPublisher()
     }
 }

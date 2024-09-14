@@ -15,8 +15,8 @@ struct Button: View {
         SwiftUI.Button(action: onTap) {
             ZStack {
                 Text(config.title)
-                    .opacity(config.textAlpha)
                     .font(UI.font.bold.headline)
+                    .opacity(config.textAlpha)
                 if config.isLoadingIndicatorShown {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())

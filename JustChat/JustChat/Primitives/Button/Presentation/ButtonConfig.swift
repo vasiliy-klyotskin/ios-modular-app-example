@@ -19,7 +19,7 @@ struct ButtonConfig {
     }
     
     static func loading() -> ButtonConfig {
-        .init(title: "", isLoadingIndicatorShown: true, textAlpha: 0, contentAlpha: 1, isInteractionDisabled: true)
+        .init(title: "@", isLoadingIndicatorShown: true, textAlpha: 0, contentAlpha: 1, isInteractionDisabled: true)
     }
     
     static func inactive(title: String) -> ButtonConfig {

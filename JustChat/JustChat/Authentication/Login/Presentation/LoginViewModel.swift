@@ -8,8 +8,8 @@
 import Combine
 
 final class LoginViewModel: ObservableObject {
-    @Published var submitButtonConfig: ButtonConfig = .standard(title: LoginStrings.continueButton)
-    @Published var isContentDisabled = false
+    @Published private(set) var submitButtonConfig: ButtonConfig = .standard(title: LoginStrings.continueButton)
+    @Published private(set) var isContentDisabled = false
     
     let toast: ToastViewModel
     let input: TextFieldViewModel
