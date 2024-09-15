@@ -6,30 +6,29 @@
 //
 
 extension AuthenticationFeature {
-    func view() -> AuthenticationView {
-        let screens = AuthenticationScreens(
-            login: { login().view() },
-            register: { register().view() },
-            enterCode: { enterCode($0).view() }
-        )
-        return .init(flow: flow, screens: screens)
-    }
+    func view() -> AuthenticationView { .init(flow: self) }
     
     static func make(env: AuthenticationEnvironment, events: AuthenticationEvents) -> AuthenticationFeature {
-        let flow = AuthenticationFlow()
+        let tokenService = AuthTokensService(storage: env.storage)
+        let weakFlow: Weak<AuthenticationFlow> = .init()
         let loginEvents = LoginEvents(
-            onSuccessfulSubmitLogin: flow.goToOtp,
+            onSuccessfulSubmitLogin: weakFlow.do { $0.goToOtp },
             onGoogleOAuthButtonTapped: {},
-            onRegisterButtonTapped: flow.goToRegistration
+            onRegisterButtonTapped: weakFlow.do { $0.goToRegistration }
         )
         let registerEvents = RegisterEvents(
-            onSuccessfulSubmitRegister: flow.goToOtp,
-            onLoginButtonTapped: flow.goBack
+            onSuccessfulSubmitRegister: weakFlow.do { $0.goToOtp },
+            onLoginButtonTapped: weakFlow.do { $0.goBack }
         )
-        let enterCodeEvents = EnterCodeEvents(onCorrectOtpEnter: { _ in })
-        let login = LoginFeature.make <~ env.login <~ loginEvents
-        let register = RegisterFeature.make <~ env.register <~ registerEvents
-        let enterCode = EnterCodeFeature.make <~ env.enterCode <~ enterCodeEvents
-        return .init(flow: flow, login: login, register: register, enterCode: enterCode)
+        let enterCodeEvents = EnterCodeEvents(
+            onCorrectOtpEnter: tokenService.save |> events.onSuccess
+        )
+        let flow = AuthenticationFlow(factory: .init(
+            login: LoginFeature.make <~ env.login <~ loginEvents,
+            register: RegisterFeature.make <~ env.register <~ registerEvents,
+            enterCode: EnterCodeFeature.make <~ env.enterCode <~ enterCodeEvents
+        ))
+        weakFlow.obj = flow
+        return flow
     }
 }

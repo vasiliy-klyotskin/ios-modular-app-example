@@ -7,21 +7,17 @@
 
 import Foundation
 
-struct AuthenticationFeature {
-    let flow: AuthenticationFlow
-    let login: () -> LoginFeature
-    let register: () -> RegisterFeature
-    let enterCode: (EnterCodeResendModel) -> EnterCodeFeature
-}
+typealias AuthenticationFeature = AuthenticationFlow
 
 struct AuthenticationEvents {
-    
+    let onSuccess: () -> Void
 }
 
 struct AuthenticationEnvironment {
     let httpClient: RemoteClient
     let scheduler: AnySchedulerOf<DispatchQueue>
     let makeTimer: MakeTimer
+    let storage: KeychainStorage
 }
 
 extension AuthenticationEnvironment {

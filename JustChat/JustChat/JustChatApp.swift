@@ -15,8 +15,9 @@ struct JustChatApp: App {
         env: .init(
             httpClient: demoHttpClient.load,
             scheduler: .main,
-            makeTimer: Timer.scheduledOnMainRunLoop
-        ), events: .init()
+            makeTimer: Timer.scheduledOnMainRunLoop,
+            storage: .init(service: "any")
+        ), events: .init(onSuccess: { print("Here we go") })
     )
     
     var body: some Scene {

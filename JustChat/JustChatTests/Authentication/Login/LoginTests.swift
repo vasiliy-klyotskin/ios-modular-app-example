@@ -69,7 +69,7 @@ import Foundation
         sut.simulateUserInitiateLogin()
         #expect(spy.generalError == nil, "There should be no general error after the user resubmits.")
         
-        spy.finishRemoteWith(response: generalError("error message"), index: 1)
+        spy.finishRemoteWith(response: TestData.generalError("error message"), index: 1)
         #expect(spy.generalError == "error message", "There should be a general error after the user receives a remote general error.")
     }
     
@@ -87,7 +87,7 @@ import Foundation
         sut.simulateUserInitiateLogin()
         #expect(spy.loginError == nil, "There should be no login input error after the user submits.")
         
-        spy.finishRemoteWith(response: inputError("login error"), index: 0)
+        spy.finishRemoteWith(response: TestData.inputError("login error"), index: 0)
         #expect(spy.loginError == "login error", "There should be a login input error after receiving an error.")
         
         sut.simulateUserInitiateLogin()
@@ -136,7 +136,7 @@ import Foundation
         
         sut.simulateUserInitiateLogin()
         spy.finishRemoteWith(response: successResponse(token: "token", otpLength: 4, next: 30), index: 1)
-        #expect(spy.successes == [successModel(token: "token", otpLength: 4, nextAttemptAfter: 30)], "There should be a success message after receiving an error.")
+        #expect(spy.successes == [TestData.successModel(token: "token", otpLength: 4, nextAttemptAfter: 30)], "There should be a success message after receiving an error.")
     }
 
     @Test func googleOauthTap() {
@@ -163,6 +163,7 @@ import Foundation
     // MARK: - Helpers
     
     typealias Sut = LoginFeature
+    typealias TestData = LoginData
     
     private let leakChecker = MemoryLeakChecker()
     
@@ -176,7 +177,7 @@ import Foundation
         )
         let sut = LoginFeature.make(env: env, events: events)
         spy.startSpying(sut: sut)
-        leakChecker.addForChecking(sut, spy, sourceLocation: loc)
+        leakChecker.addForChecking(sut, spy, spy.remote, sourceLocation: loc)
         return (sut, spy)
     }
 }

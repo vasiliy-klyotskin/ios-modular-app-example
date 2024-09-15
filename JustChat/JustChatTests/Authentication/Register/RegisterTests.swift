@@ -76,7 +76,7 @@ import Foundation
         #expect(spy.emailError == nil, "There should be no email input error after the user initiates registration.")
         #expect(spy.usernameError == nil, "There should be no username input error after the user initiates registration.")
         
-        spy.finishRemoteWith(response: validationErrorResponse(email: "email error", username: "username error"), index: 0)
+        spy.finishRemoteWith(response: TestData.validationErrorResponse(email: "email error", username: "username error"), index: 0)
         #expect(spy.emailError == "email error", "There should be an email input error after receiving a validation error.")
         #expect(spy.usernameError == "username error", "There should be an username input error after receiving a validation error.")
     }
@@ -95,7 +95,7 @@ import Foundation
         sut.simulateUserInitiatesRegistration()
         #expect(spy.generalError == nil, "There should be no general error after the user initiates registration again.")
         
-        spy.finishRemoteWith(response: generalErrorResponse(message: "general error"), index: 1)
+        spy.finishRemoteWith(response: TestData.generalErrorResponse(message: "general error"), index: 1)
         #expect(spy.generalError == "general error", "There should be a general error after receiving general error.")
         
         sut.simulateUserInitiatesRegistration()
@@ -132,7 +132,7 @@ import Foundation
         
         sut.simulateUserInitiatesRegistration()
         spy.finishRemoteWith(response: successResponse(token: "token", otpLength: 4, next: 30), index: 1)
-        #expect(spy.successes == [successModel(token: "token", otpLength: 4, nextAttemptAfter: 30)], "There should be a message after receiving success.")
+        #expect(spy.successes == [TestData.successModel(token: "token", otpLength: 4, nextAttemptAfter: 30)], "There should be a message after receiving success.")
     }
     
     @Test func loginButtonTap() {
@@ -151,6 +151,7 @@ import Foundation
     // MARK: - Helpers
     
     typealias Sut = RegisterFeature
+    typealias TestData = RegisterData
     
     private let leakChecker = MemoryLeakChecker()
     
@@ -163,7 +164,7 @@ import Foundation
         )
         let sut = RegisterFeature.make(env: env, events: events)
         spy.startSpying(sut: sut)
-        leakChecker.addForChecking(sut, spy, sourceLocation: loc)
+        leakChecker.addForChecking(sut, spy, spy.remote, sourceLocation: loc)
         return (sut, spy)
     }
 }

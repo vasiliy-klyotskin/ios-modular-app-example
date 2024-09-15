@@ -31,7 +31,7 @@ import Foundation
         sut.simulateUserTapsResend()
         expectResendRequestIsCorrect(spy.remote.requests[1], for: "initial token", "There should be a new request after resending again.")
         
-        spy.finishRemoteWith(response: successResendResponse(token: "new token", otpLength: 3, next: 10), index: 1)
+        spy.finishRemoteWith(response: SutData.successResendResponse(token: "new token", otpLength: 3, next: 10), index: 1)
         #expect(spy.remote.requests.count == 2, "There should be no new requests after receiving success.")
         
         spy.timer.simulateTimePassed(seconds: 10)
@@ -54,7 +54,7 @@ import Foundation
         sut.simulateUserTapsResend()
         #expect(spy.isResendingLoadingIndicatorDisplayed == true, "There should be a submission loading indicator after the user taps resend again.")
         
-        spy.finishRemoteWith(response: successResendResponse(token: "any", otpLength: 4, next: 30), index: 1)
+        spy.finishRemoteWith(response: SutData.successResendResponse(token: "any", otpLength: 4, next: 30), index: 1)
         #expect(spy.isResendingLoadingIndicatorDisplayed == false, "There should be no submission loading indicator after success.")
     }
     
@@ -77,7 +77,7 @@ import Foundation
         #expect(spy.isCodeInputDimmed == false, "Input should not be dimmed.")
         
         sut.simulateUserTapsResend()
-        spy.finishRemoteWith(response: successResendResponse(token: "any", otpLength: 4, next: 30), index: 1)
+        spy.finishRemoteWith(response: SutData.successResendResponse(token: "any", otpLength: 4, next: 30), index: 1)
         #expect(spy.isResendButtonDisabled == true, "Button should be dimmed after success.")
         #expect(spy.isCodeInputDimmed == false, "Input should not be dimmed.")
     }
@@ -97,11 +97,11 @@ import Foundation
         sut.simulateUserTapsResend()
         #expect(spy.generalError == nil, "There should not be a general error when the user taps resend after error.")
         
-        spy.finishRemoteWith(response: resendGeneralError("some error message"), index: 1)
+        spy.finishRemoteWith(response: SutData.resendGeneralError("some error message"), index: 1)
         #expect(spy.generalError == "some error message", "There should be a general error after receiving remote error.")
         
         sut.simulateUserTapsResend()
-        spy.finishRemoteWith(response: successResendResponse(token: "any", otpLength: 4), index: 2)
+        spy.finishRemoteWith(response: SutData.successResendResponse(token: "any", otpLength: 4), index: 2)
         #expect(spy.generalError == nil, "There should not be a general error after success.")
     }
     
@@ -111,7 +111,7 @@ import Foundation
         #expect(spy.validationError == nil, "There should be no validation error initially.")
         
         sut.simulateUserEntersOtp("2345")
-        spy.finishRemoteWith(response: submitValidationError("validation error"), index: 0)
+        spy.finishRemoteWith(response: SutData.submitValidationError("validation error"), index: 0)
         spy.timer.simulateTimePassed(seconds: 30)
         sut.simulateUserTapsResend()
         #expect(spy.validationError == nil, "There should be no validation error after the user resends otp.")
@@ -123,7 +123,7 @@ import Foundation
         #expect(spy.showRemainingTime == false, "Remaining time should not be displayed initially if next attempt time is zero.")
         
         sut.simulateUserTapsResend()
-        spy.finishRemoteWith(response: successResendResponse(token: "any", otpLength: 4, next: 150), index: 0)
+        spy.finishRemoteWith(response: SutData.successResendResponse(token: "any", otpLength: 4, next: 150), index: 0)
         #expect(spy.showRemainingTime == true, "Remaining time should be displayed initially.")
         #expect(spy.timeRemainingUntilNextAttempt == "2:29", "Remaining time should be correct initially.")
         
@@ -139,7 +139,7 @@ import Foundation
         #expect(spy.showRemainingTime == false, "Remaining time should be hidden after time is over.")
         
         sut.simulateUserTapsResend()
-        spy.finishRemoteWith(response: successResendResponse(token: "any", otpLength: 4, next: 25), index: 1)
+        spy.finishRemoteWith(response: SutData.successResendResponse(token: "any", otpLength: 4, next: 25), index: 1)
         #expect(spy.showRemainingTime == true, "Remaining time should be displayed after resending.")
         #expect(spy.timeRemainingUntilNextAttempt == "0:24", "Remaining time should be correct after resending.")
     }
@@ -163,7 +163,7 @@ import Foundation
         #expect(sut.code() == "435", "Code should persist after receiving an error")
         
         sut.simulateUserTapsResend()
-        spy.finishRemoteWith(response: successResendResponse(token: "any", otpLength: 5), index: 1)
+        spy.finishRemoteWith(response: SutData.successResendResponse(token: "any", otpLength: 5), index: 1)
         #expect(sut.code() == "", "Code should be cleared after successful resending.")
     }
     
@@ -185,7 +185,7 @@ import Foundation
         
         spy.timer.simulateTimePassed(seconds: 20)
         sut.simulateUserTapsResend()
-        spy.finishRemoteWith(response: successResendResponse(token: "new token", otpLength: 4), index: 1)
+        spy.finishRemoteWith(response: SutData.successResendResponse(token: "new token", otpLength: 4), index: 1)
         sut.simulateUserEntersOtp("5432")
         expectSubmitRequestIsCorrect(spy.remote.requests[2], code: "5432", token: "new token", "There should be a new request with new token when the user enters a full code after resending")
     }
@@ -204,7 +204,7 @@ import Foundation
         sut.simulateUserEntersOtp("1234")
         #expect(spy.isSubmissionLoadingIndicatorDisplayed == true, "There should be a submission loading indicator after the user enters otp.")
         
-        spy.finishRemoteWith(response: successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 1)
+        spy.finishRemoteWith(response: SutData.successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 1)
         #expect(spy.isSubmissionLoadingIndicatorDisplayed == false, "There should be no submission loading indicator after success.")
     }
     
@@ -222,11 +222,11 @@ import Foundation
         sut.simulateUserEntersOtp("4321")
         #expect(spy.generalError == nil, "There should be no general error when user submits new otp.")
         
-        spy.finishRemoteWith(response: submitGeneralError("general error"), index: 1)
+        spy.finishRemoteWith(response: SutData.submitGeneralError("general error"), index: 1)
         #expect(spy.generalError == "general error", "There should be a general error after receiving remote error.")
         
         sut.simulateUserEntersOtp("4654")
-        spy.finishRemoteWith(response: successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 2)
+        spy.finishRemoteWith(response: SutData.successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 2)
         #expect(spy.generalError == nil, "There should be no general error after success.")
     }
     
@@ -238,14 +238,14 @@ import Foundation
         sut.simulateUserEntersOtp("1234")
         #expect(spy.validationError == nil, "There should be no validation error after the user submits otp.")
         
-        spy.finishRemoteWith(response: submitValidationError("validation error"), index: 0)
+        spy.finishRemoteWith(response: SutData.submitValidationError("validation error"), index: 0)
         #expect(spy.validationError == "validation error", "There should be a validation error after receiving backend error.")
         
         sut.simulateUserEntersOtp("456")
         #expect(spy.validationError == nil, "There should be no validation error after the user changes otp.")
         
         sut.simulateUserEntersOtp("4567")
-        spy.finishRemoteWith(response: successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 1)
+        spy.finishRemoteWith(response: SutData.successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 1)
         #expect(spy.validationError == nil, "There should be no validation error after success.")
     }
     
@@ -260,7 +260,7 @@ import Foundation
         sut.simulateUserTapsResend()
         #expect(spy.otpLength == 4, "Otp length should not be changed after user resends otp.")
         
-        spy.finishRemoteWith(response: successResendResponse(token: "any", otpLength: 5, next: 10), index: 0)
+        spy.finishRemoteWith(response: SutData.successResendResponse(token: "any", otpLength: 5, next: 10), index: 0)
         #expect(spy.otpLength == 5, "Otp length should be changed after receiving new otp length.")
     }
     
@@ -280,12 +280,12 @@ import Foundation
         #expect(spy.isResendButtonDisabled == true, "Resend button should be dimmed during request even if time is over.")
         #expect(spy.isCodeInputDimmed == false, "Code input should not be dimmed.")
         
-        spy.finishRemoteWith(response: submitGeneralError("any"), index: 1)
+        spy.finishRemoteWith(response: SutData.submitGeneralError("any"), index: 1)
         #expect(spy.isResendButtonDisabled == false, "Resend button should not be dimmed after error if time is over.")
         #expect(spy.isCodeInputDimmed == false, "Code input should not be dimmed.")
         
         sut.simulateUserEntersOtp("7890")
-        spy.finishRemoteWith(response: successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 2)
+        spy.finishRemoteWith(response: SutData.successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 2)
         #expect(spy.isResendButtonDisabled == false, "Resend button should not be dimmed after success.")
         #expect(spy.isCodeInputDimmed == false, "Code input should not be dimmed.")
     }
@@ -302,9 +302,11 @@ import Foundation
         #expect(spy.successes.isEmpty, "There should not be success message after error.")
         
         sut.simulateUserEntersOtp("1234")
-        spy.finishRemoteWith(response: successSubmitResponse(accessToken: "access", refreshToken: "refresh"), index: 1)
-        #expect(spy.successes[0] == successModel(access: "access", refresh: "refresh"), "There should be a message after success")
+        spy.finishRemoteWith(response: SutData.successSubmitResponse(accessToken: "access", refreshToken: "refresh"), index: 1)
+        #expect(spy.successes[0] == SutData.successModel(access: "access", refresh: "refresh"), "There should be a message after success")
     }
+    
+    
     
     @Test func codeInputValueDuringSubmission() {
         let (sut, spy) = makeSut(otpLength: 4, nextAttempt: 30)
@@ -321,13 +323,14 @@ import Foundation
         #expect(sut.code() == "", "Code should be cleared after receiving an error.")
         
         sut.simulateUserEntersOtp("4321")
-        spy.finishRemoteWith(response: successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 1)
+        spy.finishRemoteWith(response: SutData.successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 1)
         #expect(sut.code() == "4321", "Code should persist after receiving success.")
     }
     
     // MARK: - Helpers
     
     typealias Sut = EnterCodeFeature
+    typealias SutData = EnterCodeData
     
     private let leakChecker = MemoryLeakChecker()
     
@@ -347,7 +350,7 @@ import Foundation
         let model = EnterCodeResendModel(confirmationToken: token, otpLength: otpLength, nextAttemptAfter: nextAttempt)
         let sut = EnterCodeFeature.make(env: env, events: events, model: model)
         spy.startSpying(sut: sut)
-        leakChecker.addForChecking(sut, spy, sourceLocation: loc)
+        leakChecker.addForChecking(sut, spy, spy.remote, sourceLocation: loc)
         sut.simulateViewAppeared()
         return (sut, spy)
     }

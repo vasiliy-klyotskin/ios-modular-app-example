@@ -6,28 +6,63 @@
 //
 
 import Combine
+import Foundation
 
 final class AuthenticationFlow: ObservableObject {
     enum Path: Hashable {
-        case register
-        case enterCode(EnterCodeResendModel)
+        case register(Screen<RegisterFeature>)
+        case enterCode(Screen<EnterCodeFeature>)
+    }
+    
+    struct Factory {
+        let login: () -> LoginFeature
+        let register: () -> RegisterFeature
+        let enterCode: (EnterCodeResendModel) -> EnterCodeFeature
     }
     
     @Published var path: [Path] = []
+    lazy var root: LoginFeature = { factory.login() }()
+    private let factory: Factory
+    
+    init(factory: Factory) {
+        self.factory = factory
+    }
     
     func goToRegistration() {
-        path.append(.register)
+        let registerScreen = Screen(feature: factory.register())
+        path.append(.register(registerScreen))
     }
     
     func goToOtp(model: LoginModel) {
-        path.append(.enterCode(model.enterCodeModel))
+        let enterCodeScreen = Screen(feature: factory.enterCode(model.enterCodeModel))
+        path.append(.enterCode(enterCodeScreen))
     }
     
     func goToOtp(model: RegisterModel) {
-        path.append(.enterCode(model.enterCodeModel))
+        let enterCodeScreen = Screen(feature: factory.enterCode(model.enterCodeModel))
+        path.append(.enterCode(enterCodeScreen))
     }
     
     func goBack() {
-        path.removeLast()
+        if !path.isEmpty {
+            path.removeLast()
+        }
+    }
+}
+
+struct Screen<T>: Hashable {
+    let id = UUID()
+    let feature: T
+    
+    static func screen(_ feature: T) -> Screen<T> {
+        .init(feature: feature)
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Screen<T>, rhs: Screen<T>) -> Bool {
+        lhs.id == rhs.id
     }
 }
