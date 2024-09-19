@@ -6,7 +6,6 @@
 //
 
 import Foundation
-@testable import JustChat
 
 enum LoginData {
     static func successResponse(token: String, otpLength: Int, next: Int = 60) -> (Data, HTTPURLResponse) {

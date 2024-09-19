@@ -90,8 +90,8 @@ import Foundation
     
     private func makeSut(_ loc: SourceLocation = #_sourceLocation) -> (Sut, ToastSpy) {
         let scheduler = DispatchQueue.test
-        let spy = ToastSpy(scheduler: scheduler)
-        let sut = Sut.make(scheduler: scheduler.eraseToAnyScheduler())
+        let spy = ToastSpy(uiScheduler: scheduler)
+        let sut = Sut.make(uiScheduler: scheduler.eraseToAnyScheduler())
         spy.startSpying(sut: sut)
         leakChecker.addForChecking(sut, spy, sourceLocation: loc)
         return (sut, spy)

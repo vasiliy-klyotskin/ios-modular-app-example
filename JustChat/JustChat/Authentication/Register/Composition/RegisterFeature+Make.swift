@@ -12,7 +12,7 @@ extension RegisterFeature {
     func view() -> RegisterView { .init(vm: self) }
     
     static func make(env: RegisterEnvironment, events: RegisterEvents) -> RegisterFeature {
-        let vm = RegisterViewModel(toast: .make(scheduler: env.scheduler))
+        let vm = RegisterViewModel(toast: env.toast)
         vm.onValidatedRegisterSubmit = start(submission <~ env <~ events <~ vm)
         vm.onLoginTapped = events.onLoginButtonTapped
         return vm
@@ -24,11 +24,11 @@ extension RegisterFeature {
         vm: Weak<RegisterViewModel>,
         request: RegisterRequest
     ) -> AnyPublisher<RegisterModel, RegisterError> {
-        env.httpClient(request.remote)
+        env.remoteClient(request.remote)
             .mapResponseToDtoAndRemoteError()
             .mapError(RegisterError.fromRemoteError)
             .map(RegisterModel.fromDto)
-            .receive(on: env.scheduler)
+            .receive(on: env.uiScheduler)
             .onLoadingStart(vm.do { $0.startLoading })
             .onLoadingFinish(vm.do { $0.finishLoading })
             .onLoadingFailure(vm.do { $0.handleError })

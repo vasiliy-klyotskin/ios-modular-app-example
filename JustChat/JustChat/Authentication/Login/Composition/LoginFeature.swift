@@ -9,13 +9,22 @@ import Foundation
 
 typealias LoginFeature = LoginViewModel
 
-struct LoginEnvironment {
-    let httpClient: RemoteClient
-    let scheduler: AnySchedulerOf<DispatchQueue>
-}
-
 struct LoginEvents {
     let onSuccessfulSubmitLogin: (LoginModel) -> Void
-    let onGoogleOAuthButtonTapped: () -> Void
+    let onGoogleSignInButtonTapped: () -> Void
     let onRegisterButtonTapped: () -> Void
+}
+
+struct LoginEnvironment {
+    let remoteClient: RemoteClient
+    let uiScheduler: AnySchedulerOf<DispatchQueue>
+    let toast: ToastViewModel
+    
+    static func from(resolver: Resolver) -> Self {
+        .init(
+            remoteClient: resolver.remoteClient,
+            uiScheduler: resolver.uiScheduler,
+            toast: resolver.appToast
+        )
+    }
 }

@@ -15,12 +15,12 @@ struct AnyScheduler<SchedulerTimeType: Strideable, SchedulerOptions>: Scheduler 
     private let _scheduleAfter: (SchedulerTimeType, SchedulerTimeType.Stride, SchedulerOptions?, @escaping () -> Void) -> Void
     private let _scheduleAfterInterval: (SchedulerTimeType, SchedulerTimeType.Stride, SchedulerTimeType.Stride, SchedulerOptions?, @escaping () -> Void) -> Cancellable
     
-    init<S>(_ scheduler: S) where SchedulerTimeType == S.SchedulerTimeType, SchedulerOptions == S.SchedulerOptions, S: Scheduler {
-        _now = { scheduler.now }
-        _minimumTolerance = { scheduler.minimumTolerance }
-        _schedule = scheduler.schedule(options:_:)
-        _scheduleAfter = scheduler.schedule(after:tolerance:options:_:)
-        _scheduleAfterInterval = scheduler.schedule(after:interval:tolerance:options:_:)
+    init<S>(_ uiScheduler: S) where SchedulerTimeType == S.SchedulerTimeType, SchedulerOptions == S.SchedulerOptions, S: Scheduler {
+        _now = { uiScheduler.now }
+        _minimumTolerance = { uiScheduler.minimumTolerance }
+        _schedule = uiScheduler.schedule(options:_:)
+        _scheduleAfter = uiScheduler.schedule(after:tolerance:options:_:)
+        _scheduleAfterInterval = uiScheduler.schedule(after:interval:tolerance:options:_:)
     }
     
     var now: SchedulerTimeType { _now() }

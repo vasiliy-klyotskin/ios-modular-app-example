@@ -9,12 +9,22 @@ import Foundation
 
 typealias EnterCodeFeature = EnterCodeViewModel
 
-struct EnterCodeEnvironment {
-    let httpClient: RemoteClient
-    let scheduler: AnySchedulerOf<DispatchQueue>
-    let makeTimer: MakeTimer
-}
-
 struct EnterCodeEvents {
     let onCorrectOtpEnter: (EnterCodeSubmitModel) -> Void
+}
+
+struct EnterCodeEnvironment {
+    let remoteClient: RemoteClient
+    let uiScheduler: AnySchedulerOf<DispatchQueue>
+    let toast: ToastViewModel
+    let makeTimer: MakeTimer
+    
+    static func from(resolver: Resolver) -> Self {
+        .init(
+            remoteClient: resolver.remoteClient,
+            uiScheduler: resolver.uiScheduler,
+            toast: resolver.appToast,
+            makeTimer: resolver.get(MakeTimer.self)
+        )
+    }
 }

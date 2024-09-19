@@ -9,10 +9,11 @@ import Foundation
 @testable import JustChat
 
 final class AuthenticationSpy {
-    let storage = KeychainStorage(service: "any")
+    let keychain = KeychainStorage(service: "any")
     let remote = RemoteSpy()
     let timer = TimerSpy()
-    let scheduler = DispatchQueue.test
+    let uiScheduler = DispatchQueue.test
+    let oAuth = AuthSessionSpy()
     
     var successMessages = 0
     
@@ -22,23 +23,23 @@ final class AuthenticationSpy {
     
     func finishRemoteWithError(index: Int) {
         remote.finishWithError(index: index)
-        scheduler.advance()
+        uiScheduler.advance()
     }
     
     func finishRemoteWith(response: RemoteResponse, index: Int) {
         remote.finishWith(response: response, index: index)
-        scheduler.advance()
+        uiScheduler.advance()
     }
     
     var storedAccessToken: String? {
-        storage.read(for: AuthTokensService.accessTokenId)
+        keychain.read(for: AuthTokensService.accessTokenId)
     }
     
     var storedRefreshToken: String? {
-        storage.read(for: AuthTokensService.refreshTokenId)
+        keychain.read(for: AuthTokensService.refreshTokenId)
     }
     
     func clearPersistedValues() {
-        storage.flush()
+        keychain.flush()
     }
 }

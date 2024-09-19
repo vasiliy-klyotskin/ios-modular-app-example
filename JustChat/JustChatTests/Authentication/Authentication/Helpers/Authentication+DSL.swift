@@ -28,6 +28,14 @@ extension AuthenticationTests.Sut {
             throw ScreenIsNotVisible()
         }
     }
+    
+    func oAuth() throws -> OAuthFeature {
+        if let googleOAuthFeature {
+            return googleOAuthFeature
+        } else {
+            throw ScreenIsNotVisible()
+        }
+    }
 }
 
 struct ScreenIsNotVisible: Error {}

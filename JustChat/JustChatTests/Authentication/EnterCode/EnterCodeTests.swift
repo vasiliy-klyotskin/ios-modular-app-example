@@ -342,8 +342,9 @@ import Foundation
     ) -> (Sut, EnterCodeFeatureSpy) {
         let spy = EnterCodeFeatureSpy()
         let env = EnterCodeEnvironment(
-            httpClient: spy.remote.load,
-            scheduler: spy.scheduler.eraseToAnyScheduler(),
+            remoteClient: spy.remote.load,
+            uiScheduler: spy.uiScheduler.eraseToAnyScheduler(),
+            toast: .init(),
             makeTimer: spy.timer.make()
         )
         let events = EnterCodeEvents(onCorrectOtpEnter: spy.keepSuccess)

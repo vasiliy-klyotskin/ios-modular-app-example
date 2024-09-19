@@ -11,16 +11,16 @@ final class LoginViewModel: ObservableObject {
     @Published private(set) var submitButtonConfig: ButtonConfig = .standard(title: LoginStrings.continueButton)
     @Published private(set) var isContentDisabled = false
     
-    let toast: ToastViewModel
-    let input: TextFieldViewModel
-    
     var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
     var onGoogleAuthTap: () -> Void = {}
     var onRegisterTap: () -> Void = {}
     
-    init(inputVm: TextFieldViewModel, toastVm: ToastViewModel) {
-        self.input = inputVm
-        self.toast = toastVm
+    let input: TextFieldViewModel
+    let toast: ToastViewModel
+        
+    init(input: TextFieldViewModel, toast: ToastViewModel) {
+        self.input = input
+        self.toast = toast
     }
     
     func submit() {

@@ -19,7 +19,7 @@ final class RegisterFeatureSpy {
     var loginCalls = 0
     
     let remote = RemoteSpy()
-    let scheduler = DispatchQueue.test
+    let uiScheduler = DispatchQueue.test
     
     private var cancellables = Set<AnyCancellable>()
     private var submitButtonConfig: ButtonConfig = .standard(title: "")
@@ -34,12 +34,12 @@ final class RegisterFeatureSpy {
     
     func finishRemoteWithError(index: Int) {
         remote.finishWithError(index: index)
-        scheduler.advance()
+        uiScheduler.advance()
     }
     
     func finishRemoteWith(response: RemoteResponse, index: Int) {
         remote.finishWith(response: response, index: index)
-        scheduler.advance()
+        uiScheduler.advance()
     }
     
     func keepRegisterModel(_ model: RegisterModel) {

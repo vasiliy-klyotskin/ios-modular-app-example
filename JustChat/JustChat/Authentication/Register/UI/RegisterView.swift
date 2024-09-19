@@ -20,7 +20,6 @@ struct RegisterView: View {
             }
         }
         .background(UI.color.background.primary)
-        .showToast(Toast(vm: vm.toast))
     }
     
     private func content() -> some View {

@@ -12,10 +12,10 @@ extension LoginFeature {
     func view() -> LoginView { .init(vm: self) }
     
     static func make(env: LoginEnvironment, events: LoginEvents) -> LoginFeature {
-        let vm = LoginViewModel(inputVm: .init(), toastVm: .make(scheduler: env.scheduler))
+        let vm = LoginViewModel(input: .init(), toast: env.toast)
         vm.onValidatedLoginSubmit = start(submission <~ env <~ events <~ vm)
         vm.onRegisterTap = events.onRegisterButtonTapped
-        vm.onGoogleAuthTap = events.onGoogleOAuthButtonTapped
+        vm.onGoogleAuthTap = events.onGoogleSignInButtonTapped
         return vm
     }
     
@@ -25,11 +25,11 @@ extension LoginFeature {
         vm: Weak<LoginViewModel>,
         login: LoginRequest
     ) -> AnyPublisher<LoginModel, LoginError> {
-        env.httpClient(login.remote)
+        env.remoteClient(login.remote)
             .mapResponseToDtoAndRemoteError()
             .mapError(LoginError.fromRemoteError)
             .map(LoginModel.fromDto)
-            .receive(on: env.scheduler)
+            .receive(on: env.uiScheduler)
             .onLoadingStart(vm.do { $0.startLoading })
             .onLoadingFinish(vm.do { $0.finishLoading })
             .onLoadingFailure(vm.do { $0.handleError })

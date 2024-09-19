@@ -14,22 +14,18 @@ struct AuthenticationEvents {
 }
 
 struct AuthenticationEnvironment {
-    let httpClient: RemoteClient
-    let scheduler: AnySchedulerOf<DispatchQueue>
-    let makeTimer: MakeTimer
-    let storage: KeychainStorage
-}
+    let keychain: KeychainStorage
+    private let resolver: Resolver
 
-extension AuthenticationEnvironment {
-    var login: LoginEnvironment {
-        .init(httpClient: httpClient, scheduler: scheduler)
+    static func from(resolver: Resolver) -> AuthenticationEnvironment {
+        .init(
+            keychain: resolver.get(KeychainStorage.self),
+            resolver: resolver
+        )
     }
     
-    var register: RegisterEnvironment {
-        .init(httpClient: httpClient, scheduler: scheduler)
-    }
-    
-    var enterCode: EnterCodeEnvironment {
-        .init(httpClient: httpClient, scheduler: scheduler, makeTimer: makeTimer)
-    }
+    func login() -> LoginEnvironment { .from(resolver: resolver) }
+    func oAuth() -> OAuthEnvironment { .from(resolver: resolver) }
+    func register() -> RegisterEnvironment { .from(resolver: resolver) }
+    func enterCode() -> EnterCodeEnvironment { .from(resolver: resolver) }
 }

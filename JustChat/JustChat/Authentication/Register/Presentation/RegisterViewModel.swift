@@ -11,12 +11,12 @@ final class RegisterViewModel: ObservableObject {
     @Published private(set) var submitButtonConfig: ButtonConfig = .standard(title: RegisterStrings.submitButtonTitle)
     @Published private(set) var isContentDisabled: Bool = false
     
+    var onValidatedRegisterSubmit: (RegisterRequest) -> Void = { _ in }
+    var onLoginTapped: () -> Void = {}
+    
     let email: TextFieldViewModel
     let username: TextFieldViewModel
     let toast: ToastViewModel
-    
-    var onValidatedRegisterSubmit: (RegisterRequest) -> Void = { _ in }
-    var onLoginTapped: () -> Void = {}
     
     init(toast: ToastViewModel) {
         self.toast = toast

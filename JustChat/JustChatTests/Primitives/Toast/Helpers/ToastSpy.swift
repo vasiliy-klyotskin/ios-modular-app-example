@@ -12,10 +12,10 @@ import Foundation
 final class ToastSpy {
     var message: String?
     
-    private let scheduler: TestSchedulerOf<DispatchQueue>
+    private let uiScheduler: TestSchedulerOf<DispatchQueue>
     
-    init(scheduler: TestSchedulerOf<DispatchQueue>) {
-        self.scheduler = scheduler
+    init(uiScheduler: TestSchedulerOf<DispatchQueue>) {
+        self.uiScheduler = uiScheduler
     }
     
     private var cancellables: Set<AnyCancellable> = []
@@ -25,6 +25,6 @@ final class ToastSpy {
     }
     
     func simulateTimePassed(seconds: Int) {
-        scheduler.advance(by: .init(integerLiteral: seconds))
+        uiScheduler.advance(by: .init(integerLiteral: seconds))
     }
 }

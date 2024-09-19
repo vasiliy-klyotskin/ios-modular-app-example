@@ -9,19 +9,19 @@ import Combine
 import Foundation
 
 extension ToastViewModel {
-    static func make(scheduler: AnySchedulerOf<DispatchQueue>) -> ToastViewModel {
+    static func make(uiScheduler: AnySchedulerOf<DispatchQueue>) -> ToastViewModel {
         let vm = ToastViewModel()
-        vm.onNeedHideAfter = cancellingStart(hide <~ scheduler <~ vm)
+        vm.onNeedHideAfter = cancellingStart(hide <~ uiScheduler <~ vm)
         return vm
     }
     
     private static func hide(
-        scheduler: AnySchedulerOf<DispatchQueue>,
+        uiScheduler: AnySchedulerOf<DispatchQueue>,
         vm: Weak<ToastViewModel>,
         delay: Int
     ) -> AnyPublisher<(), Never> {
         Just(())
-            .delay(for: .seconds(delay), scheduler: scheduler)
+            .delay(for: .seconds(delay), scheduler: uiScheduler)
             .onLoadingSuccess(vm.do { $0.hideAfterDelay })
             .eraseToAnyPublisher()
     }

@@ -21,7 +21,6 @@ struct LoginView: View {
             }
         }
         .background(UI.color.background.primary)
-        .showToast(Toast(vm: vm.toast))
     }
     
     private func content() -> some View {
@@ -85,5 +84,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView(vm: .init(inputVm: .init(), toastVm: .init()))
+    LoginView(vm: .init(input: .init(), toast: .init()))
 }

@@ -21,7 +21,7 @@ final class LoginFeatureSpy {
     var googleAuthCalls = 0
     
     let remote = RemoteSpy()
-    let scheduler = DispatchQueue.test
+    let uiScheduler = DispatchQueue.test
     
     private var cancellables = Set<AnyCancellable>()
     private var submitButtonConfig: ButtonConfig = .standard(title: "")
@@ -36,12 +36,12 @@ final class LoginFeatureSpy {
     
     func finishRemoteWithError(index: Int) {
         remote.finishWithError(index: index)
-        scheduler.advance()
+        uiScheduler.advance()
     }
     
     func finishRemoteWith(response: RemoteResponse, index: Int) {
         remote.finishWith(response: response, index: index)
-        scheduler.advance()
+        uiScheduler.advance()
     }
     
     func keepLoginModel(_ model: LoginModel) {

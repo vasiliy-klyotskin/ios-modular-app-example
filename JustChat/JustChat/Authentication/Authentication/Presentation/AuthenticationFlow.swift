@@ -17,15 +17,23 @@ final class AuthenticationFlow: ObservableObject {
     struct Factory {
         let login: () -> LoginFeature
         let register: () -> RegisterFeature
+        let googleOAuth: () -> OAuthFeature
         let enterCode: (EnterCodeResendModel) -> EnterCodeFeature
     }
     
-    @Published var path: [Path] = []
     lazy var root: LoginFeature = { factory.login() }()
+    @Published var googleOAuthFeature: OAuthFeature?
+    @Published var path: [Path] = []
+    
     private let factory: Factory
     
     init(factory: Factory) {
         self.factory = factory
+    }
+    
+    func showGoogleSignIn() {
+        googleOAuthFeature = factory.googleOAuth()
+        googleOAuthFeature?.startGoogleSignIn()
     }
     
     func goToRegistration() {
@@ -50,7 +58,7 @@ final class AuthenticationFlow: ObservableObject {
     }
 }
 
-struct Screen<T>: Hashable {
+struct Screen<T>: Identifiable, Hashable {
     let id = UUID()
     let feature: T
     

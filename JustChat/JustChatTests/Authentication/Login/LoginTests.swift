@@ -28,7 +28,7 @@ import Foundation
         sut.simulateUserInitiateLogin()
         expectRequestIsCorrect(spy.remote.requests[1], for: "new login", "A remote request should be made after user resubmits.")
         
-        spy.remote.finishWith(response: successResponse(token: "any", otpLength: 4), index: 1)
+        spy.remote.finishWith(response: TestData.successResponse(token: "any", otpLength: 4), index: 1)
         #expect(spy.remote.requests.count == 2, "There should be no new requests after success.")
     }
     
@@ -47,7 +47,7 @@ import Foundation
         #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false after receiving an error.")
         
         sut.simulateUserInitiateLogin()
-        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 4), index: 1)
+        spy.finishRemoteWith(response: TestData.successResponse(token: "any", otpLength: 4), index: 1)
         #expect(spy.isLoadingIndicatorDisplayed == false, "The loading state should be false after success.")
     }
     
@@ -79,7 +79,7 @@ import Foundation
         #expect(spy.loginError == nil, "There should be no login input error initially.")
         
         sut.simulateUserInitiateLogin()
-        #expect(spy.loginError == LoginStrings.emptyInputError, "There should be an empty login error after the user submits if input is empty.")
+        #expect(spy.loginError == LoginStrings.emptyInputError, "There should be an empty login error after the user submits an empty input.")
         
         sut.simulateUserChangesLoginInput("any")
         #expect(spy.loginError == nil, "There should be no login input error after the user changes the login.")
@@ -109,7 +109,7 @@ import Foundation
         #expect(spy.isContentDisabled == false, "Content should not be disabled after receiving an error.")
         
         sut.simulateUserInitiateLogin()
-        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 4), index: 1)
+        spy.finishRemoteWith(response: TestData.successResponse(token: "any", otpLength: 4), index: 1)
         #expect(spy.isContentDisabled == false, "Content should not be disabled after success.")
     }
     
@@ -118,7 +118,7 @@ import Foundation
         
         sut.simulateUserChangesLoginInput("login")
         sut.simulateUserInitiateLogin()
-        spy.finishRemoteWith(response: successResponse(token: "any", otpLength: 4), index: 0)
+        spy.finishRemoteWith(response: TestData.successResponse(token: "any", otpLength: 4), index: 0)
         #expect(spy.input == "login", "Input should not be cleared after success")
     }
     
@@ -135,7 +135,7 @@ import Foundation
         #expect(spy.successes.isEmpty, "There should not be a success message after receiving an error.")
         
         sut.simulateUserInitiateLogin()
-        spy.finishRemoteWith(response: successResponse(token: "token", otpLength: 4, next: 30), index: 1)
+        spy.finishRemoteWith(response: TestData.successResponse(token: "token", otpLength: 4, next: 30), index: 1)
         #expect(spy.successes == [TestData.successModel(token: "token", otpLength: 4, nextAttemptAfter: 30)], "There should be a success message after receiving an error.")
     }
 
@@ -169,10 +169,10 @@ import Foundation
     
     private func makeSut(_ loc: SourceLocation = #_sourceLocation) -> (Sut, LoginFeatureSpy) {
         let spy = LoginFeatureSpy()
-        let env = LoginEnvironment(httpClient: spy.remote.load, scheduler: spy.scheduler.eraseToAnyScheduler())
+        let env = LoginEnvironment(remoteClient: spy.remote.load, uiScheduler: spy.uiScheduler.eraseToAnyScheduler(), toast: .init())
         let events = LoginEvents(
             onSuccessfulSubmitLogin: spy.keepLoginModel(_:),
-            onGoogleOAuthButtonTapped: spy.incrementGoogleAuth,
+            onGoogleSignInButtonTapped: spy.incrementGoogleAuth,
             onRegisterButtonTapped: spy.incrementRegister
         )
         let sut = LoginFeature.make(env: env, events: events)

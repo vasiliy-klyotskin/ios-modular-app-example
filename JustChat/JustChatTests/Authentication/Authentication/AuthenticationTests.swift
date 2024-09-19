@@ -59,6 +59,24 @@ import Foundation
         #expect(spy.successMessages == 1, "There should be a success message after the flow finishes.")
     }
     
+    @Test
+    func userSignsInWithGoogle() throws {
+        let (sut, spy) = makeSut()
+        
+        #expect(spy.storedAccessToken == nil, "There should not be an access token initially.")
+        #expect(spy.storedRefreshToken == nil, "There should not be a refresh token initially.")
+        #expect(spy.successMessages == 0, "There should not be success messages initially.")
+        
+        try sut.loginScreen().simulateUserTapsGoogleAuth()
+        
+        spy.oAuth.finishWIth(url: OAuthData.redirectUrlWith(code: "abc123"))
+        spy.finishRemoteWith(response: OAuthData.successResponse(accessToken: "access", refreshToken: "refresh"), index: 0)
+        
+        #expect(spy.storedAccessToken == "access", "There should be an access token after the flow finishes.")
+        #expect(spy.storedRefreshToken == "refresh", "There should be a refresh token after the flow finishes.")
+        #expect(spy.successMessages == 1, "There should be a success message after the flow finishes.")
+    }
+    
     // MARK: - Helpers
     
     typealias Sut = AuthenticationFeature
@@ -67,16 +85,23 @@ import Foundation
     
     private func makeSut(_ loc: SourceLocation = #_sourceLocation) -> (Sut, AuthenticationSpy) {
         let spy = AuthenticationSpy()
-        let env = AuthenticationEnvironment(
-            httpClient: spy.remote.load,
-            scheduler: spy.scheduler.eraseToAnyScheduler(),
-            makeTimer: spy.timer.make(),
-            storage: spy.storage
-        )
+        let container = makeContainer(spy: spy)
+        let env = AuthenticationEnvironment.from(resolver: container)
         let events = AuthenticationEvents(onSuccess: spy.processSuccess)
         let sut = AuthenticationFeature.make(env: env, events: events)
-        leakChecker.addForChecking(sut, spy, spy.remote, spy.storage, sourceLocation: loc)
+        leakChecker.addForChecking(sut, spy, spy.remote, spy.keychain, sourceLocation: loc)
         spy.clearPersistedValues()
         return (sut, spy)
+    }
+    
+    private func makeContainer(spy: AuthenticationSpy) -> Container {
+        Container()
+            .register(RemoteClient.self, spy.remote.load)
+            .register(AnySchedulerOf<DispatchQueue>.self, spy.uiScheduler.eraseToAnyScheduler())
+            .register(ToastViewModel.self, .init())
+            .register(MakeTimer.self, spy.timer.make())
+            .register(MakeAuthSession.self, spy.oAuth.makeSession)
+            .register(KeychainStorage.self, spy.keychain)
+            .register(AppInfo.self, .init())
     }
 }

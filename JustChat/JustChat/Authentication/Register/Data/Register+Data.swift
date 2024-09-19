@@ -5,8 +5,6 @@
 //  Created by Василий Клецкин on 9/15/24.
 //
 
-@testable import JustChat
-
 enum RegisterData {
     static func successResponse(token: String, otpLength: Int, next: Int = 60) -> RemoteResponse {
         let json = """

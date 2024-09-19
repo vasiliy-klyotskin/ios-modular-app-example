@@ -16,9 +16,8 @@ final class EnterCodeViewModel: ObservableObject {
     var onNeedSubmit: (EnterCodeSubmitRequest) -> Void = { _ in }
     var onNeedResend: (EnterCodeResendRequest) -> Void = { _ in }
 
-    let codeInputVm: CodeInputViewModel
-    let toastVm: ToastViewModel
-    
+    let codeInput: CodeInputViewModel
+    let toast: ToastViewModel
     private let ticker: SecondTicker
     
     private var confirmationToken: String
@@ -28,12 +27,12 @@ final class EnterCodeViewModel: ObservableObject {
     
     init(
         model: EnterCodeResendModel,
-        codeInputVm: CodeInputViewModel,
-        toastVm: ToastViewModel,
+        codeInput: CodeInputViewModel,
+        toast: ToastViewModel,
         ticker: SecondTicker
     ) {
-        self.toastVm = toastVm
-        self.codeInputVm = codeInputVm
+        self.toast = toast
+        self.codeInput = codeInput
         self.ticker = ticker
         self.confirmationToken = model.confirmationToken
         self.secondsLeftBeforeResend = model.nextAttemptAfter
@@ -41,8 +40,8 @@ final class EnterCodeViewModel: ObservableObject {
     
     func resend() {
         guard secondsLeftBeforeResend <= 0 else { return }
-        toastVm.updateMessage(nil)
-        codeInputVm.updateError(nil)
+        toast.updateMessage(nil)
+        codeInput.updateError(nil)
         onNeedResend(.init(confirmationToken: confirmationToken))
     }
 
@@ -59,14 +58,14 @@ final class EnterCodeViewModel: ObservableObject {
     func updateResendModel(_ resendModel: EnterCodeResendModel) {
         confirmationToken = resendModel.confirmationToken
         secondsLeftBeforeResend = resendModel.nextAttemptAfter
-        codeInputVm.updateLength(resendModel.otpLength)
+        codeInput.updateLength(resendModel.otpLength)
         updateResendUI()
-        codeInputVm.clearInput()
+        codeInput.clearInput()
         ticker.start()
     }
 
     func handleResendError(_ error: EnterCodeResendError) {
-        toastVm.updateMessage(error.message)
+        toast.updateMessage(error.message)
     }
 
     func startSubmitLoading() {
@@ -80,12 +79,12 @@ final class EnterCodeViewModel: ObservableObject {
     }
 
     func handleSubmitError(_ error: EnterCodeSubmitError) {
-        codeInputVm.clearInput()
+        codeInput.clearInput()
         switch error {
         case .general(let message):
-            toastVm.updateMessage(message)
+            toast.updateMessage(message)
         case .validation(let validation):
-            codeInputVm.updateError(validation)
+            codeInput.updateError(validation)
         }
     }
 
@@ -105,14 +104,14 @@ final class EnterCodeViewModel: ObservableObject {
     }
 
     func handleEnteredCode(_ code: String) {
-        toastVm.updateMessage(nil)
+        toast.updateMessage(nil)
         onNeedSubmit(.init(code: code, confirmationToken: confirmationToken))
     }
 
     private func updateUIState() {
-        codeInputVm.updateIsLoading(isSubmitting)
-        codeInputVm.updateIsDimmed(isResending)
-        codeInputVm.updateIsDisabled(isSubmitting || isResending)
+        codeInput.updateIsLoading(isSubmitting)
+        codeInput.updateIsDimmed(isResending)
+        codeInput.updateIsDisabled(isSubmitting || isResending)
         updateResendButton()
     }
     
