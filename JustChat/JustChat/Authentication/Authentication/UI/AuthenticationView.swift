@@ -16,14 +16,18 @@ struct AuthenticationView: View {
                 .optionalOverlay { flow.googleOAuthFeature?.view() }
                 .navigationDestination(for: AuthenticationFlow.Path.self, destination: destination(path:))
         }
+        .tint(UI.color.text.primary)
     }
     
     @ViewBuilder
     private func destination(path: AuthenticationFlow.Path) -> some View {
-        switch path {
-        case .enterCode(let screen): screen.feature.view()
-        case .register(let screen): screen.feature.view()
+        Group {
+            switch path {
+            case .enterCode(let screen): screen.feature.view()
+            case .register(let screen): screen.feature.view()
+            }
         }
+        .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
     }
 }
 

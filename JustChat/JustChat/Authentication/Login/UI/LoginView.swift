@@ -11,30 +11,35 @@ struct LoginView: View {
     @ObservedObject var vm: LoginViewModel
     
     private var separatorHeight: CGFloat { 1 }
+    private var particlesImageName: String { "sparkles" }
     
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 content()
                     .frame(minHeight: geometry.size.height)
-                    
+                    .disabled(vm.isContentDisabled)
             }
+            .background(ParticlesView(size: geometry.size, imageName: particlesImageName))
+            .background(UI.color.background.primary)
         }
-        .background(UI.color.background.primary)
     }
     
     private func content() -> some View {
-        VStack(alignment: .leading) {
+        VStack(spacing: 0) {
             Spacer()
-            header().padding(.bottom, UI.spacing.lg)
-            input().padding(.bottom, UI.spacing.lg)
-            submitButton().padding(.bottom, UI.spacing.md)
-            separator().padding(.bottom, UI.spacing.md)
-            googleAuthButton().padding(.bottom, UI.spacing.lg)
-            register()
+            BackgroundGradientSeparator()
+            VStack(alignment: .leading) {
+                header().padding(.bottom, UI.spacing.lg)
+                input().padding(.bottom, UI.spacing.lg)
+                submitButton().padding(.bottom, UI.spacing.md)
+                separator().padding(.bottom, UI.spacing.md)
+                googleAuthButton().padding(.bottom, UI.spacing.lg)
+                register()
+            }
+            .padding(UI.spacing.md)
+            .background(UI.color.background.primary)
         }
-        .padding(UI.spacing.md)
-        .disabled(vm.isContentDisabled)
     }
     
     private func header() -> some View {

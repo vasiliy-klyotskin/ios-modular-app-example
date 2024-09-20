@@ -11,7 +11,7 @@ struct TextField: View {
     @ObservedObject var vm: TextFieldViewModel
     let title: String
     
-    @ScaledMetric(wrappedValue: 16, relativeTo: .body) var iconSize: CGFloat
+    @ScaledMetric(wrappedValue: 12, relativeTo: .body) var iconSize: CGFloat
 
     var body: some View {
         VStack(alignment: .leading, spacing: UI.spacing.sm) {

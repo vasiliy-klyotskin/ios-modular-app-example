@@ -10,25 +10,32 @@ import SwiftUI
 struct RegisterView: View {
     @ObservedObject var vm: RegisterViewModel
     
+    private var particlesImageName: String { "figure" }
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 content()
-                    .padding(UI.spacing.md)
                     .frame(minHeight: geometry.size.height)
                     .disabled(vm.isContentDisabled)
             }
+            .background(ParticlesView(size: geometry.size, imageName: particlesImageName))
+            .background(UI.color.background.primary)
         }
-        .background(UI.color.background.primary)
     }
     
     private func content() -> some View {
-        VStack(alignment: .leading, spacing: UI.spacing.lg) {
+        VStack(spacing: 0) {
             Spacer()
-            header()
-            inputs().padding(.vertical, UI.spacing.md)
-            submitButton()
-            login()
+            BackgroundGradientSeparator()
+            VStack(alignment: .leading, spacing: UI.spacing.lg) {
+                header()
+                inputs().padding(.vertical, UI.spacing.md)
+                submitButton()
+                login()
+            }
+            .padding(UI.spacing.md)
+            .background(UI.color.background.primary)
         }
     }
     

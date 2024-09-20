@@ -10,26 +10,32 @@ import SwiftUI
 struct EnterCodeView: View {
     @ObservedObject var vm: EnterCodeViewModel
     
+    private var particlesImageName: String { "lock.fill" }
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                content()
-                    .padding(UI.spacing.md)
-                    .frame(minHeight: geometry.size.height)
+                content().frame(minHeight: geometry.size.height)
             }
+            .background(ParticlesView(size: geometry.size, imageName: particlesImageName))
+            .background(UI.color.background.primary)
+            .onAppear(perform: vm.handleViewAppear)
         }
-        .background(UI.color.background.primary)
     }
     
     private func content() -> some View {
-        VStack(alignment: .leading) {
+        VStack(spacing: 0) {
             Spacer()
-            header()
-            CodeInputView(vm: vm.codeInput).padding(.vertical, UI.spacing.md)
-            resendInfo()
-            resendButton()
+            BackgroundGradientSeparator()
+            VStack(alignment: .leading, spacing: UI.spacing.md) {
+                header()
+                CodeInputView(vm: vm.codeInput).padding(.vertical, UI.spacing.md)
+                resendInfo()
+                resendButton()
+            }
+            .padding(UI.spacing.md)
+            .background(UI.color.background.primary)
         }
-        .onAppear(perform: vm.handleViewAppear)
     }
     
     private func header() -> some View {

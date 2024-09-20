@@ -6,7 +6,7 @@
 //
 
 enum EnterCodeStrings {
-    static var title: String { "Enter code 👾" }
+    static var title: String { "Enter code 🔑" }
     static var subtitle: String { "Please check your email for the verification code we just sent you, and enter it below." }
     static var resendButton: String { "Resend code" }
     static var resendCodeIn: String { "Resend the code in" }
