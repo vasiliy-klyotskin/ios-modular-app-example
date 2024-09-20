@@ -23,6 +23,7 @@ final class CodeInputViewModel: ObservableObject {
     var onCodeIsEntered: (String) -> Void = { _ in }
     
     private var codeAtDisableMoment: String? = nil
+    private var isFocused: Bool = false
     
     init(length: Int) {
         self.length = length
@@ -66,7 +67,12 @@ final class CodeInputViewModel: ObservableObject {
     }
     
     func shouldShowCursor(at index: Int) -> Bool {
-        index == codeInput.count && codeInput.count < length
+        isFocused && (index == codeInput.count) && (codeInput.count < length)
+    }
+    
+    func updateIsFocused(oldValue: Bool, newValue: Bool) {
+        objectWillChange.send()
+        self.isFocused = newValue
     }
     
     private func handleInputChange(oldValue: String, newValue: String) {

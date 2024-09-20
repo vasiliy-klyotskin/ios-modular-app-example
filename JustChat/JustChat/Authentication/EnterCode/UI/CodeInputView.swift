@@ -24,7 +24,9 @@ struct CodeInputView: View {
             hiddenTextField()
             codeFieldWithIndicatorAndError()
         }
+        .onTapGesture(perform: focusOnCodeInput)
         .onAppear(perform: focusOnCodeInput)
+        .onChange(of: isFocused, vm.updateIsFocused)
     }
     
     private func codeFieldWithIndicatorAndError() -> some View {
@@ -73,7 +75,6 @@ struct CodeInputView: View {
                     }
                 }
             )
-            
     }
     
     private func hiddenTextField() -> some View {
@@ -93,7 +94,9 @@ struct CodeInputView: View {
     }
     
     private func focusOnCodeInput() {
-        isFocused = true
+        if !isFocused {
+            isFocused = true
+        }
     }
 }
 

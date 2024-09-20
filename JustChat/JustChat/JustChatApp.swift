@@ -29,6 +29,7 @@ struct JustChatApp: App {
         WindowGroup {
             Self.feature.view()
                 .showToast(Toast(vm: Self.toast))
+                .hideKeyboardOnTap()
         }
     }
 }
@@ -46,5 +47,26 @@ final class AuthenticationDemoRemote {
                 .delay(for: 2, scheduler: DispatchQueue.main)
                 .eraseToAnyPublisher()
         }
+    }
+}
+
+struct HideKeyboardOnTapModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .onTapGesture {
+                self.hideKeyboard()
+            }
+    }
+    
+    private func hideKeyboard() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else { return }
+        window.endEditing(true)
+    }
+}
+
+extension View {
+    func hideKeyboardOnTap() -> some View {
+        self.modifier(HideKeyboardOnTapModifier())
     }
 }
