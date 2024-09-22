@@ -10,10 +10,11 @@ struct OAuthRequestDTO: Encodable, Equatable {
 }
 
 extension OAuthRequest {
+    static var path: String { "oauth/google" }
+    static var method: String { "POST" }
+    
     var remote: RemoteRequest {
-        let path = "oauth/google"
-        let method = "POST"
         let dto = OAuthRequestDTO(authCode: authCode)
-        return .init(path: path, method: method, body: .encodable(dto))
+        return .init(path: Self.path, method: Self.method, body: .encodable(dto))
     }
 }

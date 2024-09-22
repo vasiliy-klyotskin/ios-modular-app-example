@@ -84,7 +84,7 @@ import Foundation
     
     // MARK: - Helpers
 
-    typealias Sut = ToastViewModel
+    typealias Sut = ToastFeature
     
     private let leakChecker = MemoryLeakChecker()
     

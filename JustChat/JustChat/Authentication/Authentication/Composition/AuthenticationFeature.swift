@@ -10,7 +10,7 @@ import Foundation
 typealias AuthenticationFeature = AuthenticationFlow
 
 struct AuthenticationEvents {
-    let onSuccess: () -> Void
+    let onSuccess: (AuthenticationTokens) -> Void
 }
 
 struct AuthenticationEnvironment {

@@ -9,13 +9,15 @@ import Foundation
 import Combine
 
 extension RegisterFeature {
-    func view() -> RegisterView { .init(vm: self) }
-    
     static func make(env: RegisterEnvironment, events: RegisterEvents) -> RegisterFeature {
         let vm = RegisterViewModel(toast: env.toast)
         vm.onValidatedRegisterSubmit = start(submission <~ env <~ events <~ vm)
         vm.onLoginTapped = events.onLoginButtonTapped
         return vm
+    }
+    
+    func view() -> RegisterView {
+        .init(vm: self)
     }
     
     private static func submission(

@@ -6,29 +6,19 @@
 //
 
 final class AuthTokensService {
+    static var accessTokenId: String { "ACCESS_TOKEN_KEY" }
+    static var refreshTokenId: String { "REFRESH_TOKEN_KEY" }
+    
     let keychain: KeychainStorage
     
     init(keychain: KeychainStorage) {
         self.keychain = keychain
     }
-    
-    static var accessTokenId: String { "ACCESS_TOKEN_KEY" }
-    static var refreshTokenId: String { "REFRESH_TOKEN_KEY" }
-    
-    func save(accessToken: String, refreshToken: String) {
+
+    func save(tokens: AuthenticationTokens) {
         keychain.delete(for: Self.accessTokenId)
         keychain.delete(for: Self.refreshTokenId)
-        keychain.save(for: Self.accessTokenId, value: accessToken)
-        keychain.save(for: Self.refreshTokenId, value: refreshToken)
-    }
-}
-
-extension AuthTokensService {
-    func save(_ model: EnterCodeSubmitModel) {
-        save(accessToken: model.accessToken, refreshToken: model.refreshToken)
-    }
-    
-    func save(_ model: OAuthModel) {
-        save(accessToken: model.accessToken, refreshToken: model.refreshToken)
+        keychain.save(for: Self.accessTokenId, value: tokens.accessToken)
+        keychain.save(for: Self.refreshTokenId, value: tokens.refreshToken)
     }
 }

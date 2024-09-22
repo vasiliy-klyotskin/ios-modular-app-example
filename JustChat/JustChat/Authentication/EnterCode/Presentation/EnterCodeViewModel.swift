@@ -9,13 +9,13 @@ import Combine
 import Foundation
 
 final class EnterCodeViewModel: ObservableObject {
+    var onNeedSubmit: (EnterCodeSubmitRequest) -> Void = { _ in }
+    var onNeedResend: (EnterCodeResendRequest) -> Void = { _ in }
+    
     @Published private(set) var resendButtonConfig: ButtonConfig = .standard(title: EnterCodeStrings.resendButton)
     @Published private(set) var timeRemainingUntilNextAttempt: String = ""
     @Published private(set) var showTimeUntilNextAttempt = true
     
-    var onNeedSubmit: (EnterCodeSubmitRequest) -> Void = { _ in }
-    var onNeedResend: (EnterCodeResendRequest) -> Void = { _ in }
-
     let codeInput: CodeInputViewModel
     let toast: ToastViewModel
     private let ticker: SecondTicker

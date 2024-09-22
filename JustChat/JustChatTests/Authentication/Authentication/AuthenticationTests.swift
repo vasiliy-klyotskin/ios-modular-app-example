@@ -16,7 +16,7 @@ import Foundation
         
         #expect(spy.storedAccessToken == nil, "There should not be an access token initially.")
         #expect(spy.storedRefreshToken == nil, "There should not be a refresh token initially.")
-        #expect(spy.successMessages == 0, "There should not be success messages initially.")
+        #expect(spy.successMessages.count == 0, "There should not be success messages initially.")
         
         try sut.loginScreen().simulateUserChangesLoginInput("CrazyFrog123")
         try sut.loginScreen().simulateUserInitiateLogin()
@@ -30,7 +30,7 @@ import Foundation
         
         #expect(spy.storedAccessToken == "access token 123", "There should be an access token after the flow finishes.")
         #expect(spy.storedRefreshToken == "refresh token 123", "There should be a refresh token after the flow finishes.")
-        #expect(spy.successMessages == 1, "There should be a success message after the flow finishes.")
+        #expect(spy.successMessages == [.init(accessToken: "access token 123", refreshToken: "refresh token 123")], "There should be a success message after the flow finishes.")
     }
     
     @Test
@@ -39,7 +39,7 @@ import Foundation
         
         #expect(spy.storedAccessToken == nil, "There should not be an access token initially.")
         #expect(spy.storedRefreshToken == nil, "There should not be a refresh token initially.")
-        #expect(spy.successMessages == 0, "There should not be success messages initially.")
+        #expect(spy.successMessages.count == 0, "There should not be success messages initially.")
         
         try sut.loginScreen().simulateUserTapsRegister()
         
@@ -56,7 +56,7 @@ import Foundation
         
         #expect(spy.storedAccessToken == "access token 321", "There should be an access token after the flow finishes.")
         #expect(spy.storedRefreshToken == "refresh token 321", "There should be a refresh token after the flow finishes.")
-        #expect(spy.successMessages == 1, "There should be a success message after the flow finishes.")
+        #expect(spy.successMessages == [.init(accessToken: "access token 321", refreshToken: "refresh token 321")], "There should be a success message after the flow finishes.")
     }
     
     @Test
@@ -65,7 +65,7 @@ import Foundation
         
         #expect(spy.storedAccessToken == nil, "There should not be an access token initially.")
         #expect(spy.storedRefreshToken == nil, "There should not be a refresh token initially.")
-        #expect(spy.successMessages == 0, "There should not be success messages initially.")
+        #expect(spy.successMessages.count == 0, "There should not be success messages initially.")
         
         try sut.loginScreen().simulateUserTapsGoogleAuth()
         
@@ -74,7 +74,7 @@ import Foundation
         
         #expect(spy.storedAccessToken == "access", "There should be an access token after the flow finishes.")
         #expect(spy.storedRefreshToken == "refresh", "There should be a refresh token after the flow finishes.")
-        #expect(spy.successMessages == 1, "There should be a success message after the flow finishes.")
+        #expect(spy.successMessages == [.init(accessToken: "access", refreshToken: "refresh")], "There should be a success message after the flow finishes.")
     }
     
     // MARK: - Helpers
@@ -98,7 +98,7 @@ import Foundation
         Container()
             .register(RemoteClient.self, spy.remote.load)
             .register(AnySchedulerOf<DispatchQueue>.self, spy.uiScheduler.eraseToAnyScheduler())
-            .register(ToastViewModel.self, .init())
+            .register(ToastFeature.self, .init())
             .register(MakeTimer.self, spy.timer.make())
             .register(MakeAuthSession.self, spy.oAuth.makeSession)
             .register(KeychainStorage.self, spy.keychain)

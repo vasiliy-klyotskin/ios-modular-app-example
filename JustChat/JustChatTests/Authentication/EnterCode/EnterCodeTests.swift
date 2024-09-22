@@ -188,6 +188,10 @@ import Foundation
         spy.finishRemoteWith(response: SutData.successResendResponse(token: "new token", otpLength: 4), index: 1)
         sut.simulateUserEntersOtp("5432")
         expectSubmitRequestIsCorrect(spy.remote.requests[2], code: "5432", token: "new token", "There should be a new request with new token when the user enters a full code after resending")
+        
+        spy.finishRemoteWith(response: SutData.successSubmitResponse(accessToken: "any", refreshToken: "any"), index: 2)
+        sut.simulateUserEntersOtp("5432")
+        #expect(spy.remote.requests.count == 3, "There should be no new requests after submitting the same code after success (edge case).")
     }
     
     @Test func submissionLoadingIndicator() {
@@ -305,8 +309,6 @@ import Foundation
         spy.finishRemoteWith(response: SutData.successSubmitResponse(accessToken: "access", refreshToken: "refresh"), index: 1)
         #expect(spy.successes[0] == SutData.successModel(access: "access", refresh: "refresh"), "There should be a message after success")
     }
-    
-    
     
     @Test func codeInputValueDuringSubmission() {
         let (sut, spy) = makeSut(otpLength: 4, nextAttempt: 30)

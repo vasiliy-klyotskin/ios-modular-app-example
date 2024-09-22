@@ -20,5 +20,5 @@ extension Resolver {
 extension Resolver {
     var remoteClient: RemoteClient { self.get(RemoteClient.self) }
     var uiScheduler: AnySchedulerOf<DispatchQueue> { self.get(AnySchedulerOf<DispatchQueue>.self) }
-    var appToast: ToastViewModel { self.get(ToastViewModel.self) }
+    var appToast: ToastFeature { self.get(ToastFeature.self) }
 }

@@ -8,8 +8,6 @@
 import Combine
 
 extension OAuthFeature {
-    func view() -> OAuthView { .init(vm: self) }
-    
     static func make(env: OAuthEnvironment, events: OAuthEvents) -> OAuthFeature {
         let oAuth = OAuthService(
             provider: PresentationContextProvider(),
@@ -20,6 +18,10 @@ extension OAuthFeature {
         vm.onNeedStartGoogleSignIn = oAuth.startGoogleSignIn
         oAuth.onGoogleSignInSuccess = start(getTokens <~ env <~ events <~ vm)
         return vm
+    }
+    
+    func view() -> OAuthView {
+        .init(vm: self)
     }
     
     private static func getTokens(

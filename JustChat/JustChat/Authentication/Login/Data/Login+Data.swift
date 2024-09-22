@@ -8,7 +8,7 @@
 import Foundation
 
 enum LoginData {
-    static func successResponse(token: String, otpLength: Int, next: Int = 60) -> (Data, HTTPURLResponse) {
+    static func successResponse(token: String, otpLength: Int, next: Int = 60) -> RemoteResponse {
         let json = """
         {
             "confirmationToken": "\(token)",

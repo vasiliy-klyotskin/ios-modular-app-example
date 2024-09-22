@@ -16,7 +16,7 @@ struct EnterCodeEvents {
 struct EnterCodeEnvironment {
     let remoteClient: RemoteClient
     let uiScheduler: AnySchedulerOf<DispatchQueue>
-    let toast: ToastViewModel
+    let toast: ToastFeature
     let makeTimer: MakeTimer
     
     static func from(resolver: Resolver) -> Self {

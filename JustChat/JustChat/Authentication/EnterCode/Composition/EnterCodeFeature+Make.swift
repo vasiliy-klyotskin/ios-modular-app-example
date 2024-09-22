@@ -8,8 +8,6 @@
 import Combine
 
 extension EnterCodeFeature {
-    func view() -> EnterCodeView { .init(vm: self) }
-    
     static func make(env: EnterCodeEnvironment, events: EnterCodeEvents, model: EnterCodeResendModel) -> EnterCodeFeature {
         let ticker = SecondTicker(makeTimer: env.makeTimer)
         let codeInputVm = CodeInputViewModel(length: model.otpLength)
@@ -24,6 +22,10 @@ extension EnterCodeFeature {
         codeInputVm.onCodeIsEntered = Weak(vm).do { $0.handleEnteredCode }
         ticker.onTick = Weak(vm).do { $0.handleNextTick }
         return vm
+    }
+    
+    func view() -> EnterCodeView {
+        .init(vm: self)
     }
     
     private static func resend(

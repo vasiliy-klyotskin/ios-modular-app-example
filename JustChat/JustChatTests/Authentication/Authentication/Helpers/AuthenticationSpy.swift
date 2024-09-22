@@ -15,10 +15,10 @@ final class AuthenticationSpy {
     let uiScheduler = DispatchQueue.test
     let oAuth = AuthSessionSpy()
     
-    var successMessages = 0
+    var successMessages: [AuthenticationTokens] = []
     
-    func processSuccess() {
-        successMessages += 1
+    func processSuccess(model: AuthenticationTokens) {
+        successMessages.append(model)
     }
     
     func finishRemoteWithError(index: Int) {

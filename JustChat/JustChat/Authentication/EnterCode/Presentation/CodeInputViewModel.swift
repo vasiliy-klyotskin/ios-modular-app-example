@@ -9,6 +9,8 @@ import Combine
 import Foundation
 
 final class CodeInputViewModel: ObservableObject {
+    var onCodeIsEntered: (String) -> Void = { _ in }
+    
     @Published private(set) var length: Int
     @Published private(set) var isDimmed = false
     @Published private(set) var error: String? = nil
@@ -19,8 +21,6 @@ final class CodeInputViewModel: ObservableObject {
             handleInputChange(oldValue: oldValue, newValue: rawInput)
         }
     }
-    
-    var onCodeIsEntered: (String) -> Void = { _ in }
     
     private var codeAtDisableMoment: String? = nil
     private var isFocused: Bool = false
@@ -76,6 +76,7 @@ final class CodeInputViewModel: ObservableObject {
     }
     
     private func handleInputChange(oldValue: String, newValue: String) {
+        if oldValue == newValue { return }
         if codeAtDisableMoment != nil { return }
         error = nil
         setFiltered(newValue: newValue)

@@ -10,10 +10,11 @@ struct EnterCodeResendRequestDTO: Encodable, Equatable {
 }
 
 extension EnterCodeResendRequest {
+    static var path: String { "resend-otp" }
+    static var method: String { "POST" }
+    
     var remote: RemoteRequest {
-        let path = "resend-otp"
-        let method = "POST"
         let dto = EnterCodeResendRequestDTO(confirmationToken: self.confirmationToken)
-        return .init(path: path, method: method, body: .encodable(dto))
+        return .init(path: Self.path, method: Self.method, body: .encodable(dto))
     }
 }

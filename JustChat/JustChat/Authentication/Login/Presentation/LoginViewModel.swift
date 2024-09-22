@@ -8,12 +8,12 @@
 import Combine
 
 final class LoginViewModel: ObservableObject {
-    @Published private(set) var submitButtonConfig: ButtonConfig = .standard(title: LoginStrings.continueButton)
-    @Published private(set) var isContentDisabled = false
-    
     var onValidatedLoginSubmit: (LoginRequest) -> Void = { _ in }
     var onGoogleAuthTap: () -> Void = {}
     var onRegisterTap: () -> Void = {}
+    
+    @Published private(set) var submitButtonConfig: ButtonConfig = .standard(title: LoginStrings.continueButton)
+    @Published private(set) var isContentDisabled = false
     
     let input: TextFieldViewModel
     let toast: ToastViewModel

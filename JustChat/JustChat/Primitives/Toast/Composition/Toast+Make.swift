@@ -8,11 +8,15 @@
 import Combine
 import Foundation
 
-extension ToastViewModel {
-    static func make(uiScheduler: AnySchedulerOf<DispatchQueue>) -> ToastViewModel {
+extension ToastFeature {
+    static func make(uiScheduler: AnySchedulerOf<DispatchQueue>) -> ToastFeature {
         let vm = ToastViewModel()
         vm.onNeedHideAfter = cancellingStart(hide <~ uiScheduler <~ vm)
         return vm
+    }
+    
+    func view() -> Toast {
+        .init(vm: self)
     }
     
     private static func hide(

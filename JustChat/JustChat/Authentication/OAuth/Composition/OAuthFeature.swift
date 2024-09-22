@@ -16,7 +16,7 @@ struct OAuthEvents {
 struct OAuthEnvironment {
     let remoteClient: RemoteClient
     let uiScheduler: AnySchedulerOf<DispatchQueue>
-    let toast: ToastViewModel
+    let toast: ToastFeature
     let appInfo: AppInfo
     let makeAuthSession: MakeAuthSession
     

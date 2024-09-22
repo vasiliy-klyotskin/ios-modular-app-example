@@ -21,10 +21,9 @@ final class AuthenticationFlow: ObservableObject {
         let enterCode: (EnterCodeResendModel) -> EnterCodeFeature
     }
     
-    lazy var root: LoginFeature = { factory.login() }()
-    @Published var googleOAuthFeature: OAuthFeature?
     @Published var path: [Path] = []
-    
+    @Published var googleOAuthFeature: OAuthFeature?
+    lazy var root: LoginFeature = { factory.login() }()
     private let factory: Factory
     
     init(factory: Factory) {

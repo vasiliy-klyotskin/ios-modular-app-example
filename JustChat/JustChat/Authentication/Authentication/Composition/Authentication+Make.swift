@@ -6,8 +6,6 @@
 //
 
 extension AuthenticationFeature {
-    func view() -> AuthenticationView { .init(flow: self) }
-    
     static func make(env: AuthenticationEnvironment, events: AuthenticationEvents) -> AuthenticationFeature {
         let tokenService = AuthTokensService(keychain: env.keychain)
         let weakFlow: Weak<AuthenticationFlow> = .init()
@@ -21,10 +19,18 @@ extension AuthenticationFeature {
             onLoginButtonTapped: weakFlow.do { $0.goBack }
         )
         let enterCodeEvents = EnterCodeEvents(
-            onCorrectOtpEnter: tokenService.save |> events.onSuccess
+            onCorrectOtpEnter:
+                firstly(tokenService.save)
+                .then(events.onSuccess)
+                .map(EnterCodeSubmitModel.from)
+                .execute
         )
         let googleOAuthEvents = OAuthEvents(
-            onSuccess: tokenService.save |> events.onSuccess
+            onSuccess:
+                firstly(tokenService.save)
+                .then(events.onSuccess)
+                .map(OAuthModel.from)
+                .execute
         )
         let flow = AuthenticationFlow(factory: .init(
             login: LoginFeature.make <~ env.login() <~ loginEvents,
@@ -34,5 +40,9 @@ extension AuthenticationFeature {
         ))
         weakFlow.obj = flow
         return flow
+    }
+    
+    func view() -> AuthenticationView {
+        .init(flow: self)
     }
 }

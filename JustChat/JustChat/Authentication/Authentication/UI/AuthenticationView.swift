@@ -13,6 +13,7 @@ struct AuthenticationView: View {
     var body: some View {
         NavigationStack(path: $flow.path) {
             flow.root.view()
+                .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
                 .optionalOverlay { flow.googleOAuthFeature?.view() }
                 .navigationDestination(for: AuthenticationFlow.Path.self, destination: destination(path:))
         }

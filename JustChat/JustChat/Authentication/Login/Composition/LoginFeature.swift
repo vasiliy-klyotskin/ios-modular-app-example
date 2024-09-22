@@ -18,7 +18,7 @@ struct LoginEvents {
 struct LoginEnvironment {
     let remoteClient: RemoteClient
     let uiScheduler: AnySchedulerOf<DispatchQueue>
-    let toast: ToastViewModel
+    let toast: ToastFeature
     
     static func from(resolver: Resolver) -> Self {
         .init(

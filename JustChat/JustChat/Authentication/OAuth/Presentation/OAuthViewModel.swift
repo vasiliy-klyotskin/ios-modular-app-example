@@ -8,9 +8,9 @@
 import Combine
 
 final class OAuthViewModel: ObservableObject {
-    @Published private(set) var isLoadingIndicatorVisible = false
-    
     var onNeedStartGoogleSignIn: () -> Void = {}
+    
+    @Published private(set) var isLoadingIndicatorVisible = false
     
     let toast: ToastViewModel
     
