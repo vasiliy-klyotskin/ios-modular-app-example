@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:JustChat/JustChat.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Authentication/Authentication.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Primitives/Primitives.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:DesignScheme/DesignScheme.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Networking/Networking.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Composition/Composition.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Demonstration/Demonstration.xcodeproj">
+   </FileRef>
+</Workspace>
