@@ -22,9 +22,6 @@ let package = Package(
         .package(path: "../DesignScheme"),
         .package(path: "../Networking"),
         .package(path: "../CompositionSupport"),
-        .package(path: "../PrimitivesDSL"),
-        .package(path: "../CompositionTestingTools"),
-        .package(path: "../NetworkingTestingTools")
     ],
     targets: [
         .target(
@@ -39,14 +36,5 @@ let package = Package(
                 .process("Resources")
             ]
         ),
-        .testTarget(
-            name: "AuthenticationTests",
-            dependencies: [
-                .target(name: "Authentication"),
-                .product(name: "CompositionTestingTools", package: "CompositionTestingTools"),
-                .product(name: "NetworkingTestingTools", package: "NetworkingTestingTools"),
-                .product(name: "PrimitivesDSL", package: "PrimitivesDSL"),
-            ]
-        )
     ]
 )

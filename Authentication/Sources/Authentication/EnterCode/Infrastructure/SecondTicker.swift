@@ -7,9 +7,9 @@
 
 import Foundation
 
-public typealias MakeTimer = (_ interval: TimeInterval, _ repeats: Bool, _ block: @escaping (Timer) -> Void) -> Timer
+public typealias MakeTimer = (_ interval: TimeInterval, _ repeats: Bool, _ block: @Sendable @escaping (Timer) -> Void) -> Timer
 
-final class SecondTicker {
+final class SecondTicker: @unchecked Sendable {
     var onTick: () -> Void = {}
     
     private let timeinterval: TimeInterval = 1

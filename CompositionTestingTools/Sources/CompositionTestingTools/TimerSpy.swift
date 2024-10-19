@@ -7,7 +7,7 @@
 
 import Foundation
 
-public typealias MakeTimer = (_ interval: TimeInterval, _ repeats: Bool, _ block: @escaping (Timer) -> Void) -> Timer
+public typealias MakeTimer = (_ interval: TimeInterval, _ repeats: Bool, _ block: @Sendable @escaping (Timer) -> Void) -> Timer
 
 public final class TimerSpy {
     private var timePassed: TimeInterval = 0

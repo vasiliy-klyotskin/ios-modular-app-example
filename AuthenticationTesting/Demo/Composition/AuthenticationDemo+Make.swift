@@ -96,7 +96,7 @@ extension AuthenticationDemoFeature {
         demoUtils: DemoUtilsFeature
     ) -> Container {
         Container()
-            .register(AppInfo.self, .init(bundleId: Bundle.main.bundleIdentifier ?? ""))
+            .register(AppInfo.self, .init(bundleId: "com.klyotskin.JustChat"))
             .register(RemoteClient.self, demoUtils.remoteClient)
             .register(AnySchedulerOf<DispatchQueue>.self, .main)
             .register(ToastFeature.self, toast)
