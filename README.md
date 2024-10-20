@@ -1,4 +1,3 @@
 # just-chat-ios
-## Elegant, dependency-free chat application crafted with SwiftUI
 
-### Work in progress...
+playground application for practicing modularity, SwiftUI and other aspects of modern iOS development
