@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:DEVLOG.md">
+   </FileRef>
+   <FileRef
       location = "group:AuthenticationTesting/AuthenticationTesting.xcodeproj">
    </FileRef>
    <FileRef
