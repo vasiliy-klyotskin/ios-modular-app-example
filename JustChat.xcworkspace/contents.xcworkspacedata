@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:iOS_CI.xctestplan">
+   </FileRef>
+   <FileRef
+      location = "group:DEVLOG.md">
+   </FileRef>
+   <FileRef
+      location = "group:AuthenticationTesting/AuthenticationTesting.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:PrimitivesTesting/PrimitivesTesting.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Authentication">
+   </FileRef>
+   <FileRef
+      location = "group:Primitives">
+   </FileRef>
+   <FileRef
+      location = "group:PrimitivesDSL">
+   </FileRef>
+   <FileRef
+      location = "group:DesignScheme">
+   </FileRef>
+   <FileRef
+      location = "group:Networking">
+   </FileRef>
+   <FileRef
+      location = "group:NetworkingTestingTools">
+   </FileRef>
+   <FileRef
+      location = "group:CompositionSupport">
+   </FileRef>
+   <FileRef
+      location = "group:CompositionTestingTools">
+   </FileRef>
+   <FileRef
+      location = "group:Demonstration">
+   </FileRef>
+</Workspace>
