@@ -14,8 +14,8 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:Primitives",
-        "identifier" : "PrimitivesTests",
+        "containerPath" : "container:PrimitivesTesting\/PrimitivesTesting.xcodeproj",
+        "identifier" : "F76CD4C12CC6C60C007A116D",
         "name" : "PrimitivesTests"
       }
     },

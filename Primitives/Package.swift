@@ -13,13 +13,11 @@ let package = Package(
             name: "Primitives",
             type: .dynamic,
             targets: ["Primitives"]
-        ),
+        )
     ],
     dependencies: [
         .package(path: "../CompositionSupport"),
-        .package(path: "../DesignScheme"),
-        .package(path: "../PrimitivesDSL"),
-        .package(path: "../CompositionTestingTools")
+        .package(path: "../DesignScheme")
     ],
     targets: [
         .target(
@@ -33,14 +31,6 @@ let package = Package(
                     name: "CompositionSupport",
                     package: "CompositionSupport"
                 )
-            ]
-        ),
-        .testTarget(
-            name: "PrimitivesTests",
-            dependencies: [
-                .target(name: "Primitives"),
-                .product(name: "PrimitivesDSL", package: "PrimitivesDSL"),
-                .product(name: "CompositionTestingTools", package: "CompositionTestingTools"),
             ]
         ),
     ]

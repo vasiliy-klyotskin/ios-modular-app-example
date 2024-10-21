@@ -45,12 +45,12 @@
 		D6E1281E2CC3CDC000518D93 /* Authentication in Frameworks */ = {isa = PBXBuildFile; productRef = D6E1281D2CC3CDC000518D93 /* Authentication */; };
 		D6E128252CC3CDE200518D93 /* Primitives in Frameworks */ = {isa = PBXBuildFile; productRef = D6E128242CC3CDE200518D93 /* Primitives */; };
 		D6E1282A2CC3CE1400518D93 /* CompositionSupport in Frameworks */ = {isa = PBXBuildFile; productRef = D6E128292CC3CE1400518D93 /* CompositionSupport */; };
-		D6E1282C2CC4FC1E00518D93 /* Authentication in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E128042CC3CDA100518D93 /* Authentication */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		D6E1282D2CC4FC1E00518D93 /* CompositionSupport in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E1280A2CC3CDA100518D93 /* CompositionSupport */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		D6E1282E2CC4FC1E00518D93 /* Demonstration in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E128012CC3CDA100518D93 /* Demonstration */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		D6E1282F2CC4FC1E00518D93 /* DesignScheme in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E127FB2CC3CDA100518D93 /* DesignScheme */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		D6E128302CC4FC1E00518D93 /* Networking in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E127FE2CC3CDA100518D93 /* Networking */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		D6E128312CC4FC1E00518D93 /* Primitives in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E128072CC3CDA100518D93 /* Primitives */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F76CD48E2CC6C32D007A116D /* Authentication in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E128042CC3CDA100518D93 /* Authentication */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F76CD48F2CC6C32D007A116D /* CompositionSupport in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E1280A2CC3CDA100518D93 /* CompositionSupport */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F76CD4902CC6C32D007A116D /* Demonstration in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E128012CC3CDA100518D93 /* Demonstration */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F76CD4912CC6C32D007A116D /* DesignScheme in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E127FB2CC3CDA100518D93 /* DesignScheme */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F76CD4922CC6C32D007A116D /* Networking in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E127FE2CC3CDA100518D93 /* Networking */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F76CD4932CC6C32D007A116D /* Primitives in Embed Frameworks */ = {isa = PBXBuildFile; productRef = D6E128072CC3CDA100518D93 /* Primitives */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,12 +70,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				D6E1282C2CC4FC1E00518D93 /* Authentication in Embed Frameworks */,
-				D6E1282E2CC4FC1E00518D93 /* Demonstration in Embed Frameworks */,
-				D6E1282D2CC4FC1E00518D93 /* CompositionSupport in Embed Frameworks */,
-				D6E128302CC4FC1E00518D93 /* Networking in Embed Frameworks */,
-				D6E128312CC4FC1E00518D93 /* Primitives in Embed Frameworks */,
-				D6E1282F2CC4FC1E00518D93 /* DesignScheme in Embed Frameworks */,
+				F76CD48E2CC6C32D007A116D /* Authentication in Embed Frameworks */,
+				F76CD4902CC6C32D007A116D /* Demonstration in Embed Frameworks */,
+				F76CD48F2CC6C32D007A116D /* CompositionSupport in Embed Frameworks */,
+				F76CD4922CC6C32D007A116D /* Networking in Embed Frameworks */,
+				F76CD4932CC6C32D007A116D /* Primitives in Embed Frameworks */,
+				F76CD4912CC6C32D007A116D /* DesignScheme in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;

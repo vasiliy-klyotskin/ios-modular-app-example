@@ -11,6 +11,9 @@
       location = "group:AuthenticationTesting/AuthenticationTesting.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:PrimitivesTesting/PrimitivesTesting.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Authentication">
    </FileRef>
    <FileRef
