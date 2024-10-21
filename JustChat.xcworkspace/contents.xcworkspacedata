@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:iOS_CI.xctestplan">
+   </FileRef>
+   <FileRef
       location = "group:DEVLOG.md">
    </FileRef>
    <FileRef

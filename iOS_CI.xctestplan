@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "448E265F-9B4A-4DFB-A84B-53BCE34B27BC",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Primitives",
+        "identifier" : "PrimitivesTests",
+        "name" : "PrimitivesTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:AuthenticationTesting\/AuthenticationTesting.xcodeproj",
+        "identifier" : "D6E127B62CC3CD2300518D93",
+        "name" : "AuthenticationTests"
+      }
+    }
+  ],
+  "version" : 1
+}
